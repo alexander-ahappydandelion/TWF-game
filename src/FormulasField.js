@@ -1,76 +1,61 @@
 class FormulasField {
-    constructor(formulaSize, fieldSize, origin, scene, formulasGenerator, obj, action) {
-        this.fieldWidth = fieldSize.width;
-        this.fieldHeight = fieldSize.height;
-        this.formulaWidth = formulaSize.width;
-        this.formulaHeight = formulaSize.height;
+    constructor(fieldHeight, scene, formulasGenerator, formulaBuilder) {
+        this.fieldHeight = fieldHeight;
+        this.x = 240;
+        this.topY = 0;
+
+        this.indent = 10;
+        this.speed = { x: 0, y: 0.7 };
+
         this.scene = scene;
-        this.speed = { x: 0, y: 0.7};
+
         this.formulasGenerator = formulasGenerator;
+        this.formulaBuilder = formulaBuilder;
 
-        this.myFormula = Formula.build()
-            .withTexFormula("e^x")
-            .withHeight(20)
-            .placedAt({x: 240, y: 0})
-            .onScene(scene)
-            .onCollisionWith(obj)
-            .doAction(action)
-            .render();
-
-        this.formulasQueue = [this.myFormula];
-        this.collisions = [];
+        this.formulas = [];
     }
-
-    addCollision(obj, action) {
-        for (const formula of this.formulasQueue) {
-            formula.addCollision(obj, action);
-        }
-        console.log('collision was added in formula field');
-    }
-
-
 
     update() {
-        this.addNewFormulasIfNeeded();
-        this.destroyOldFormulasIfNeeded();
-        this.moveFormulasDown();
+        this.move(this.speed);
+        this.addFormulas();
+        this.removeExtraFormulas();
     }
 
-    addNewFormulasIfNeeded() {
-        if (this.needAnotherFormula()) {
-            this.formulasQueue.push(
-                Formula.build()
-                .withTexFormula("e^6x")
-                .withHeight(20)
-                .placedAt({x: 240, y: -56})
-                .onScene(this.scene)
-                .render()
-            );
 
-        }
-    }
-
-    destroyOldFormulasIfNeeded() {
-        if (this.needRemoveFormula()) {
-            this.formulasQueue[0].destroy();
-            this.formulasQueue.shift();
-        }
-    }
-
-    needAnotherFormula() {
-        return this.formulasQueue.size === 0
-            || 0 <= this.formulasQueue[this.formulasQueue.length - 1].getTopY();
-    }
-
-    needRemoveFormula() {
-        return this.formulasQueue.size !== 0
-            && this.fieldHeight < this.formulasQueue[0].getTopY();
-    }
-
-    moveFormulasDown() {
-        let speed = this.speed;
-        this.formulasQueue.forEach(function(formula) {
-            formula.move(speed);
+    move() {
+        this.formulas.forEach(formula => {
+            formula.move(this.speed);
         })
     }
+
+    addFormulas() {
+        while (this.haveExtraSpace()) {
+            let texFormula = this.formulasGenerator.getNext();
+            let newFormula = this.formulaBuilder
+                .withTexFormula(texFormula)
+                .placedAt({ x: this.x, bottomY: this.topY })
+                .render();
+
+            this.formulas.push(newFormula);
+        }
+    }
+
+    removeExtraFormulas() {
+        while (this.haveExtraFormula()) {
+            this.formulas[0].destroy();
+            this.formulas.shift();
+        }
+    }
+
+    haveExtraSpace() {
+        console.log(this.formulas.length);
+        return this.formulas.length === 0
+            || this.topY + this.indent <= this.formulas[this.formulas.length - 1].getTopY();
+    }
+
+    haveExtraFormula() {
+        return this.formulas.size !== 0
+            && this.topY + this.fieldHeight <= this.formulas[0].getTopY();
+    }
+
 }
