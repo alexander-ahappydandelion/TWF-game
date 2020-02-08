@@ -13,6 +13,26 @@ class FormulasField {
         this.formulaBuilder = formulaBuilder;
 
         this.formulas = [];
+        this.balls = [];
+    }
+
+    addCollisionWith(ball) {
+        console.log('[fmField] adding of collision started');
+
+        this.balls.push(ball);
+
+        for (let formula of this.formulas) {
+            this.scene.physics.add.collider(
+                formula.getSceneObject(),
+                ball.getSceneObject(),
+                function (_formula, _obj) {
+                    console.log('[collision] the collision has happened');
+                    ball.destroy();
+                }
+            )
+        }
+
+        console.log('[fmField] adding of collision finished');
     }
 
     update() {

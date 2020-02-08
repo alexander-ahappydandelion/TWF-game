@@ -34,7 +34,11 @@ class Scene extends Phaser.Scene {
             .render();
 
         this.input.on('pointerdown', () => {
-            this.cannon.shoot();
+            let ball = this.cannon.shoot();
+            console.log('[scene] the ball has been got');
+
+            this.fmField.addCollisionWith(ball);
+            console.log('[scene] the collision was added');
         });
 
     }

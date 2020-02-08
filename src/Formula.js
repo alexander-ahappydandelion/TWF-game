@@ -25,6 +25,10 @@ class Formula {
         }
     }
 
+    getSceneObject() {
+        return this.bgImage;
+    }
+
     getTopY() {
         if (this.bgImage) {
             return this.bgImage.y - this.bgImage.displayHeight / 2;
