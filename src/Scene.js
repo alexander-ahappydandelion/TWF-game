@@ -8,13 +8,25 @@ class Scene extends Phaser.Scene {
 
     preload() {
         this.load.image('bgWhite', 'assets/images/formulaBackground.png');
+        this.load.image('bgGreen', 'assets/images/bgGreen.png');
         this.load.image('cannon_ball', 'assets/images/cannon_ball.png');
         this.load.image('cannon', 'assets/images/cannon.png');
     }
 
     create() {
+        this.anims.create({
+            key: 'fm_accept',
+            frames: [
+                { key: 'bgWhite' },
+                { key: 'bgGreen' }
+            ],
+            frameRate: 10,
+            repeat: 3
+        });
+
         let fmBuilder = new FormulaBuilder()
             .setBgImageLabel('bgWhite')
+            .setAcceptAnim('fm_accept')
             .setFormulaHeight(40)
             .setFormulaShift({x: 0, y: -4})
             .setScene(this);

@@ -27,6 +27,7 @@ class FormulasField {
                 ball.getSceneObject(),
                 function (_formula, _obj) {
                     console.log('[collision] the collision has happened');
+                    formula.hit();
                     ball.destroy();
                 }
             )

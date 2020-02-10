@@ -58,6 +58,11 @@ class FormulaBuilder {
         return this;
     }
 
+    setAcceptAnim(acceptAnim) {
+        this.acceptAnim = acceptAnim;
+        return this;
+    }
+
     setFormulaHeight(height) {
         this.formulaHeight = height;
         return this;
@@ -80,7 +85,8 @@ class FormulaBuilder {
         formula.fmOrigin = { x: this.origin.x + this.shift.x, y: this.origin.y + this.shift.y };
 
         this.scene.load.once('complete', () => {
-           formula.bgImage = this.scene.physics.add.image(this.origin.x, this.origin.y, this.bgLabel);
+           formula.bgImage = this.scene.physics.add.sprite(this.origin.x, this.origin.y, this.bgLabel);
+           formula.acceptAnim = this.acceptAnim;
            formula.bgImage.setImmovable(true);
 
            formula.fmImage = this.scene.add.image(this.origin.x + this.shift.x,

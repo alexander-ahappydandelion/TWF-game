@@ -5,6 +5,8 @@ class Formula {
 
         this.bgOrigin = undefined;
         this.fmOrigin = undefined;
+
+        this.acceptAnim = undefined;
     }
 
     move(speed) {
@@ -32,6 +34,15 @@ class Formula {
     getTopY() {
         if (this.bgImage) {
             return this.bgImage.y - this.bgImage.displayHeight / 2;
+        }
+    }
+
+    hit() {
+        if (this.acceptAnim) {
+            this.bgImage.on('animationcomplete', () => {
+                this.destroy();
+            });
+            this.bgImage.play(this.acceptAnim);
         }
     }
 
