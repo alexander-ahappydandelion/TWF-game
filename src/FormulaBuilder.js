@@ -1,6 +1,7 @@
 class FormulaBuilder {
     constructor() {
         this.id = "memorizable id";
+        this.model = undefined;
         this.scene = undefined;
         this.bgLabel = undefined;
         this.texFormula = undefined;
@@ -12,8 +13,9 @@ class FormulaBuilder {
 
     // temporary parameters
 
-    withTexFormula(texFormula) {
-        this.texFormula = texFormula;
+    withFormula(formula) {
+        this.texFormula = formula.text.replace("&", "%26");
+        this.isCorrect = formula.isCorrect;
         return this;
     }
 
@@ -48,6 +50,11 @@ class FormulaBuilder {
         return this;
     }
 
+    setGameModel(model) {
+        this.model = model;
+        return this;
+    }
+
     setScene(scene) {
         this.scene = scene;
         return this;
@@ -60,6 +67,11 @@ class FormulaBuilder {
 
     setAcceptAnim(acceptAnim) {
         this.acceptAnim = acceptAnim;
+        return this;
+    }
+
+    setRejectAnim(rejectAnim) {
+        this.rejectAnim = rejectAnim;
         return this;
     }
 
@@ -76,6 +88,9 @@ class FormulaBuilder {
     render() {
         let formula = new Formula();
 
+        formula.model = this.model;
+        formula.isCorrect = this.isCorrect;
+
         this.scene.load.image(this.id + this.texFormula,
             'https://chart.apis.google.com/chart?cht=tx' +
                     '&chs=' + this.formulaHeight +
@@ -87,6 +102,7 @@ class FormulaBuilder {
         this.scene.load.once('complete', () => {
            formula.bgImage = this.scene.physics.add.sprite(this.origin.x, this.origin.y, this.bgLabel);
            formula.acceptAnim = this.acceptAnim;
+           formula.rejectAnim = this.rejectAnim;
            formula.bgImage.setImmovable(true);
 
            formula.fmImage = this.scene.add.image(this.origin.x + this.shift.x,

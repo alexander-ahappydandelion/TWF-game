@@ -51,9 +51,9 @@ class FormulasField {
 
     addFormulas() {
         while (this.haveExtraSpace()) {
-            let texFormula = this.formulasGenerator.getNext();
+            let formula = this.formulasGenerator.getNext();
             let newFormula = this.formulaBuilder
-                .withTexFormula(texFormula)
+                .withFormula(formula)
                 .placedAt({ x: this.x, bottomY: this.topY })
                 .render();
 
