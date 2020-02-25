@@ -1,6 +1,6 @@
 const config = {
-    width: 640,
-    height: 480,
+    width: 1200,
+    height: 800,
     backgroundColor: 0xffcc66,
     scene: [Scene],
     pixelArt: true,
@@ -9,6 +9,9 @@ const config = {
         arcade: {
             debug: false
         }
+    },
+    fps: {
+        target: 60
     }
 };
 

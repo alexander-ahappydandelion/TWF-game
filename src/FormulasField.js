@@ -37,7 +37,7 @@ class FormulasField {
     }
 
     update() {
-        this.move(this.speed);
+        // this.move(this.speed);
         this.addFormulas();
         this.removeExtraFormulas();
     }

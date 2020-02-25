@@ -101,12 +101,14 @@ class FormulaBuilder {
 
         this.scene.load.once('complete', () => {
            formula.bgImage = this.scene.physics.add.sprite(this.origin.x, this.origin.y, this.bgLabel);
+           formula.bgImage.setVelocity(0, 70);
            formula.acceptAnim = this.acceptAnim;
            formula.rejectAnim = this.rejectAnim;
            formula.bgImage.setImmovable(true);
 
-           formula.fmImage = this.scene.add.image(this.origin.x + this.shift.x,
-               this.origin.y + this.shift.y, this.id + this.texFormula);
+           // formula.fmImage = this.scene.physics.add.image(this.origin.x + this.shift.x,
+           //     this.origin.y + this.shift.y, this.id + this.texFormula);
+           // formula.fmImage.setVelocity(0, 30);
         });
 
         this.scene.load.start();

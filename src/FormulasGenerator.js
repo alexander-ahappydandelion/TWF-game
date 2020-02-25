@@ -1,34 +1,134 @@
 class FormulasGenerator {
     constructor(gameModel) {
-        this.expr = "(A|B)&(C|D)";
+        this.expr = "(A|B)&(C->D)";
         this.correctSubs = [
             {
                 origin: "A|B",
                 target: "B|A"
             },
             {
-                origin: "B|A",
-                target: "A|B"
+                origin: "A&B",
+                target: "B&A"
             },
             {
-                origin: "A\\/C",
-                target: "C\\/A"
+                origin: "A|(B|C)",
+                target: "A|B|C"
             },
             {
-                origin: "B\\/C",
-                target: "C\\/B"
+                origin: "A|B|C",
+                target: "A|(B|C)",
             },
             {
-                origin: "A/\\B",
-                target: "B/\\A"
+                origin: "A&(B&C)",
+                target: "A&B&C"
             },
             {
-                origin: "A/\\C",
-                target: "C/\\A"
+                origin: "A&B&C",
+                target: "A&(B&C)"
             },
             {
-                origin: "B/\\C",
-                target: "C/\\B"
+                origin: "(A|B)|C",
+                target: "A|B|C"
+            },
+            {
+                origin: "A|B|C",
+                target: "(A|B)|C"
+            },
+            {
+                origin: "(A&B)&C",
+                target: "A&B&C"
+            },
+            {
+                origin: "A&B&C",
+                target: "(A&B)&C"
+            },
+            {
+                origin: "A|(B&C)",
+                target: "(A|B)&(A|C)"
+            },
+            {
+                origin: "(A|B)&(A|C)",
+                target: "A|(B&C)"
+            },
+            {
+                origin: "A&(B|C)",
+                target: "(A&B)|(A&C)"
+            },
+            {
+                origin: "(A&B)|(A&C)",
+                target: "A&(B|C)"
+            },
+            {
+                origin: "!(A&B)",
+                target: "!A|!B"
+            },
+            {
+                origin: "!A|!B",
+                target: "!(A&B)"
+            },
+            {
+                origin: "!(A|B)",
+                target: "!A&!B"
+            },
+            {
+                origin: "!A&!B",
+                target: "!(A|B)"
+            },
+            {
+                origin: "!A|B",
+                target: "A->B"
+            },
+            {
+                origin: "A->B",
+                target: "!A|B"
+            },
+            {
+                origin: "!(!(A))",
+                target: "A"
+            },
+              // {
+            //     origin: "A",
+            //     target: "!(!(A))"
+            // },
+            // {
+            //     origin: "A",
+            //     target: "!!A"
+            // },
+            // {
+            //     origin: "!!A",
+            //     target: "A"
+            // },
+            {
+                origin: "A|(A&B)",
+                target: "A"
+            },
+            {
+                origin: "A",
+                target: "A|(A&B)"
+            },
+            {
+                origin: "A&(A|B)",
+                target: "A"
+            },
+            {
+                origin: "A",
+                target: "A&(A|B)"
+            },
+            {
+                origin: "A|A",
+                target: "A"
+            },
+            {
+                origin: "A",
+                target: "A|A"
+            },
+            {
+                origin: "A&A",
+                target: "A"
+            },
+            {
+                origin: "A",
+                target: "A&A"
             }
         ];
         this.wrongSubs = [
@@ -45,7 +145,7 @@ class FormulasGenerator {
 
     getNext() {
         let isCorrect = this.isNextFormulaCorrect();
-        this.expr = this.getNextExpression(isCorrect);
+        // this.expr = this.getNextExpression(isCorrect);
 
         // return {
         //     "expr": this.expr,
@@ -60,7 +160,8 @@ class FormulasGenerator {
 
 
     isNextFormulaCorrect() {
-        return Math.random() < 0.5;
+        // return Math.random() < 0.5;
+        return true;
     }
 
     getNextExpression(isCorrect) {
@@ -100,40 +201,64 @@ class FormulasGenerator {
     getNextApplicableSubstitutionFrom(subs) {
         let sub = this.getRandomElemOf(subs);
         while (!this.isApplicableSubstitution(this.expr, sub)) {
+            console.log("I was here  1 " + subs.length);
             sub = this.getRandomElemOf(subs);
+            console.log("I was here 2 " + subs.length);
         }
+        console.log("I was here 3: " + sub);
         return sub;
     }
 
     applySub(expr, sub, place) {
         return TWF.api.applyExpressionBySubstitutionPlaceCoordinates(expr, sub.origin, sub.target,
             place.parentStartPosition, place.parentEndPosition,
-            place.startPosition, place.endPosition)
+            place.startPosition, place.endPosition,
+            "setTheory")
     }
 
     // assumption: @sub is an applicable sub for @epxr
     applySubInRandomPlace(expr, sub) {
         let places = this.getSubsPlacesFor(expr, sub);
-        console.log("places: " + places + " $applySubInRandomPlace");
+        console.log("places: " + places.length + " $applySubInRandomPlace ");
+        console.log("expr: " + expr);
+        console.log("sub.origin: " + sub.origin);
+        console.log("sub.target: " + sub.target);
+        for (let place of places) {
+            console.log("place.parentStartPosition: " + place.parentStartPosition);
+            console.log("place.parentEndPosition: " + place.parentEndPosition);
+            console.log("place.startPosition: " + place.startPosition);
+            console.log("place.endPosition: " + place.startPosition);
+        }
         return this.applySub(expr, sub, this.getRandomElemOf(places));
     }
 
     isApplicableSubstitution(expr, sub) {
+        console.log("I was here 5")
         let subs = this.getSubsPlacesFor(expr, sub);
+        console.log("I was here 6")
         return subs.length > 0
     }
 
     getSubsPlacesFor(expr, sub) {
-        let placesJSON = TWF.api.findSubstitutionPlacesCoordinatesInExpressionJSON(expr, sub.origin, sub.target);
+        console.log("I was here 7");
+        console.log("expr: " + expr);
+        console.log("sub.origin: " + sub.origin);
+        console.log("sub.target: " + sub.target);
+        let placesJSON = TWF.api.findSubstitutionPlacesCoordinatesInExpressionJSON(expr, sub.origin, sub.target, "setTheory");
+        console.log("I was here 8");
+        console.log("placesJSON: " + placesJSON);
         let substitutionPlaces = (JSON.parse(placesJSON)).substitutionPlaces;
+        console.log("I was here 9")
         substitutionPlaces.forEach((subPlaces) => {
             for (let place in subPlaces) {
                 subPlaces[place] = parseInt(subPlaces[place]);
             }
         });
-        substitutionPlaces = substitutionPlaces.filter((subPlaces) => {
-            return subPlaces.endPosition - subPlaces.startPosition <= sub.origin.length + 2
-        });
+        console.log("I was here 10")
+        // substitutionPlaces = substitutionPlaces.filter((subPlaces) => {
+        //     return subPlaces.endPosition - subPlaces.startPosition <= sub.origin.length + 2
+        // });
+        // console.log("I was here 11")
         return substitutionPlaces
     }
 

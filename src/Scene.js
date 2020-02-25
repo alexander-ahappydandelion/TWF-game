@@ -50,7 +50,7 @@ class Scene extends Phaser.Scene {
 
         let cannonBallBuilder = new CannonBallBuilder()
             .withImageLabel('cannon_ball', 0.25, 24.5)
-            .withSpeed(1000);
+            .withSpeed(70);
 
         this.cannon = new CannonBuilder()
             .withCannonBallBuilder(cannonBallBuilder)
