@@ -4,87 +4,129 @@ class FormulasGenerator {
         this.correctSubs = [
             {
                 origin: "A|B",
-                target: "B|A"
+                target: "B|A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&B",
-                target: "B&A"
+                target: "B&A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A|(B|C)",
-                target: "A|B|C"
+                target: "A|B|C",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A|B|C",
                 target: "A|(B|C)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&(B&C)",
-                target: "A&B&C"
+                target: "A&B&C",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&B&C",
-                target: "A&(B&C)"
+                target: "A&(B&C)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "(A|B)|C",
-                target: "A|B|C"
+                target: "A|B|C",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A|B|C",
-                target: "(A|B)|C"
+                target: "(A|B)|C",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "(A&B)&C",
-                target: "A&B&C"
+                target: "A&B&C",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&B&C",
-                target: "(A&B)&C"
+                target: "(A&B)&C",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A|(B&C)",
-                target: "(A|B)&(A|C)"
+                target: "(A|B)&(A|C)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "(A|B)&(A|C)",
-                target: "A|(B&C)"
+                target: "A|(B&C)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&(B|C)",
-                target: "(A&B)|(A&C)"
+                target: "(A&B)|(A&C)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "(A&B)|(A&C)",
-                target: "A&(B|C)"
+                target: "A&(B|C)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "!(A&B)",
-                target: "!A|!B"
+                target: "!A|!B",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "!A|!B",
-                target: "!(A&B)"
+                target: "!(A&B)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "!(A|B)",
-                target: "!A&!B"
+                target: "!A&!B",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "!A&!B",
-                target: "!(A|B)"
+                target: "!(A|B)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "!A|B",
-                target: "A->B"
+                target: "A->B",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A->B",
-                target: "!A|B"
+                target: "!A|B",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "!(!(A))",
-                target: "A"
+                target: "A",
+                hit: -139,
+                pass: 6
             },
               // {
             //     origin: "A",
@@ -100,35 +142,51 @@ class FormulasGenerator {
             // },
             {
                 origin: "A|(A&B)",
-                target: "A"
+                target: "A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A",
-                target: "A|(A&B)"
+                target: "A|(A&B)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&(A|B)",
-                target: "A"
+                target: "A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A",
-                target: "A&(A|B)"
+                target: "A&(A|B)",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A|A",
-                target: "A"
+                target: "A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A",
-                target: "A|A"
+                target: "A|A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A&A",
-                target: "A"
+                target: "A",
+                hit: -139,
+                pass: 6
             },
             {
                 origin: "A",
-                target: "A&A"
+                target: "A&A",
+                hit: -139,
+                pass: 6
             }
         ];
         this.wrongSubs = [
@@ -154,7 +212,9 @@ class FormulasGenerator {
         // return encodeURI(this.expr.replace("&", encodeURIComponent("&")));
         return {
             "text": this.expr + encodeURI(" " + isCorrect),
-            "isCorrect": isCorrect
+            "isCorrect": isCorrect,
+            "hitScore": -239,
+            "passScore": 6
         };
     }
 

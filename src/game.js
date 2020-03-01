@@ -3,7 +3,7 @@ const config = {
     height: 800,
     backgroundColor: 0xffcc66,
     scene: [Scene],
-    pixelArt: true,
+    // pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {

@@ -12,9 +12,12 @@ class Scene extends Phaser.Scene {
         this.load.image('bgRed', 'assets/images/bgRed.png');
         this.load.image('cannon_ball', 'assets/images/cannon_ball.png');
         this.load.image('cannon', 'assets/images/cannon.png');
+        this.load.image('heart', 'assets/images/heart.png')
     }
 
     create() {
+        this.events = new Queue();
+
         this.anims.create({
             key: 'fm_accept',
             frames: [
@@ -35,7 +38,13 @@ class Scene extends Phaser.Scene {
             repeat: 3
         });
 
-        this.model = new GameModel();
+        this.scoreText = this.add.text(700, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        this.hearts = [];
+        for (let i = 0; i < 5; ++i) {
+            this.hearts.push(this.add.image(670 - 27 * i, 34, 'heart').setScale(0.045));
+        }
+
+        this.model = new GameModel(this);
 
         let fmBuilder = new FormulaBuilder()
             .setGameModel(this.model)
@@ -50,7 +59,7 @@ class Scene extends Phaser.Scene {
 
         let cannonBallBuilder = new CannonBallBuilder()
             .withImageLabel('cannon_ball', 0.25, 24.5)
-            .withSpeed(70);
+            .withSpeed(1000);
 
         this.cannon = new CannonBuilder()
             .withCannonBallBuilder(cannonBallBuilder)
@@ -100,12 +109,59 @@ class Scene extends Phaser.Scene {
     update() {
         this.fmField.update();
         this.focusCannonOnPointer(this.cannon);
+        if (this.superText !== undefined) {
+            let distance = Phaser.Math.Distance.Between(
+                this.superText.body.x, this.superText.body.y,
+                825, 30
+            );
+
+            console.log('current distance: ' + distance);
+
+            if (distance < 20) {
+                this.superText.body.stop();
+                this.superText.destroy();
+                this.superText = undefined;
+            }
+        }
     }
 
     focusCannonOnPointer(cannon) {
         let angleToPointer = Phaser.Math.Angle.BetweenPoints(this.cannon.getOrigin(), this.input.activePointer);
         cannon.rotateTo(Phaser.Math.Angle.Wrap(angleToPointer + Phaser.Math.TAU));
         return this;
+    }
+
+    setScore(score) {
+        this.scoreText.setText('score: ' + score);
+    }
+
+    removeHeart() {
+        this.hearts.pop().destroy();
+    }
+
+    // change the name of the method
+    flashAnim(text) {
+        this.superText = this.add.text(400, 300, '' + text, { font: "48px Arial Black", fill: "#c51b7d" });
+        this.superText.setStroke('#de77ae', 16)
+        this.physics.world.enable(this.superText);
+
+        // var target = new Phaser.Math.Vector2(0, 16);
+        // target.x = 400;
+        // target.y = 350;
+        //
+        this.physics.accelerateToObject(this.superText, {x: 825, y: 30}, 1000, 1000, 1000);
+
+        // this.events.enqueue(() => {
+        //     console.log('I was in an event')
+        //     let distance = Phaser.Math.Distance.Between(
+        //         this.superText.body.x, this.superText.body.y,
+        //         400, 300
+        //     );
+        //
+        //     if (distance < 4) {
+        //         this.superText.body.stop()
+        //     }
+        // })
     }
 
 }

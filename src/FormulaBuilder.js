@@ -5,6 +5,8 @@ class FormulaBuilder {
         this.scene = undefined;
         this.bgLabel = undefined;
         this.texFormula = undefined;
+        this.hitScore = undefined;
+        this.passScore = undefined;
         this.formulaHeight = undefined;
         this.shift = { x: 0, y: 0 };
         this.origin = { x: undefined, y: undefined }
@@ -16,6 +18,8 @@ class FormulaBuilder {
     withFormula(formula) {
         this.texFormula = formula.text.replace("&", "%26");
         this.isCorrect = formula.isCorrect;
+        this.hitScore = formula.hitScore;
+        this.passScore = formula.passScore;
         return this;
     }
 
@@ -90,6 +94,8 @@ class FormulaBuilder {
 
         formula.model = this.model;
         formula.isCorrect = this.isCorrect;
+        formula.hitScore = this.hitScore;
+        formula.passScore = this.passScore;
 
         this.scene.load.image(this.id + this.texFormula,
             'https://chart.apis.google.com/chart?cht=tx' +

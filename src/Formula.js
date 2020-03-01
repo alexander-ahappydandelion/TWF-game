@@ -3,6 +3,9 @@ class Formula {
         this.model = undefined;
         this.isCorrect = undefined;
 
+        this.hitScore = undefined;
+        this.passScore = undefined;
+
         this.bgImage = undefined;
         this.fmImage = undefined;
 
@@ -44,6 +47,10 @@ class Formula {
     }
 
     hit() {
+        if (this.isHit) { return; }
+
+        this.model.formulaWasHit(this);
+
         console.log("isCorrect: " + String(this.isCorrect) + " $hit");
         if ( this.isCorrect && this.rejectAnim) {
             this.bgImage.play(this.rejectAnim);
@@ -58,6 +65,7 @@ class Formula {
 
     destroy() {
         if (!this.isCorrect && !this.isHit) { this.model.decLives("the player didn't hit a wrong formula"); }
+        this.model.formulaWasPassed(this);
 
         if (this.bgImage) { this.bgImage.destroy(); }
         if (this.fmImage) { this.fmImage.destroy(); }
