@@ -137,19 +137,33 @@ class Scene extends Phaser.Scene {
 
     removeHeart() {
         this.hearts.pop().destroy();
+
+        if (this.hearts.length === 0) {
+            this.scene.start('gameover');
+        }
     }
 
     // change the name of the method
-    flashAnim(text) {
-        this.superText = this.add.text(400, 300, '' + text, { font: "48px Arial Black", fill: "#c51b7d" });
-        this.superText.setStroke('#de77ae', 16)
+    flashAnim(text, pos, theme) {
+        // this.superText = this.add.text(400, 300, '' + text, {font: "48px Arial Black", fill: "#c51b7d"});
+        let   textStyle = {};
+        let strokeStyle = {};
+
+        if (pos === "center") { pos = {x: 400, y: 300}; textStyle.font = "48px Arial Black"; }
+        if (pos === "bottom") { pos = {x: 400, y: 480}; textStyle.font = "32px Arial Black"; }
+
+        if (theme === "success") { textStyle.fill = "#6EBA7F"; strokeStyle.color = "#A1F2B3"; strokeStyle.thickness = 16; }
+        if (theme === "fail"   ) { textStyle.fill = "#A00000"; strokeStyle.color = "#DD0000"; strokeStyle.thickness = 16; }
+
+        this.superText = this.add.text(pos.x, pos.y, '' + text, textStyle);
+        this.superText.setStroke(strokeStyle.color, strokeStyle.thickness)
         this.physics.world.enable(this.superText);
 
         // var target = new Phaser.Math.Vector2(0, 16);
         // target.x = 400;
         // target.y = 350;
         //
-        this.physics.accelerateToObject(this.superText, {x: 825, y: 30}, 1000, 1000, 1000);
+        this.physics.accelerateToObject(this.superText, {x: 825, y: 30}, 200, 1000, 1000);
 
         // this.events.enqueue(() => {
         //     console.log('I was in an event')

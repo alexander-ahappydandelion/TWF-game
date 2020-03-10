@@ -15,7 +15,15 @@ class GameModel {
         this.scene.setScore(this.score);
         console.log("Current score: " + this.score + " $GameModel");
 
-        this.scene.flashAnim(formula.hitScore);
+        if (0 <= formula.hitScore) {
+            this.scene.flashAnim(formula.hitScore, "center", "success");
+        } else {
+            this.scene.flashAnim(formula.hitScore, "center", "fail");
+        }
+
+        if (formula.isCorrect) {
+            this.scene.removeHeart();
+        }
 
         // this.superText = this.scene.add.text(400, 300, '' + formula.hitScore, { fontSize: '32px', fill: '#000' });
         // this.scene.physics.world.enable(this.superText);
@@ -28,6 +36,17 @@ class GameModel {
         this.score += formula.passScore;
         this.scene.setScore(this.score);
         console.log("Current score: " + this.score + " $GameModel");
+
+        if (0 <= formula.passScore) {
+            this.scene.flashAnim(formula.passScore, "bottom", "success", );
+        } else {
+            this.scene.flashAnim(formula.passScore, "bottom", "fail");
+        }
+
+        if (!formula.isCorrect && !formula.isHit) {
+            this.scene.removeHeart();
+        }
+
 
         return this;
     }

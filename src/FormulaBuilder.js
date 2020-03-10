@@ -100,7 +100,7 @@ class FormulaBuilder {
         this.scene.load.image(this.id + this.texFormula,
             'https://chart.apis.google.com/chart?cht=tx' +
                     '&chs=' + this.formulaHeight +
-                    '&chl=' + this.texFormula);
+                    '&chl=' + this.isCorrect);
 
         formula.bgOrigin = { x: this.origin.x, y: this.origin.y };
         formula.fmOrigin = { x: this.origin.x + this.shift.x, y: this.origin.y + this.shift.y };
@@ -112,9 +112,9 @@ class FormulaBuilder {
            formula.rejectAnim = this.rejectAnim;
            formula.bgImage.setImmovable(true);
 
-           // formula.fmImage = this.scene.physics.add.image(this.origin.x + this.shift.x,
-           //     this.origin.y + this.shift.y, this.id + this.texFormula);
-           // formula.fmImage.setVelocity(0, 30);
+           formula.fmImage = this.scene.physics.add.image(this.origin.x + this.shift.x,
+               this.origin.y + this.shift.y, this.id + this.texFormula);
+           formula.fmImage.setVelocity(0, 70);
         });
 
         this.scene.load.start();

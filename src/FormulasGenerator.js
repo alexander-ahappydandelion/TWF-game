@@ -213,15 +213,15 @@ class FormulasGenerator {
         return {
             "text": this.expr + encodeURI(" " + isCorrect),
             "isCorrect": isCorrect,
-            "hitScore": -239,
-            "passScore": 6
+            "hitScore": isCorrect ? -239 : 239,
+            "passScore": isCorrect ? 6 : -239
         };
     }
 
 
     isNextFormulaCorrect() {
-        // return Math.random() < 0.5;
-        return true;
+        return Math.random() < 0.5;
+        // return true;
     }
 
     getNextExpression(isCorrect) {
