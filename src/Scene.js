@@ -12,12 +12,14 @@ class Scene extends Phaser.Scene {
         this.load.image('bgRed', 'assets/images/bgRed.png');
         this.load.image('cannon_ball', 'assets/images/cannon_ball.png');
         this.load.image('cannon', 'assets/images/cannon.png');
-        this.load.image('heart', 'assets/images/heart.png')
+        this.load.image('heart', 'assets/images/heart.png');
+        this.load.image('arrow', 'assets/images/small_arrow.png');
+        this.load.image('bgSilver', 'assets/images/silver_bg.png');
+        this.load.image('redArrow', 'assets/images/redArrow.png');
+        this.load.image('greenArrow', 'assets/images/greenArrow.png');
     }
 
     create() {
-        this.events = new Queue();
-
         this.anims.create({
             key: 'fm_accept',
             frames: [
@@ -59,13 +61,13 @@ class Scene extends Phaser.Scene {
 
         let cannonBallBuilder = new CannonBallBuilder()
             .withImageLabel('cannon_ball', 0.25, 24.5)
-            .withSpeed(1000);
+            .withSpeed(2000);
 
         this.cannon = new CannonBuilder()
             .withCannonBallBuilder(cannonBallBuilder)
             .withCannonImageLabel('cannon', 0.25)
             .withCenterAt({ x: 0.5, y: 0.75 })
-            .placedAt({ x: 580, y: 260 })
+            .placedAt({ x: 780, y: 260 })
             .onScene(this)
             .render();
 
@@ -136,11 +138,13 @@ class Scene extends Phaser.Scene {
     }
 
     removeHeart() {
-        this.hearts.pop().destroy();
-
-        if (this.hearts.length === 0) {
-            this.scene.start('gameover');
+        if (this.hearts.length > 0) {
+            this.hearts.pop().destroy();
         }
+
+        // if (this.hearts.length === 0) {
+        //     this.scene.start('gameover');
+        // }
     }
 
     // change the name of the method

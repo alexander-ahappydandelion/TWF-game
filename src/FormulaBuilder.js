@@ -15,11 +15,12 @@ class FormulaBuilder {
 
     // temporary parameters
 
-    withFormula(formula) {
+    withFormula(formula, isInitial) {
         this.texFormula = formula.text.replace("&", "%26");
         this.isCorrect = formula.isCorrect;
         this.hitScore = formula.hitScore;
         this.passScore = formula.passScore;
+        this.isInitial = isInitial;
         return this;
     }
 
@@ -96,11 +97,13 @@ class FormulaBuilder {
         formula.isCorrect = this.isCorrect;
         formula.hitScore = this.hitScore;
         formula.passScore = this.passScore;
+        formula.isInitial = this.isInitial;
 
         this.scene.load.image(this.id + this.texFormula,
-            'https://chart.apis.google.com/chart?cht=tx' +
-                    '&chs=' + this.formulaHeight +
-                    '&chl=' + this.isCorrect);
+            'https://chart.apis.google.com/chart?cht=tx' +  // tex parameter
+                    '&chs=' + this.formulaHeight +          // specify the height of formula
+                    '&chl=' + this.isCorrect +              // specify the text of formula
+                    '&chf=bg,s,11223300');                  // make transparent background
 
         formula.bgOrigin = { x: this.origin.x, y: this.origin.y };
         formula.fmOrigin = { x: this.origin.x + this.shift.x, y: this.origin.y + this.shift.y };
@@ -115,6 +118,30 @@ class FormulaBuilder {
            formula.fmImage = this.scene.physics.add.image(this.origin.x + this.shift.x,
                this.origin.y + this.shift.y, this.id + this.texFormula);
            formula.fmImage.setVelocity(0, 70);
+
+           console.log("isInitial: " + formula.isInitial);
+           if (!formula.isInitial) {
+               formula.arrow = this.scene.physics.add.image(this.origin.x,
+                   this.origin.y + 45, 'arrow');
+               formula.arrow.setVelocity(0, 70);
+
+               formula.rightText = this.scene.add.text(
+                   this.origin.x + 20, this.origin.y + 35,
+                   '',
+                   { font: "16px Arial", fill: "#000" }
+               );
+               this.scene.physics.world.enable(formula.rightText);
+               this.scene.physics.moveTo(formula.rightText, this.origin.x + 20, 100500, 70);
+
+               formula.leftText = this.scene.add.text(
+                   this.origin.x - 20, this.origin.y + 35,
+                   '',
+                   { font: "16px Arial", fill: "#000" }
+               );
+               formula.leftText.setOrigin(1.0, 0);
+               this.scene.physics.world.enable(formula.leftText);
+               this.scene.physics.moveTo(formula.leftText, this.origin.x - 20, 100500, 70);
+           }
         });
 
         this.scene.load.start();

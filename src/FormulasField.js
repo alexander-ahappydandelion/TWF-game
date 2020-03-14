@@ -4,7 +4,7 @@ class FormulasField {
         this.x = 240;
         this.topY = 0;
 
-        this.indent = 10;
+        this.indent = 25;
         this.speed = { x: 0, y: 0.7 };
 
         this.scene = scene;
@@ -52,8 +52,10 @@ class FormulasField {
     addFormulas() {
         while (this.haveExtraSpace()) {
             let formula = this.formulasGenerator.getNext();
+            let isInitial = this.formulas.length === 0;
+
             let newFormula = this.formulaBuilder
-                .withFormula(formula)
+                .withFormula(formula, isInitial)
                 .placedAt({ x: this.x, bottomY: this.topY })
                 .render();
 
@@ -75,7 +77,7 @@ class FormulasField {
     }
 
     haveExtraFormula() {
-        return this.formulas.size !== 0
+        return this.formulas.length !== 0
             && this.topY + this.fieldHeight <= this.formulas[0].getTopY();
     }
 

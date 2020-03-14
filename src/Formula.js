@@ -49,16 +49,31 @@ class Formula {
     hit() {
         if (this.isHit) { return; }
 
+        this.bgImage.setTexture('bgSilver');
+        if (!this.isInitial) {
+            if (this.isCorrect) {
+                this.arrow.setTexture('greenArrow');
+            } else {
+                this.arrow.setTexture('redArrow');
+            }
+
+            if (0 <= this.hitScore) {
+                this.rightText.setText('+' + this.hitScore);
+            } else {
+                this.leftText.setText('' + this.hitScore);
+            }
+        }
+
         this.model.formulaWasHit(this);
 
-        console.log("isCorrect: " + String(this.isCorrect) + " $hit");
-        if ( this.isCorrect && this.rejectAnim) {
-            this.bgImage.play(this.rejectAnim);
-            this.model.decLives("the player hit a correct formula");
-        }
-        if (!this.isCorrect && this.acceptAnim) {
-            this.bgImage.play(this.acceptAnim);
-        }
+        // console.log("isCorrect: " + String(this.isCorrect) + " $hit");
+        // if ( this.isCorrect && this.rejectAnim) {
+        //     this.bgImage.play(this.rejectAnim);
+        //     this.model.decLives("the player hit a correct formula");
+        // }
+        // if (!this.isCorrect && this.acceptAnim) {
+        //     this.bgImage.play(this.acceptAnim);
+        // }
 
         this.isHit = true;
     }
@@ -67,8 +82,11 @@ class Formula {
         if (!this.isCorrect && !this.isHit) { this.model.decLives("the player didn't hit a wrong formula"); }
         this.model.formulaWasPassed(this);
 
-        if (this.bgImage) { this.bgImage.destroy(); }
-        if (this.fmImage) { this.fmImage.destroy(); }
+        if (this.bgImage)   { this.bgImage.destroy();   }
+        if (this.fmImage)   { this.fmImage.destroy();   }
+        if (this.arrow  )   { this.arrow.destroy();     }
+        if (this.leftText)  { this.leftText.destroy();  }
+        if (this.rightText) { this.rightText.destroy(); }
     }
 
 }
