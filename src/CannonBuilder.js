@@ -35,8 +35,6 @@ class CannonBuilder {
         cannon.obj.setScale(this.scale);
         cannon.builder = this.builder;
 
-        console.log('render of cannon completed' + cannon.obj.originX);
-
         return cannon;
     }
 

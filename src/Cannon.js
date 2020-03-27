@@ -5,7 +5,6 @@ class Cannon {
     }
 
     shoot() {
-        console.log('пиу-пин');
         let cannonBall = this.builder
             .withDirection(this.calculateDirection())
             .placedAt(this.getOrigin())

@@ -16,7 +16,8 @@ class FormulaBuilder {
     // temporary parameters
 
     withFormula(formula, isInitial) {
-        this.texFormula = formula.text.replace("&", "%26");
+        // this.texFormula = formula.text.replace("&", "%26");
+        this.formula_label = formula.label;
         this.isCorrect = formula.isCorrect;
         this.hitScore = formula.hitScore;
         this.passScore = formula.passScore;
@@ -99,27 +100,27 @@ class FormulaBuilder {
         formula.passScore = this.passScore;
         formula.isInitial = this.isInitial;
 
-        this.scene.load.image(this.id + this.texFormula,
-            'https://chart.apis.google.com/chart?cht=tx' +  // tex parameter
-                    '&chs=' + this.formulaHeight +          // specify the height of formula
-                    '&chl=' + this.isCorrect +              // specify the text of formula
-                    '&chf=bg,s,11223300');                  // make transparent background
+        // this.scene.load.image('form' + this.texFormula,
+        //     'https://chart.apis.google.com/chart?cht=tx' +  // tex parameter
+        //             '&chs=' + this.formulaHeight +          // specify the height of formula
+        //             '&chl=' + this.texFormula +              // specify the text of formula
+        //             '&chf=bg,s,11223300');                  // make transparent background
 
         formula.bgOrigin = { x: this.origin.x, y: this.origin.y };
         formula.fmOrigin = { x: this.origin.x + this.shift.x, y: this.origin.y + this.shift.y };
 
-        this.scene.load.once('complete', () => {
-           formula.bgImage = this.scene.physics.add.sprite(this.origin.x, this.origin.y, this.bgLabel);
+        // this.scene.load.once('load', (fileObject) => {
+        //     console.log('fileObject: ' + fileObject.key);
+            formula.bgImage = this.scene.physics.add.sprite(this.origin.x, this.origin.y, this.bgLabel);
            formula.bgImage.setVelocity(0, 70);
            formula.acceptAnim = this.acceptAnim;
            formula.rejectAnim = this.rejectAnim;
            formula.bgImage.setImmovable(true);
 
            formula.fmImage = this.scene.physics.add.image(this.origin.x + this.shift.x,
-               this.origin.y + this.shift.y, this.id + this.texFormula);
+               this.origin.y + this.shift.y, this.formula_label);
            formula.fmImage.setVelocity(0, 70);
 
-           console.log("isInitial: " + formula.isInitial);
            if (!formula.isInitial) {
                formula.arrow = this.scene.physics.add.image(this.origin.x,
                    this.origin.y + 45, 'arrow');
@@ -142,7 +143,7 @@ class FormulaBuilder {
                this.scene.physics.world.enable(formula.leftText);
                this.scene.physics.moveTo(formula.leftText, this.origin.x - 20, 100500, 70);
            }
-        });
+        // });
 
         this.scene.load.start();
 

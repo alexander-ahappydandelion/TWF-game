@@ -1,13 +1,7 @@
 class FormulasGenerator {
-    constructor(initialExpr) {
-        this.count = 0;
-        this.limit = 100;
-
-        // this.expr = "(A|B)&(C->D)";
-        this.expr = initialExpr;
-        this.isCorrect = true;
-
-
+    constructor() {
+        this.counts = 1;
+        this.expr = "(A|B)&(C->D)";
         this.correctSubs = [
             {
                 origin: "A|B",
@@ -135,7 +129,7 @@ class FormulasGenerator {
                 hit: -139,
                 pass: 6
             },
-              // {
+            // {
             //     origin: "A",
             //     target: "!(!(A))"
             // },
@@ -208,18 +202,10 @@ class FormulasGenerator {
         ];
     }
 
-    hasNext() {
-        return this.count < this.limit;
-    }
-
     getNext() {
-        this.count += 1;
-
-        this.prevExpr = this.expr;
-        this.prevIsCorrect = this.isCorrect;
-
-        this.isCorrect = this.isNextFormulaCorrect();
-        this.expr = this.getNextExpression(this.isCorrect);
+        let isCorrect = this.isNextFormulaCorrect();
+        // this.expr = this.getNextExpression(isCorrect);
+        this.counts += 1;
 
         // return {
         //     "expr": this.expr,
@@ -227,11 +213,11 @@ class FormulasGenerator {
         // }
         // return encodeURI(this.expr.replace("&", encodeURIComponent("&")));
         return {
-            'label': 'fm' + this.prevExpr,
-            "tex": '' + this.prevExpr,
-            "isCorrect": this.prevIsCorrect,
-            "hitScore": this.prevIsCorrect ? -239 : 239,
-            "passScore": this.prevIsCorrect ? 6 : -239
+            'label': 'sf' + this.counts,
+            "text": '' + this.counts++,
+            "isCorrect": isCorrect,
+            "hitScore": isCorrect ? -239 : 239,
+            "passScore": isCorrect ? 6 : -239
         };
     }
 
@@ -242,41 +228,20 @@ class FormulasGenerator {
     }
 
     getNextExpression(isCorrect) {
-        return isCorrect ? this.getNextExpressionOf(this.correctSubs)
-                         : this.getNextExpressionOf(this.wrongSubs);
+        return isCorrect ? this.getNextCorrectExpression()
+            : this.getNextWrongExpression();
     }
 
-    getNextExpressionOf(subs) {
-        // let nextExpr = this.expr;
+    getNextCorrectExpression() {
+        let nextExpr = this.expr;
 
         // check if we've got the same formula
-        // while (nextExpr === this.expr) {
-        //     let sub = this.getNextApplicableSubstitutionFrom(this.correctSubs);
-        //     nextExpr = this.applySubInRandomPlace(this.expr, sub);
-        // }
-
-        this.shuffle(subs);
-
-        let applicableSub = undefined;
-        for (let sub of subs) {
-            if (this.isApplicableSubstitution(this.expr, sub)) {
-                applicableSub = sub;
-                break;
-            }
+        while (nextExpr === this.expr) {
+            let sub = this.getNextApplicableSubstitutionFrom(this.correctSubs);
+            nextExpr = this.applySubInRandomPlace(this.expr, sub);
         }
 
-        return this.applySubInRandomPlace(this.expr, applicableSub);
-    }
-
-    shuffle(a) {
-        var j, x, i;
-        for (i = a.length - 1; i > 0; i--) {
-            j = Math.floor(Math.random() * (i + 1));
-            x = a[i];
-            a[i] = a[j];
-            a[j] = x;
-        }
-        return a;
+        return nextExpr;
     }
 
     getNextWrongExpression() {
@@ -342,3 +307,14 @@ class FormulasGenerator {
     }
 
 }
+
+var generator = new FormulasGenerator();
+
+onmessage = function(event) {
+    var generatedFormulas = []
+    for (let i = 0; i < 10; ++i) {
+        generatedFormulas.push(generator.getNext());
+    }
+
+    postMessage(generatedFormulas)
+};

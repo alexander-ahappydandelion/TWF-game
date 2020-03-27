@@ -7,13 +7,11 @@ class GameModel {
 
     decLives(reason) {
         this.lives -= 1;
-        console.log('The player has ' + this.lives + " lives. Reason: " + reason + " #GameModel:decLives");
     }
 
     formulaWasHit(formula) {
         this.score += formula.hitScore;
         this.scene.setScore(this.score);
-        console.log("Current score: " + this.score + " $GameModel");
 
         if (0 <= formula.hitScore) {
             this.scene.flashAnim(formula.hitScore, "center", "success");
@@ -35,7 +33,6 @@ class GameModel {
     formulaWasPassed(formula) {
         this.score += formula.passScore;
         this.scene.setScore(this.score);
-        console.log("Current score: " + this.score + " $GameModel");
 
         if (0 <= formula.passScore) {
             this.scene.flashAnim(formula.passScore, "bottom", "success", );

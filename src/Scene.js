@@ -4,6 +4,7 @@ class Scene extends Phaser.Scene {
     }
 
     init() {
+        this.initExpr = "A|B"
     }
 
     preload() {
@@ -17,6 +18,14 @@ class Scene extends Phaser.Scene {
         this.load.image('bgSilver', 'assets/images/silver_bg.png');
         this.load.image('redArrow', 'assets/images/redArrow.png');
         this.load.image('greenArrow', 'assets/images/greenArrow.png');
+
+        // первую формулу в списке загружаем заранее
+        this.load.image('fm' + this.initExpr,
+            'https://chart.apis.google.com/chart?cht=tx' +  // tex parameter
+                    '&chs=' + 50 +          // specify the height of formula
+                    '&chl=' + this.initExpr +              // specify the text of formula
+                    '&chf=bg,s,11223300');                  // make transparent background
+
     }
 
     create() {
@@ -56,8 +65,8 @@ class Scene extends Phaser.Scene {
             .setFormulaHeight(40)
             .setFormulaShift({x: 0, y: -4})
             .setScene(this);
-        let fmGenerator= new FormulasGenerator(this.model);
-        this.fmField = new FormulasField(480, this, fmGenerator, fmBuilder);
+        this.fmGenerator= new FormulasGenerator(this.initExpr);
+        this.fmField = new FormulasField(480, this, this.fmGenerator, fmBuilder);
 
         let cannonBallBuilder = new CannonBallBuilder()
             .withImageLabel('cannon_ball', 0.25, 24.5)
@@ -73,10 +82,8 @@ class Scene extends Phaser.Scene {
 
         this.input.on('pointerdown', () => {
             let ball = this.cannon.shoot();
-            console.log('[scene] the ball has been got');
 
             this.fmField.addCollisionWith(ball);
-            console.log('[scene] the collision was added');
         });
 
         // let positions = TWF.api.findSubstitutionPlacesCoordinatesInExpressionJSON("A\\/A", "A", "B");
@@ -116,8 +123,6 @@ class Scene extends Phaser.Scene {
                 this.superText.body.x, this.superText.body.y,
                 825, 30
             );
-
-            console.log('current distance: ' + distance);
 
             if (distance < 20) {
                 this.superText.body.stop();
