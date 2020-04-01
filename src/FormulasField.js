@@ -45,6 +45,11 @@ class FormulasField {
     }
 
     getUrl(tex) {
+        tex = tex.replace("\\", "\\backslash ")
+            .replace("|", "\\vee ")
+            .replace("&", "\\wedge ")
+            .replace("->", "\\rightarrow ");
+
         return 'https://chart.apis.google.com/chart?cht=tx' +  // tex parameter
                 '&chs=' + 50 +          // specify the height of formula
                 '&chl=' + encodeURIComponent(tex) +              // specify the text of formula

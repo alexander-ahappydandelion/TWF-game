@@ -1,7 +1,6 @@
 if (typeof kotlin === 'undefined') {
   throw new Error("Error loading module 'TWF'. Its dependency 'kotlin' was not found. Please, check whether 'kotlin' is loaded prior to 'TWF'.");
-}
-var TWF = function (_, Kotlin) {
+}var TWF = function (_, Kotlin) {
   'use strict';
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var toSet = Kotlin.kotlin.collections.toSet_7wnvza$;
@@ -20,11 +19,11 @@ var TWF = function (_, Kotlin) {
   var rangeTo = Kotlin.kotlin.ranges.rangeTo_38ydlf$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var ensureNotNull = Kotlin.ensureNotNull;
-  var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var equals = Kotlin.equals;
+  var Pair = Kotlin.kotlin.Pair;
+  var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
   var throwCCE = Kotlin.throwCCE;
-  var Pair = Kotlin.kotlin.Pair;
   var mutableMapOf = Kotlin.kotlin.collections.mutableMapOf_qfcya0$;
   var to = Kotlin.kotlin.to_ujzrz7$;
   var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
@@ -38,9 +37,6 @@ var TWF = function (_, Kotlin) {
   var coerceAtLeast = Kotlin.kotlin.ranges.coerceAtLeast_dqglrj$;
   var LinkedHashMap_init = Kotlin.kotlin.collections.LinkedHashMap_init_bwtc7$;
   var Math_0 = Math;
-  var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
-  var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
-  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var union = Kotlin.kotlin.collections.union_q4559j$;
   var compareBy = Kotlin.kotlin.comparisons.compareBy_bvgy4j$;
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
@@ -61,9 +57,12 @@ var TWF = function (_, Kotlin) {
   var emptySet = Kotlin.kotlin.collections.emptySet_287e2$;
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var toMutableMap = Kotlin.kotlin.collections.toMutableMap_abgq59$;
+  var LinkedHashSet_init = Kotlin.kotlin.collections.LinkedHashSet_init_287e2$;
   var Collection = Kotlin.kotlin.collections.Collection;
+  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var contains = Kotlin.kotlin.text.contains_li3zpu$;
   var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
+  var LinkedHashMap_init_0 = Kotlin.kotlin.collections.LinkedHashMap_init_q3lmfv$;
   var toString = Kotlin.toString;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var isBlank = Kotlin.kotlin.text.isBlank_gw00vp$;
@@ -77,6 +76,7 @@ var TWF = function (_, Kotlin) {
   var emptyList = Kotlin.kotlin.collections.emptyList_287e2$;
   var first_0 = Kotlin.kotlin.text.first_gw00vp$;
   var last_0 = Kotlin.kotlin.text.last_gw00vp$;
+  var get_lastIndex_0 = Kotlin.kotlin.text.get_lastIndex_gw00vp$;
   var max = Kotlin.kotlin.collections.max_exjks8$;
   var contains_0 = Kotlin.kotlin.text.contains_sgbm27$;
   var unboxChar = Kotlin.unboxChar;
@@ -88,7 +88,6 @@ var TWF = function (_, Kotlin) {
   var get_indices = Kotlin.kotlin.text.get_indices_gw00vp$;
   var toBoxedChar = Kotlin.toBoxedChar;
   var numberToInt = Kotlin.numberToInt;
-  var get_lastIndex_0 = Kotlin.kotlin.text.get_lastIndex_gw00vp$;
   var isWhitespace = Kotlin.kotlin.text.isWhitespace_myv2d0$;
   var startsWith = Kotlin.kotlin.text.startsWith_sgbm27$;
   var substringBefore = Kotlin.kotlin.text.substringBefore_8cymmc$;
@@ -174,8 +173,7 @@ var TWF = function (_, Kotlin) {
           destination.add_11rb$(element);
       }
       functionConfiguration = new FunctionConfiguration(toSet(destination));
-    }
-    if (compiledConfiguration === void 0)
+    }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
     var expressionTreeParser = new ExpressionTreeParser(string, void 0, compiledConfiguration.functionConfiguration, compiledConfiguration.compiledImmediateVariableReplacements);
     expressionTreeParser.parse();
@@ -188,8 +186,10 @@ var TWF = function (_, Kotlin) {
   function expressionToStructureString(expressionNode) {
     return expressionNode.toString();
   }
-  function expressionToString(expressionNode) {
-    return expressionNode.toUserView_odr8sm$();
+  function expressionToString(expressionNode, characterEscapingDepth) {
+    if (characterEscapingDepth === void 0)
+      characterEscapingDepth = 1;
+    return escapeCharacters(expressionNode.toUserView_odr8sm$(), characterEscapingDepth);
   }
   function compareWithoutSubstitutions(left, right, scope, notChangesOnVariablesFunction, functionConfiguration, compiledConfiguration) {
     if (scope === void 0)
@@ -202,9 +202,11 @@ var TWF = function (_, Kotlin) {
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
     return compiledConfiguration.factComporator.expressionComporator.compareWithoutSubstitutions_15tjed$(left, right);
   }
-  function expressionSubstitutionFromStrings(left, right, scope, functionConfiguration, compiledConfiguration) {
+  function expressionSubstitutionFromStrings(left, right, scope, basedOnTaskContext, functionConfiguration, compiledConfiguration) {
     if (scope === void 0)
       scope = '';
+    if (basedOnTaskContext === void 0)
+      basedOnTaskContext = false;
     if (functionConfiguration === void 0) {
       var $receiver = split(scope, [';']);
       var destination = ArrayList_init();
@@ -216,19 +218,18 @@ var TWF = function (_, Kotlin) {
           destination.add_11rb$(element);
       }
       functionConfiguration = new FunctionConfiguration(toSet(destination));
-    }
-    if (compiledConfiguration === void 0)
+    }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
-    return new ExpressionSubstitution(stringToExpression(left, void 0, void 0, compiledConfiguration), stringToExpression(right, void 0, void 0, compiledConfiguration));
+    return new ExpressionSubstitution(stringToExpression(left, void 0, void 0, compiledConfiguration), stringToExpression(right, void 0, void 0, compiledConfiguration), void 0, basedOnTaskContext);
   }
   function findSubstitutionPlacesInExpression(expression, substitution) {
     if (!substitution.leftFunctions.isEmpty() && intersect(substitution.leftFunctions, expression.getContainedFunctions()).isEmpty() && intersect(substitution.left.getContainedVariables(), expression.getContainedVariables()).isEmpty()) {
       return ArrayList_init();
-    }
-    return substitution.findAllPossibleSubstitutionPlaces_6718cy$(expression);
+    }return substitution.findAllPossibleSubstitutionPlaces_6718cy$(expression);
   }
   function applySubstitution(expression, substitution, substitutionPlaces) {
     substitution.applySubstitution_55nkop$(substitutionPlaces);
+    expression.getTopNode().computeNodeIdsAsNumbersInDirectTraversal_za3lpa$();
     return expression;
   }
   function generateTask(expressionSubstitutions, stepsCount, originalExpressions) {
@@ -260,8 +261,7 @@ var TWF = function (_, Kotlin) {
           destination_0.add_11rb$(element_0);
       }
       functionConfiguration = new FunctionConfiguration(tmp$_0, toSet(destination_0));
-    }
-    if (compiledConfiguration === void 0)
+    }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
     return compareWithoutSubstitutions(stringToExpression(left, void 0, void 0, compiledConfiguration), stringToExpression(right, void 0, void 0, compiledConfiguration), void 0, void 0, void 0, compiledConfiguration);
   }
@@ -311,9 +311,11 @@ var TWF = function (_, Kotlin) {
   function findSubstitutionPlacesCoordinatesInExpressionJSON$lambda(it) {
     return it.toJSON();
   }
-  function findSubstitutionPlacesCoordinatesInExpressionJSON(expression, substitutionLeft, substitutionRight, scope, functionConfiguration, compiledConfiguration) {
+  function findSubstitutionPlacesCoordinatesInExpressionJSON(expression, substitutionLeft, substitutionRight, scope, basedOnTaskContext, functionConfiguration, compiledConfiguration) {
     if (scope === void 0)
       scope = '';
+    if (basedOnTaskContext === void 0)
+      basedOnTaskContext = false;
     if (functionConfiguration === void 0) {
       var $receiver = split(scope, [';']);
       var destination = ArrayList_init();
@@ -325,10 +327,9 @@ var TWF = function (_, Kotlin) {
           destination.add_11rb$(element);
       }
       functionConfiguration = new FunctionConfiguration(toSet(destination));
-    }
-    if (compiledConfiguration === void 0)
+    }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
-    var substitutionPlaces = findSubstitutionPlacesInExpression(stringToExpression(expression, void 0, void 0, compiledConfiguration), expressionSubstitutionFromStrings(substitutionLeft, substitutionRight, void 0, void 0, compiledConfiguration));
+    var substitutionPlaces = findSubstitutionPlacesInExpression(stringToExpression(expression, void 0, void 0, compiledConfiguration), expressionSubstitutionFromStrings(substitutionLeft, substitutionRight, void 0, basedOnTaskContext, void 0, compiledConfiguration));
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault(substitutionPlaces, 10));
     var tmp$_0;
     tmp$_0 = substitutionPlaces.iterator();
@@ -339,9 +340,13 @@ var TWF = function (_, Kotlin) {
     var data = joinToString(destination_0, ',', void 0, void 0, void 0, void 0, findSubstitutionPlacesCoordinatesInExpressionJSON$lambda);
     return '{' + '"' + 'substitutionPlaces' + '"' + ':[' + data + ']}';
   }
-  function applyExpressionBySubstitutionPlaceCoordinates(expression, substitutionLeft, substitutionRight, parentStartPosition, parentEndPosition, startPosition, endPosition, scope, functionConfiguration, compiledConfiguration) {
+  function applyExpressionBySubstitutionPlaceCoordinates(expression, substitutionLeft, substitutionRight, parentStartPosition, parentEndPosition, startPosition, endPosition, scope, basedOnTaskContext, characterEscapingDepth, functionConfiguration, compiledConfiguration) {
     if (scope === void 0)
       scope = '';
+    if (basedOnTaskContext === void 0)
+      basedOnTaskContext = false;
+    if (characterEscapingDepth === void 0)
+      characterEscapingDepth = 1;
     if (functionConfiguration === void 0) {
       var $receiver = split(scope, [';']);
       var destination = ArrayList_init();
@@ -353,12 +358,11 @@ var TWF = function (_, Kotlin) {
           destination.add_11rb$(element);
       }
       functionConfiguration = new FunctionConfiguration(toSet(destination));
-    }
-    if (compiledConfiguration === void 0)
+    }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
     var tmp$_0;
     var actualExpression = stringToExpression(expression, void 0, void 0, compiledConfiguration);
-    var actualSubstitution = expressionSubstitutionFromStrings(substitutionLeft, substitutionRight, void 0, void 0, compiledConfiguration);
+    var actualSubstitution = expressionSubstitutionFromStrings(substitutionLeft, substitutionRight, void 0, basedOnTaskContext, void 0, compiledConfiguration);
     var substitutionPlaces = findSubstitutionPlacesInExpression(actualExpression, actualSubstitution);
     var destination_0 = ArrayList_init();
     var tmp$_1;
@@ -371,12 +375,11 @@ var TWF = function (_, Kotlin) {
     var actualPlace = destination_0;
     if (!actualPlace.isEmpty()) {
       tmp$_0 = applySubstitution(actualExpression, actualSubstitution, actualPlace);
-    }
-     else {
+    } else {
       tmp$_0 = actualExpression;
     }
     var result = tmp$_0;
-    return expressionToString(result);
+    return escapeCharacters(expressionToString(result), characterEscapingDepth);
   }
   function generateTaskInJSON$lambda(it) {
     return '{' + '"' + 'left' + '"' + ':' + '"' + expressionToString(it.left) + '"' + ',' + '"' + 'right' + '"' + ':' + '"' + expressionToString(it.right) + '"' + '}';
@@ -384,9 +387,11 @@ var TWF = function (_, Kotlin) {
   function generateTaskInJSON$lambda_0(it) {
     return '{' + '"' + 'left' + '"' + ':' + '"' + expressionToString(it.left) + '"' + ',' + '"' + 'right' + '"' + ':' + '"' + expressionToString(it.right) + '"' + '}';
   }
-  function generateTaskInJSON(expressionSubstitutions, stepsCount, originalExpressions, scope, functionConfiguration, compiledConfiguration) {
+  function generateTaskInJSON(expressionSubstitutions, stepsCount, originalExpressions, scope, characterEscapingDepth, functionConfiguration, compiledConfiguration) {
     if (scope === void 0)
       scope = '';
+    if (characterEscapingDepth === void 0)
+      characterEscapingDepth = 1;
     if (functionConfiguration === void 0) {
       var $receiver = split(scope, [';']);
       var destination = ArrayList_init();
@@ -398,8 +403,7 @@ var TWF = function (_, Kotlin) {
           destination.add_11rb$(element);
       }
       functionConfiguration = new FunctionConfiguration(toSet(destination));
-    }
-    if (compiledConfiguration === void 0)
+    }if (compiledConfiguration === void 0)
       compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
     var $receiver_0 = split(expressionSubstitutions, [';']);
     var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
@@ -409,7 +413,7 @@ var TWF = function (_, Kotlin) {
       var item = tmp$_0.next();
       var tmp$_1 = destination_0.add_11rb$;
       var parts = split(item, ['=']);
-      tmp$_1.call(destination_0, expressionSubstitutionFromStrings(first(parts), last(parts), void 0, void 0, compiledConfiguration));
+      tmp$_1.call(destination_0, expressionSubstitutionFromStrings(first(parts), last(parts), void 0, void 0, void 0, compiledConfiguration));
     }
     var $receiver_1 = split(originalExpressions, [';']);
     var destination_1 = ArrayList_init_0(collectionSizeOrDefault($receiver_1, 10));
@@ -420,7 +424,7 @@ var TWF = function (_, Kotlin) {
       destination_1.add_11rb$(stringToExpression(item_0, void 0, void 0, compiledConfiguration));
     }
     var expressionTask = generateTask(destination_0, stepsCount, destination_1);
-    return '{' + ('"' + 'originalExpression' + '"' + ':' + '"' + expressionToString(expressionTask.originalExpression) + '"' + ',') + ('"' + 'finalExpression' + '"' + ':' + '"' + expressionToString(expressionTask.finalExpression) + '"' + ',') + ('"' + 'requiredSubstitutions' + '"' + ':[' + joinToString(expressionTask.requiredSubstitutions, ',', void 0, void 0, void 0, void 0, generateTaskInJSON$lambda) + '],') + ('"' + 'allSubstitutions' + '"' + ':[' + joinToString(expressionTask.allSubstitutions, ',', void 0, void 0, void 0, void 0, generateTaskInJSON$lambda_0) + ']') + '}';
+    return escapeCharacters('{' + ('"' + 'originalExpression' + '"' + ':' + '"' + expressionToString(expressionTask.originalExpression) + '"' + ',') + ('"' + 'finalExpression' + '"' + ':' + '"' + expressionToString(expressionTask.finalExpression) + '"' + ',') + ('"' + 'requiredSubstitutions' + '"' + ':[' + joinToString(expressionTask.requiredSubstitutions, ',', void 0, void 0, void 0, void 0, generateTaskInJSON$lambda) + '],') + ('"' + 'allSubstitutions' + '"' + ':[' + joinToString(expressionTask.allSubstitutions, ',', void 0, void 0, void 0, void 0, generateTaskInJSON$lambda_0) + ']') + '}', characterEscapingDepth);
   }
   function BaseNumber(number) {
     this.number = number;
@@ -548,8 +552,7 @@ var TWF = function (_, Kotlin) {
   function BaseOperationsComputation$Companion_getInstance() {
     if (BaseOperationsComputation$Companion_instance === null) {
       new BaseOperationsComputation$Companion();
-    }
-    return BaseOperationsComputation$Companion_instance;
+    }return BaseOperationsComputation$Companion_instance;
   }
   BaseOperationsComputation.prototype.complexFunctionToAny_0 = function (listOfArgs, baseOperation) {
     return baseOperation(this.parseComplexNumbers_0(listOfArgs));
@@ -561,12 +564,10 @@ var TWF = function (_, Kotlin) {
     var tmp$, tmp$_0;
     if (expressionNode.children.isEmpty()) {
       tmp$_0 = this.stringToNumber_0(expressionNode.value);
-    }
-     else {
+    } else {
       if (this.isFoldedExpression_0(expressionNode)) {
         return this.calculateFoldedExpression_0(expressionNode);
-      }
-      var listOfArgs = ArrayList_init();
+      }var listOfArgs = ArrayList_init();
       tmp$ = expressionNode.children.iterator();
       while (tmp$.hasNext()) {
         var childNode = tmp$.next();
@@ -574,12 +575,49 @@ var TWF = function (_, Kotlin) {
       }
       if (ensureNotNull(this.baseComputationOperations_0.get_11rb$(this.computationType_0)).containsKey_11rb$(expressionNode.value)) {
         tmp$_0 = ensureNotNull(ensureNotNull(this.baseComputationOperations_0.get_11rb$(this.computationType_0)).get_11rb$(expressionNode.value))(listOfArgs);
-      }
-       else {
+      } else {
         tmp$_0 = this.stringToNumber_0(defaultRandom().toString());
       }
     }
     return tmp$_0;
+  };
+  BaseOperationsComputation.prototype.calculatePenalty_hwpqgh$ = function (value, operatorType) {
+    if (operatorType === void 0)
+      operatorType = '';
+    if (equals(operatorType, 'ln') || equals(operatorType, 'asin')) {
+      var re = abs_0(toComplex_1(value.toString()).getReal().value);
+      var im = abs_0(toComplex_1(value.toString()).getImaginary().value);
+      return re * im;
+    }return abs_0(toComplex_1(value.toString()).getImaginary().value);
+  };
+  BaseOperationsComputation.prototype.computeWithPenalty_6718cy$ = function (expressionNode) {
+    var tmp$;
+    if (expressionNode.children.isEmpty()) {
+      var value = this.stringToNumber_0(expressionNode.value);
+      return new Pair(value, this.calculatePenalty_hwpqgh$(value));
+    } else {
+      if (this.isFoldedExpression_0(expressionNode)) {
+        var value_0 = this.calculateFoldedExpression_0(expressionNode);
+        return new Pair(value_0, this.calculatePenalty_hwpqgh$(value_0));
+      }var penalty = 0.0;
+      var listOfArgs = ArrayList_init();
+      tmp$ = expressionNode.children.iterator();
+      while (tmp$.hasNext()) {
+        var childNode = tmp$.next();
+        var tmp$_0 = this.computeWithPenalty_6718cy$(childNode);
+        var value_1 = tmp$_0.component1()
+        , pen = tmp$_0.component2();
+        penalty += pen;
+        listOfArgs.add_11rb$(value_1);
+      }
+      if (ensureNotNull(this.baseComputationOperations_0.get_11rb$(this.computationType_0)).containsKey_11rb$(expressionNode.value)) {
+        var value_2 = ensureNotNull(ensureNotNull(this.baseComputationOperations_0.get_11rb$(this.computationType_0)).get_11rb$(expressionNode.value))(listOfArgs);
+        return new Pair(value_2, penalty + this.calculatePenalty_hwpqgh$(value_2, expressionNode.value));
+      } else {
+        var value_3 = this.stringToNumber_0(defaultRandom().toString());
+        return new Pair(value_3, penalty + this.calculatePenalty_hwpqgh$(value_3));
+      }
+    }
   };
   BaseOperationsComputation.prototype.stringToNumber_0 = function (arg) {
     var tmp$;
@@ -619,8 +657,7 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (Kotlin.isType(arg, Complex)) {
         listOfNumbers.add_11rb$(arg);
-      }
-       else {
+      } else {
         throw IllegalArgumentException_init('List contains element, which is not a complex number');
       }
     }
@@ -634,8 +671,7 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (typeof arg === 'number') {
         listOfNumbers.add_11rb$(arg);
-      }
-       else {
+      } else {
         throw IllegalArgumentException_init('List contains element, which is not a complex number');
       }
     }
@@ -644,8 +680,7 @@ var TWF = function (_, Kotlin) {
   BaseOperationsComputation.prototype.brackets_0 = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Not one argument in brackets.');
-    }
-     else {
+    } else {
       return listOfArgs.get_za3lpa$(0);
     }
   };
@@ -662,8 +697,7 @@ var TWF = function (_, Kotlin) {
   BaseOperationsComputation.prototype.convertToFoldedExpression_0 = function (expression) {
     if (!this.isFoldedExpression_0(expression)) {
       throw IllegalArgumentException_init(expression.value + ' is not folded');
-    }
-    var from = this.compute_6718cy$(expression.children.get_za3lpa$(1));
+    }var from = this.compute_6718cy$(expression.children.get_za3lpa$(1));
     var to = this.compute_6718cy$(expression.children.get_za3lpa$(2));
     return new BaseOperationsComputation$FoldedExpression(expression.children.get_za3lpa$(0).value, this.convertToDouble_0(from), this.convertToDouble_0(to), expression.children.get_za3lpa$(3));
   };
@@ -1190,15 +1224,11 @@ var TWF = function (_, Kotlin) {
       var operation = this.getOperation_bm4lxs$(node.value, node.children.size);
       if (operation != null) {
         return operation.calculatingFunction(node);
-      }
-    }
-    if (node.children.size > 0) {
+      }}if (node.children.size > 0) {
       var operation_0 = this.getOperation_bm4lxs$(node.value, node.children.size);
       if (operation_0 != null) {
         return operation_0.calculatingFunction(node);
-      }
-    }
-    return node;
+      }}return node;
   };
   BaseOperationsDefinitions.prototype.computeExpressionTree_6718cy$ = function (node) {
     var tmp$;
@@ -1214,17 +1244,14 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(1).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var low = tmp$;
+    }var low = tmp$;
     tmp$_0 = toDoubleOrNull(argsParentNode.children.get_za3lpa$(2).value);
     if (tmp$_0 == null) {
       return argsParentNode;
-    }
-    var up = tmp$_0;
+    }var up = tmp$_0;
     if (up < low) {
       argsParentNode.setVariable_61zpoe$('0.0');
-    }
-     else {
+    } else {
       var counterName = argsParentNode.children.get_za3lpa$(0).value;
       var result = 0.0;
       while (low <= up) {
@@ -1233,8 +1260,7 @@ var TWF = function (_, Kotlin) {
         tmp$_1 = toDoubleOrNull(this.computeExpressionTree_6718cy$(expr).value);
         if (tmp$_1 == null) {
           return argsParentNode;
-        }
-        result = tmp$_2 + tmp$_1;
+        }result = tmp$_2 + tmp$_1;
         low += 1.0;
       }
       argsParentNode.setVariable_61zpoe$(result.toString());
@@ -1246,17 +1272,14 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(1).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var low = tmp$;
+    }var low = tmp$;
     tmp$_0 = toDoubleOrNull(argsParentNode.children.get_za3lpa$(2).value);
     if (tmp$_0 == null) {
       return argsParentNode;
-    }
-    var up = tmp$_0;
+    }var up = tmp$_0;
     if (up < low) {
       argsParentNode.setVariable_61zpoe$('1.0');
-    }
-     else {
+    } else {
       var counterName = argsParentNode.children.get_za3lpa$(0).value;
       var result = 1.0;
       var flagHasVariable = false;
@@ -1265,14 +1288,12 @@ var TWF = function (_, Kotlin) {
         var arg = toDoubleOrNull(this.computeExpressionTree_6718cy$(expr).value);
         if (arg == null) {
           flagHasVariable = true;
-        }
-         else {
+        } else {
           result *= arg;
           if (this.additivelyEqualToZero_0(result)) {
             argsParentNode.setVariable_61zpoe$('0.0');
             break;
-          }
-        }
+          }}
         low += 1.0;
       }
       if (!flagHasVariable)
@@ -1296,16 +1317,14 @@ var TWF = function (_, Kotlin) {
       if (argValue != null) {
         result += argValue;
         argNode.nodeType = NodeType$EMPTY_getInstance();
-      }
-    }
+      }}
     removeAll(argsParentNode.children, BaseOperationsDefinitions$plus$lambda);
     if (argsParentNode.children.size === 0)
       argsParentNode.setVariable_61zpoe$(result.toString());
     else if (this.additivelyEqualToZero_0(result)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setNode_6718cy$(argsParentNode.children.get_za3lpa$(0));
-    }
-     else if (startSize > argsParentNode.children.size)
+    } else if (startSize > argsParentNode.children.size)
       argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
     return argsParentNode;
   };
@@ -1324,8 +1343,7 @@ var TWF = function (_, Kotlin) {
       if (firstIsNumber)
         argsParentNode.setVariable_61zpoe$((-result).toString());
       return argsParentNode;
-    }
-     else {
+    } else {
       tmp$ = argsParentNode.children.size;
       for (var i = 1; i < tmp$; i++) {
         if (!argsParentNode.children.get_za3lpa$(i).children.isEmpty())
@@ -1337,8 +1355,7 @@ var TWF = function (_, Kotlin) {
           else
             result += argValue;
           argsParentNode.children.get_za3lpa$(i).nodeType = NodeType$EMPTY_getInstance();
-        }
-      }
+        }}
     }
     removeAll(argsParentNode.children, BaseOperationsDefinitions$minus$lambda);
     if (argsParentNode.children.size === 1) {
@@ -1346,8 +1363,7 @@ var TWF = function (_, Kotlin) {
         argsParentNode.setVariable_61zpoe$(result.toString());
       else if (startSize > argsParentNode.children.size)
         argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
-    }
-     else {
+    } else {
       if (firstIsNumber)
         argsParentNode.children.get_za3lpa$(0).setVariable_61zpoe$(result.toString());
       else if (!this.additivelyEqualToZero_0(result) && startSize > argsParentNode.children.size)
@@ -1374,17 +1390,14 @@ var TWF = function (_, Kotlin) {
         if (this.additivelyEqualToZero_0(result)) {
           argsParentNode.setVariable_61zpoe$('0.0');
           return argsParentNode;
-        }
-      }
-    }
+        }}}
     removeAll(argsParentNode.children, BaseOperationsDefinitions$and$lambda);
     if (argsParentNode.children.size === 0)
       argsParentNode.setVariable_61zpoe$(result.toString());
     else if (this.additivelyEqualTo_0(result, 1.0)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setNode_6718cy$(argsParentNode.children.get_za3lpa$(0));
-    }
-    return argsParentNode;
+    }return argsParentNode;
   };
   function BaseOperationsDefinitions$or$lambda(it) {
     return it.nodeType === NodeType$EMPTY_getInstance();
@@ -1405,17 +1418,14 @@ var TWF = function (_, Kotlin) {
         if (!this.additivelyEqualToZero_0(result)) {
           argsParentNode.setVariable_61zpoe$('1.0');
           return argsParentNode;
-        }
-      }
-    }
+        }}}
     removeAll(argsParentNode.children, BaseOperationsDefinitions$or$lambda);
     if (argsParentNode.children.size === 0)
       argsParentNode.setVariable_61zpoe$(result.toString());
     else if (this.additivelyEqualTo_0(result, 1.0)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setNode_6718cy$(argsParentNode.children.get_za3lpa$(0));
-    }
-    return argsParentNode;
+    }return argsParentNode;
   };
   function BaseOperationsDefinitions$xor$lambda(it) {
     return it.nodeType === NodeType$EMPTY_getInstance();
@@ -1433,16 +1443,14 @@ var TWF = function (_, Kotlin) {
       if (argValue != null) {
         this.addMod2_38ydlf$(result, argValue);
         argNode.nodeType = NodeType$EMPTY_getInstance();
-      }
-    }
+      }}
     removeAll(argsParentNode.children, BaseOperationsDefinitions$xor$lambda);
     if (argsParentNode.children.size === 0)
       argsParentNode.setVariable_61zpoe$(result.toString());
     else if (this.additivelyEqualToZero_0(result)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setNode_6718cy$(argsParentNode.children.get_za3lpa$(0));
-    }
-     else if (startSize > argsParentNode.children.size)
+    } else if (startSize > argsParentNode.children.size)
       argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
     return argsParentNode;
   };
@@ -1466,18 +1474,15 @@ var TWF = function (_, Kotlin) {
         else if (!this.additivelyEqualTo_0(result, addArg)) {
           argsParentNode.setVariable_61zpoe$('0.0');
           return argsParentNode;
-        }
-        argNode.nodeType = NodeType$EMPTY_getInstance();
-      }
-    }
+        }argNode.nodeType = NodeType$EMPTY_getInstance();
+      }}
     removeAll(argsParentNode.children, BaseOperationsDefinitions$alleq$lambda);
     if (argsParentNode.children.size === 0)
       argsParentNode.setVariable_61zpoe$(result.toString());
     else if (this.additivelyEqualToZero_0(result)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setNode_6718cy$(argsParentNode.children.get_za3lpa$(0));
-    }
-     else if (startSize > argsParentNode.children.size)
+    } else if (startSize > argsParentNode.children.size)
       argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
     return argsParentNode;
   };
@@ -1506,17 +1511,14 @@ var TWF = function (_, Kotlin) {
         if (this.additivelyEqualToZero_0(result)) {
           argsParentNode.setVariable_61zpoe$('0.0');
           return argsParentNode;
-        }
-      }
-    }
+        }}}
     removeAll(argsParentNode.children, BaseOperationsDefinitions$mul$lambda);
     if (argsParentNode.children.size === 0)
       argsParentNode.setVariable_61zpoe$(result.toString());
     else if (this.additivelyEqualTo_0(result, 1.0)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setNode_6718cy$(argsParentNode.children.get_za3lpa$(0));
-    }
-     else if (startSize > argsParentNode.children.size)
+    } else if (startSize > argsParentNode.children.size)
       argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
     return argsParentNode;
   };
@@ -1535,8 +1537,7 @@ var TWF = function (_, Kotlin) {
       if (firstIsNumber)
         argsParentNode.setVariable_61zpoe$((1 / result).toString());
       return argsParentNode;
-    }
-     else {
+    } else {
       tmp$ = argsParentNode.children.size;
       for (var i = 1; i < tmp$; i++) {
         if (!argsParentNode.children.get_za3lpa$(i).children.isEmpty())
@@ -1548,8 +1549,7 @@ var TWF = function (_, Kotlin) {
           else
             result *= argValue;
           argsParentNode.children.get_za3lpa$(i).nodeType = NodeType$EMPTY_getInstance();
-        }
-      }
+        }}
     }
     removeAll(argsParentNode.children, BaseOperationsDefinitions$div$lambda);
     if (argsParentNode.children.size === 1) {
@@ -1557,8 +1557,7 @@ var TWF = function (_, Kotlin) {
         argsParentNode.setVariable_61zpoe$(result.toString());
       else if (startSize > argsParentNode.children.size)
         argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
-    }
-     else {
+    } else {
       if (firstIsNumber)
         argsParentNode.children.get_za3lpa$(0).setVariable_61zpoe$(result.toString());
       else if (!this.additivelyEqualTo_0(result, 1.0) && startSize > argsParentNode.children.size)
@@ -1575,18 +1574,15 @@ var TWF = function (_, Kotlin) {
     for (var i = get_lastIndex(argsParentNode.children); i >= 0; i--) {
       if (!argsParentNode.children.get_za3lpa$(i).children.isEmpty()) {
         break;
-      }
-      var argValue = toDoubleOrNull(argsParentNode.children.get_za3lpa$(i).value);
+      }var argValue = toDoubleOrNull(argsParentNode.children.get_za3lpa$(i).value);
       if (argValue != null) {
         var x = result;
         result = Math_0.pow(argValue, x);
         argsParentNode.children.get_za3lpa$(i).nodeType = NodeType$EMPTY_getInstance();
-      }
-       else if (this.additivelyEqualToZero_0(result)) {
+      } else if (this.additivelyEqualToZero_0(result)) {
         result = 1.0;
         argsParentNode.children.get_za3lpa$(i).nodeType = NodeType$EMPTY_getInstance();
-      }
-       else
+      } else
         break;
     }
     removeAll(argsParentNode.children, BaseOperationsDefinitions$pow$lambda);
@@ -1595,8 +1591,7 @@ var TWF = function (_, Kotlin) {
     else if (this.additivelyEqualToZero_0(result)) {
       if (argsParentNode.children.size === 1)
         argsParentNode.setVariable_61zpoe$('1.0');
-    }
-     else if (!this.additivelyEqualTo_0(result, 1.0))
+    } else if (!this.additivelyEqualTo_0(result, 1.0))
       if (startSize > argsParentNode.children.size)
         argsParentNode.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), result.toString()));
     return argsParentNode;
@@ -1606,18 +1601,15 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     var secondArg;
     if (this.additivelyEqualToZero_0(firstArg)) {
       argsParentNode.setVariable_61zpoe$('0.0');
-    }
-     else {
+    } else {
       tmp$_0 = toDoubleOrNull(argsParentNode.children.get_za3lpa$(1).value);
       if (tmp$_0 == null) {
         return argsParentNode;
-      }
-      secondArg = tmp$_0;
+      }secondArg = tmp$_0;
       argsParentNode.setVariable_61zpoe$((firstArg % secondArg).toString());
     }
     return argsParentNode;
@@ -1627,8 +1619,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.sin(firstArg).toString());
     return argsParentNode;
   };
@@ -1637,8 +1628,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.cos(firstArg).toString());
     return argsParentNode;
   };
@@ -1647,8 +1637,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.tan(firstArg).toString());
     return argsParentNode;
   };
@@ -1657,8 +1646,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.asin(firstArg).toString());
     return argsParentNode;
   };
@@ -1667,8 +1655,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.acos(firstArg).toString());
     return argsParentNode;
   };
@@ -1677,8 +1664,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.atan(firstArg).toString());
     return argsParentNode;
   };
@@ -1687,8 +1673,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     var x = 1.0 / firstArg;
     argsParentNode.setVariable_61zpoe$(Math_0.atan(x).toString());
     return argsParentNode;
@@ -1698,8 +1683,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.sinh(firstArg).toString());
     return argsParentNode;
   };
@@ -1708,8 +1692,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.cosh(firstArg).toString());
     return argsParentNode;
   };
@@ -1718,8 +1701,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.tanh(firstArg).toString());
     return argsParentNode;
   };
@@ -1728,8 +1710,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.exp(firstArg).toString());
     return argsParentNode;
   };
@@ -1738,8 +1719,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(log(firstArg, math.E).toString());
     return argsParentNode;
   };
@@ -1748,8 +1728,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(Math_0.abs(firstArg).toString());
     return argsParentNode;
   };
@@ -1758,8 +1737,7 @@ var TWF = function (_, Kotlin) {
     tmp$ = toDoubleOrNull(argsParentNode.children.get_za3lpa$(0).value);
     if (tmp$ == null) {
       return argsParentNode;
-    }
-    var firstArg = tmp$;
+    }var firstArg = tmp$;
     argsParentNode.setVariable_61zpoe$(this.not_yrwdxr$(firstArg).toString());
     return argsParentNode;
   };
@@ -1770,8 +1748,7 @@ var TWF = function (_, Kotlin) {
     if (argsParentNode.children.get_za3lpa$(0).children.size === 0) {
       argsParentNode.setVariable_61zpoe$(argsParentNode.children.get_za3lpa$(0).value);
       return argsParentNode;
-    }
-     else {
+    } else {
       return argsParentNode.children.get_za3lpa$(0);
     }
   };
@@ -1953,8 +1930,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (listOfArgs.isEmpty()) {
       throw IllegalArgumentException_init('Given list is empty');
-    }
-    var result = toComplex(0);
+    }var result = toComplex(0);
     tmp$ = listOfArgs.iterator();
     while (tmp$.hasNext()) {
       var arg = tmp$.next();
@@ -1976,16 +1952,14 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (listOfArgs.isEmpty()) {
       throw IllegalArgumentException_init('Given list is empty');
-    }
-    var result = listOfArgs.get_za3lpa$(0);
+    }var result = listOfArgs.get_za3lpa$(0);
     var isFirstElement = true;
     tmp$ = listOfArgs.iterator();
     while (tmp$.hasNext()) {
       var arg = tmp$.next();
       if (isFirstElement) {
         isFirstElement = false;
-      }
-       else {
+      } else {
         result.divAssign_i6s3kk$(arg);
       }
     }
@@ -2010,8 +1984,7 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (arg.equals_i6s3kk$(toComplex(0))) {
         return toComplex(0);
-      }
-    }
+      }}
     return toComplex(1);
   };
   ComplexBaseOperation$Companion.prototype.or_lc9fqz$ = function (listOfArgs) {
@@ -2021,8 +1994,7 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (!arg.equals_i6s3kk$(toComplex(0))) {
         return toComplex(1);
-      }
-    }
+      }}
     return toComplex(0);
   };
   ComplexBaseOperation$Companion.prototype.xor_lc9fqz$ = function (listOfArgs) {
@@ -2033,35 +2005,30 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (!arg.equals_i6s3kk$(toComplex(0))) {
         counter = counter + 1 | 0;
-      }
-    }
+      }}
     return toComplex(counter % 2);
   };
   ComplexBaseOperation$Companion.prototype.alleq_lc9fqz$ = function (listOfArgs) {
     var tmp$;
     if (listOfArgs.isEmpty()) {
       return toComplex(1);
-    }
-    var firstArg = listOfArgs.get_za3lpa$(0);
+    }var firstArg = listOfArgs.get_za3lpa$(0);
     tmp$ = listOfArgs.iterator();
     while (tmp$.hasNext()) {
       var arg = tmp$.next();
       if (!arg.equals_i6s3kk$(firstArg)) {
         return toComplex(0);
-      }
-    }
+      }}
     return toComplex(1);
   };
   ComplexBaseOperation$Companion.prototype.not_lc9fqz$ = function (listOfArgs) {
     var tmp$;
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('List size is not equals to 1');
-    }
-     else {
+    } else {
       if (listOfArgs.get_za3lpa$(0).equals_i6s3kk$(toComplex(0))) {
         tmp$ = toComplex(1);
-      }
-       else {
+      } else {
         tmp$ = toComplex(0);
       }
     }
@@ -2070,87 +2037,73 @@ var TWF = function (_, Kotlin) {
   ComplexBaseOperation$Companion.prototype.sin_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().sin_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().sin_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.cos_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().cos_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().cos_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.sinh_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().sinh_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().sinh_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.cosh_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().cosh_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().cosh_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.tan_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().tan_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().tan_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.tanh_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().tanh_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().tanh_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.asin_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().asin_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().asin_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.acos_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().acos_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().acos_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.atan_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().atan_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().atan_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.actan_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var args = listOf([Complex_init(new Real(1.0), new Real(0.0), Form$ALGEBRAIC_getInstance()), listOfArgs.get_za3lpa$(0)]);
+    }var args = listOf([Complex_init(new Real(1.0), new Real(0.0), Form$ALGEBRAIC_getInstance()), listOfArgs.get_za3lpa$(0)]);
     return Complex$Companion_getInstance().atan_i6s3kk$(this.div_lc9fqz$(args));
   };
   ComplexBaseOperation$Companion.prototype.exp_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().exp_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().exp_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.ln_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().ln_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().ln_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.prototype.abs_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex_init(Complex$Companion_getInstance().abs_i6s3kk$(listOfArgs.get_za3lpa$(0)), Real_init(0), Form$ALGEBRAIC_getInstance());
+    }return Complex_init(Complex$Companion_getInstance().abs_i6s3kk$(listOfArgs.get_za3lpa$(0)), Real_init(0), Form$ALGEBRAIC_getInstance());
   };
   ComplexBaseOperation$Companion.prototype.sqrt_lc9fqz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    return Complex$Companion_getInstance().sqrt_i6s3kk$(listOfArgs.get_za3lpa$(0));
+    }return Complex$Companion_getInstance().sqrt_i6s3kk$(listOfArgs.get_za3lpa$(0));
   };
   ComplexBaseOperation$Companion.$metadata$ = {
     kind: Kind_OBJECT,
@@ -2161,187 +2114,11 @@ var TWF = function (_, Kotlin) {
   function ComplexBaseOperation$Companion_getInstance() {
     if (ComplexBaseOperation$Companion_instance === null) {
       new ComplexBaseOperation$Companion();
-    }
-    return ComplexBaseOperation$Companion_instance;
+    }return ComplexBaseOperation$Companion_instance;
   }
   ComplexBaseOperation.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ComplexBaseOperation',
-    interfaces: []
-  };
-  function Segment(leftBorder, rightBorder, point, isLeftBorderIncluded, isRightBorderIncluded) {
-    if (leftBorder === void 0)
-      leftBorder = null;
-    if (rightBorder === void 0)
-      rightBorder = null;
-    if (point === void 0)
-      point = null;
-    if (isLeftBorderIncluded === void 0)
-      isLeftBorderIncluded = true;
-    if (isRightBorderIncluded === void 0)
-      isRightBorderIncluded = true;
-    this.leftBorder = leftBorder;
-    this.rightBorder = rightBorder;
-    this.point = point;
-    this.isLeftBorderIncluded = isLeftBorderIncluded;
-    this.isRightBorderIncluded = isRightBorderIncluded;
-  }
-  Segment.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Segment',
-    interfaces: []
-  };
-  Segment.prototype.component1 = function () {
-    return this.leftBorder;
-  };
-  Segment.prototype.component2 = function () {
-    return this.rightBorder;
-  };
-  Segment.prototype.component3 = function () {
-    return this.point;
-  };
-  Segment.prototype.component4 = function () {
-    return this.isLeftBorderIncluded;
-  };
-  Segment.prototype.component5 = function () {
-    return this.isRightBorderIncluded;
-  };
-  Segment.prototype.copy_r1ee8j$ = function (leftBorder, rightBorder, point, isLeftBorderIncluded, isRightBorderIncluded) {
-    return new Segment(leftBorder === void 0 ? this.leftBorder : leftBorder, rightBorder === void 0 ? this.rightBorder : rightBorder, point === void 0 ? this.point : point, isLeftBorderIncluded === void 0 ? this.isLeftBorderIncluded : isLeftBorderIncluded, isRightBorderIncluded === void 0 ? this.isRightBorderIncluded : isRightBorderIncluded);
-  };
-  Segment.prototype.toString = function () {
-    return 'Segment(leftBorder=' + Kotlin.toString(this.leftBorder) + (', rightBorder=' + Kotlin.toString(this.rightBorder)) + (', point=' + Kotlin.toString(this.point)) + (', isLeftBorderIncluded=' + Kotlin.toString(this.isLeftBorderIncluded)) + (', isRightBorderIncluded=' + Kotlin.toString(this.isRightBorderIncluded)) + ')';
-  };
-  Segment.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.leftBorder) | 0;
-    result = result * 31 + Kotlin.hashCode(this.rightBorder) | 0;
-    result = result * 31 + Kotlin.hashCode(this.point) | 0;
-    result = result * 31 + Kotlin.hashCode(this.isLeftBorderIncluded) | 0;
-    result = result * 31 + Kotlin.hashCode(this.isRightBorderIncluded) | 0;
-    return result;
-  };
-  Segment.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.leftBorder, other.leftBorder) && Kotlin.equals(this.rightBorder, other.rightBorder) && Kotlin.equals(this.point, other.point) && Kotlin.equals(this.isLeftBorderIncluded, other.isLeftBorderIncluded) && Kotlin.equals(this.isRightBorderIncluded, other.isRightBorderIncluded)))));
-  };
-  function SegmentsUnion(segmentsUnion) {
-    if (segmentsUnion === void 0) {
-      segmentsUnion = ArrayList_init();
-    }
-    this.segmentsUnion = segmentsUnion;
-  }
-  SegmentsUnion.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'SegmentsUnion',
-    interfaces: []
-  };
-  SegmentsUnion.prototype.component1 = function () {
-    return this.segmentsUnion;
-  };
-  SegmentsUnion.prototype.copy_sve6fy$ = function (segmentsUnion) {
-    return new SegmentsUnion(segmentsUnion === void 0 ? this.segmentsUnion : segmentsUnion);
-  };
-  SegmentsUnion.prototype.toString = function () {
-    return 'SegmentsUnion(segmentsUnion=' + Kotlin.toString(this.segmentsUnion) + ')';
-  };
-  SegmentsUnion.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.segmentsUnion) | 0;
-    return result;
-  };
-  SegmentsUnion.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.segmentsUnion, other.segmentsUnion))));
-  };
-  function VariableProperties(name, segmentsUnionsIntersection, unableToCompute) {
-    if (segmentsUnionsIntersection === void 0) {
-      segmentsUnionsIntersection = ArrayList_init();
-    }
-    if (unableToCompute === void 0)
-      unableToCompute = false;
-    this.name = name;
-    this.segmentsUnionsIntersection = segmentsUnionsIntersection;
-    this.unableToCompute = unableToCompute;
-  }
-  VariableProperties.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'VariableProperties',
-    interfaces: []
-  };
-  VariableProperties.prototype.component1 = function () {
-    return this.name;
-  };
-  VariableProperties.prototype.component2 = function () {
-    return this.segmentsUnionsIntersection;
-  };
-  VariableProperties.prototype.component3 = function () {
-    return this.unableToCompute;
-  };
-  VariableProperties.prototype.copy_6l4fbr$ = function (name, segmentsUnionsIntersection, unableToCompute) {
-    return new VariableProperties(name === void 0 ? this.name : name, segmentsUnionsIntersection === void 0 ? this.segmentsUnionsIntersection : segmentsUnionsIntersection, unableToCompute === void 0 ? this.unableToCompute : unableToCompute);
-  };
-  VariableProperties.prototype.toString = function () {
-    return 'VariableProperties(name=' + Kotlin.toString(this.name) + (', segmentsUnionsIntersection=' + Kotlin.toString(this.segmentsUnionsIntersection)) + (', unableToCompute=' + Kotlin.toString(this.unableToCompute)) + ')';
-  };
-  VariableProperties.prototype.hashCode = function () {
-    var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.name) | 0;
-    result = result * 31 + Kotlin.hashCode(this.segmentsUnionsIntersection) | 0;
-    result = result * 31 + Kotlin.hashCode(this.unableToCompute) | 0;
-    return result;
-  };
-  VariableProperties.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.segmentsUnionsIntersection, other.segmentsUnionsIntersection) && Kotlin.equals(this.unableToCompute, other.unableToCompute)))));
-  };
-  function Domain(baseOperationsDefinitions, expressions, maxValueMultiplier) {
-    if (baseOperationsDefinitions === void 0)
-      baseOperationsDefinitions = new BaseOperationsDefinitions();
-    if (expressions === void 0) {
-      expressions = ArrayList_init();
-    }
-    if (maxValueMultiplier === void 0)
-      maxValueMultiplier = 10.0;
-    this.baseOperationsDefinitions = baseOperationsDefinitions;
-    this.expressions = expressions;
-    this.maxValueMultiplier = maxValueMultiplier;
-    this.border = 0;
-    this.variablesSet = LinkedHashSet_init();
-    var tmp$;
-    var variablesNamesSet = LinkedHashSet_init();
-    var maxConstant = 1.0;
-    tmp$ = this.expressions.iterator();
-    while (tmp$.hasNext()) {
-      var expression = tmp$.next();
-      variablesNamesSet.addAll_brywnq$(expression.getVariableNames());
-      var a = expression.getMaxConstant();
-      var b = maxConstant;
-      maxConstant = Math_0.max(a, b);
-    }
-    var tmp$_0;
-    tmp$_0 = variablesNamesSet.iterator();
-    while (tmp$_0.hasNext()) {
-      var element = tmp$_0.next();
-      this.variablesSet.add_11rb$(new VariableProperties(element));
-    }
-    this.border = maxConstant * this.maxValueMultiplier;
-  }
-  Domain.prototype.generateNewPoint = function () {
-    var tmp$;
-    var result = LinkedHashMap_init_0();
-    tmp$ = this.variablesSet.iterator();
-    while (tmp$.hasNext()) {
-      var variable = tmp$.next();
-      if (variable.segmentsUnionsIntersection.isEmpty()) {
-        result.put_xwzc9p$(variable.name, random_0(-this.border, this.border).toString());
-      }
-       else {
-        throw new NotImplementedError_init();
-      }
-    }
-    return result;
-  };
-  Domain.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Domain',
     interfaces: []
   };
   function DoubleBaseOperation() {
@@ -2364,8 +2141,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (listOfArgs.isEmpty()) {
       throw IllegalArgumentException_init('Given list is empty');
-    }
-    var result = 0.0;
+    }var result = 0.0;
     tmp$ = listOfArgs.iterator();
     while (tmp$.hasNext()) {
       var arg = tmp$.next();
@@ -2387,16 +2163,14 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (listOfArgs.isEmpty()) {
       throw IllegalArgumentException_init('Given list is empty');
-    }
-    var result = listOfArgs.get_za3lpa$(0);
+    }var result = listOfArgs.get_za3lpa$(0);
     var isFirstElement = true;
     tmp$ = listOfArgs.iterator();
     while (tmp$.hasNext()) {
       var arg = tmp$.next();
       if (isFirstElement) {
         isFirstElement = false;
-      }
-       else {
+      } else {
         result /= arg;
       }
     }
@@ -2405,8 +2179,7 @@ var TWF = function (_, Kotlin) {
   DoubleBaseOperation$Companion.prototype.mod_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 2) {
       throw IllegalArgumentException_init('list size not equals 2');
-    }
-     else {
+    } else {
       return listOfArgs.get_za3lpa$(0) % listOfArgs.get_za3lpa$(1);
     }
   };
@@ -2428,20 +2201,17 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (arg === 0.0) {
         return 0.0;
-      }
-    }
+      }}
     return 1.0;
   };
   DoubleBaseOperation$Companion.prototype.not_d3e2cz$ = function (listOfArgs) {
     var tmp$;
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('List size is not equals to 1');
-    }
-     else {
+    } else {
       if (BaseOperationsComputation$Companion_getInstance().additivelyEqual_lu1900$(0.0, listOfArgs.get_za3lpa$(0))) {
         tmp$ = 1.0;
-      }
-       else {
+      } else {
         tmp$ = 0.0;
       }
     }
@@ -2454,8 +2224,7 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (arg !== 0.0) {
         return 1.0;
-      }
-    }
+      }}
     return 0.0;
   };
   DoubleBaseOperation$Companion.prototype.xor_d3e2cz$ = function (listOfArgs) {
@@ -2466,121 +2235,104 @@ var TWF = function (_, Kotlin) {
       var arg = tmp$.next();
       if (arg !== 0.0) {
         counter = counter + 1 | 0;
-      }
-    }
+      }}
     return counter % 2;
   };
   DoubleBaseOperation$Companion.prototype.alleq_d3e2cz$ = function (listOfArgs) {
     var tmp$;
     if (listOfArgs.isEmpty()) {
       return 1.0;
-    }
-    var firstArg = listOfArgs.get_za3lpa$(0);
+    }var firstArg = listOfArgs.get_za3lpa$(0);
     tmp$ = listOfArgs.iterator();
     while (tmp$.hasNext()) {
       var arg = tmp$.next();
       if (arg !== firstArg) {
         return 0.0;
-      }
-    }
+      }}
     return 1.0;
   };
   DoubleBaseOperation$Companion.prototype.sin_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.sin(x);
   };
   DoubleBaseOperation$Companion.prototype.cos_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.cos(x);
   };
   DoubleBaseOperation$Companion.prototype.sinh_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.sinh(x);
   };
   DoubleBaseOperation$Companion.prototype.cosh_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.cosh(x);
   };
   DoubleBaseOperation$Companion.prototype.tan_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.tan(x);
   };
   DoubleBaseOperation$Companion.prototype.tanh_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.tanh(x);
   };
   DoubleBaseOperation$Companion.prototype.asin_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.asin(x);
   };
   DoubleBaseOperation$Companion.prototype.acos_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.acos(x);
   };
   DoubleBaseOperation$Companion.prototype.atan_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.atan(x);
   };
   DoubleBaseOperation$Companion.prototype.actan_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = 1.0 / listOfArgs.get_za3lpa$(0);
+    }var x = 1.0 / listOfArgs.get_za3lpa$(0);
     return Math_0.atan(x);
   };
   DoubleBaseOperation$Companion.prototype.exp_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.exp(x);
   };
   DoubleBaseOperation$Companion.prototype.ln_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.log(x);
   };
   DoubleBaseOperation$Companion.prototype.abs_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.abs(x);
   };
   DoubleBaseOperation$Companion.prototype.sqrt_d3e2cz$ = function (listOfArgs) {
     if (listOfArgs.size !== 1) {
       throw IllegalArgumentException_init('Given list contains not one argument');
-    }
-    var x = listOfArgs.get_za3lpa$(0);
+    }var x = listOfArgs.get_za3lpa$(0);
     return Math_0.sqrt(x);
   };
   DoubleBaseOperation$Companion.$metadata$ = {
@@ -2592,8 +2344,7 @@ var TWF = function (_, Kotlin) {
   function DoubleBaseOperation$Companion_getInstance() {
     if (DoubleBaseOperation$Companion_instance === null) {
       new DoubleBaseOperation$Companion();
-    }
-    return DoubleBaseOperation$Companion_instance;
+    }return DoubleBaseOperation$Companion_instance;
   }
   DoubleBaseOperation.$metadata$ = {
     kind: Kind_CLASS,
@@ -2620,12 +2371,10 @@ var TWF = function (_, Kotlin) {
     var from = this.leftBorder;
     if (!this.leftBorderInc) {
       from += 1.0E-9;
-    }
-    var to = this.rightBorder;
+    }var to = this.rightBorder;
     if (this.rightBorderInc) {
       to += 1.0E-9;
-    }
-    return random_0(from, to);
+    }return random_0(from, to);
   };
   function DomainSegment$Companion() {
     DomainSegment$Companion_instance = this;
@@ -2665,8 +2414,7 @@ var TWF = function (_, Kotlin) {
   function DomainSegment$Companion_getInstance() {
     if (DomainSegment$Companion_instance === null) {
       new DomainSegment$Companion();
-    }
-    return DomainSegment$Companion_instance;
+    }return DomainSegment$Companion_instance;
   }
   DomainSegment.$metadata$ = {
     kind: Kind_CLASS,
@@ -2706,14 +2454,11 @@ var TWF = function (_, Kotlin) {
     DefinitionDomain$Companion_getInstance();
     if (points === void 0) {
       points = LinkedHashSet_init();
-    }
-    if (excludedPoints === void 0) {
+    }if (excludedPoints === void 0) {
       excludedPoints = LinkedHashSet_init();
-    }
-    if (segments === void 0) {
+    }if (segments === void 0) {
       segments = LinkedHashSet_init();
-    }
-    this.points = points;
+    }this.points = points;
     this.excludedPoints = excludedPoints;
     this.segments = segments;
   }
@@ -2729,29 +2474,24 @@ var TWF = function (_, Kotlin) {
           if (Kotlin.isType($receiver, Collection) && $receiver.isEmpty()) {
             any$result = false;
             break any$break;
-          }
-          tmp$_1 = $receiver.iterator();
+          }tmp$_1 = $receiver.iterator();
           while (tmp$_1.hasNext()) {
             var element = tmp$_1.next();
             if (element.contains_14dthe$(point)) {
               any$result = true;
               break any$break;
-            }
-          }
+            }}
           any$result = false;
         }
          while (false);
         tmp$_0 = any$result;
-      }
-      tmp$ = tmp$_0;
-    }
-    return tmp$;
+      }tmp$ = tmp$_0;
+    }return tmp$;
   };
   DefinitionDomain.prototype.generateNewPoint = function () {
     if (this.points.isEmpty() && this.segments.isEmpty()) {
       throw new EmptyDomainException();
-    }
-    var generated = this.unsafeGenerateNewPoint_0();
+    }var generated = this.unsafeGenerateNewPoint_0();
     while (this.excludedPoints.contains_11rb$(generated))
       generated = this.unsafeGenerateNewPoint_0();
     return generated;
@@ -2759,11 +2499,9 @@ var TWF = function (_, Kotlin) {
   DefinitionDomain.prototype.unsafeGenerateNewPoint_0 = function () {
     if (this.points.isEmpty()) {
       return this.generateFromSegments_0();
-    }
-     else if (this.segments.isEmpty()) {
+    } else if (this.segments.isEmpty()) {
       return this.generateFromPoints_0();
-    }
-     else {
+    } else {
       return defaultRandom() < 0.6 ? this.generateFromSegments_0() : this.generateFromPoints_0();
     }
   };
@@ -2877,17 +2615,13 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (p == null && r == null) {
       throw new EmptyDomainException();
-    }
-     else if (p == null && r != null) {
+    } else if (p == null && r != null) {
       tmp$ = r;
-    }
-     else if (r == null && p != null) {
+    } else if (r == null && p != null) {
       tmp$ = p;
-    }
-     else if (r != null && p != null) {
+    } else if (r != null && p != null) {
       tmp$ = func(p, r);
-    }
-     else {
+    } else {
       throw IllegalStateException_init();
     }
     return tmp$;
@@ -2965,8 +2699,7 @@ var TWF = function (_, Kotlin) {
   function DefinitionDomain$Companion_getInstance() {
     if (DefinitionDomain$Companion_instance === null) {
       new DefinitionDomain$Companion();
-    }
-    return DefinitionDomain$Companion_instance;
+    }return DefinitionDomain$Companion_instance;
   }
   DefinitionDomain.$metadata$ = {
     kind: Kind_CLASS,
@@ -3006,15 +2739,13 @@ var TWF = function (_, Kotlin) {
       if (Kotlin.isType($receiver, Collection) && $receiver.isEmpty()) {
         all$result = true;
         break all$break;
-      }
-      tmp$ = $receiver.iterator();
+      }tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var element = tmp$.next();
         if (!element(point)) {
           all$result = false;
           break all$break;
-        }
-      }
+        }}
       all$result = true;
     }
      while (false);
@@ -3048,8 +2779,7 @@ var TWF = function (_, Kotlin) {
   MultivariateDefinitionDomain.prototype.set_7y87zu$ = function (varname, vardomain) {
     if (this.variables.containsKey_11rb$(varname)) {
       this.variables.put_xwzc9p$(varname, vardomain);
-    }
-  };
+    }};
   MultivariateDefinitionDomain.prototype.get_61zpoe$ = function (varname) {
     return this.variables.get_11rb$(varname);
   };
@@ -3115,8 +2845,7 @@ var TWF = function (_, Kotlin) {
         if (!this.isPolynom_5lmvi0$(child, variables))
           return false;
       }
-    }
-     else if (contains('/', tmp$) || equals(tmp$, '^')) {
+    } else if (contains('/', tmp$) || equals(tmp$, '^')) {
       if (!this.isPolynom_5lmvi0$(first($receiver.children), variables))
         return false;
       tmp$_1 = $receiver.children.size;
@@ -3124,8 +2853,7 @@ var TWF = function (_, Kotlin) {
         if (!this.isConstant_5lmvi0$($receiver.children.get_za3lpa$(i), variables))
           return false;
       }
-    }
-     else {
+    } else {
       tmp$_2 = $receiver.children.iterator();
       while (tmp$_2.hasNext()) {
         var child_0 = tmp$_2.next();
@@ -3145,16 +2873,14 @@ var TWF = function (_, Kotlin) {
         if (!this.isPolynomThatCanHaveDivsOnlyOnTopLevel_5lmvi0$(child, variables))
           return false;
       }
-    }
-     else if (contains('/', tmp$)) {
+    } else if (contains('/', tmp$)) {
       tmp$_1 = $receiver.children.iterator();
       while (tmp$_1.hasNext()) {
         var child_0 = tmp$_1.next();
         if (!this.isPolynom_5lmvi0$(child_0, variables))
           return false;
       }
-    }
-     else
+    } else
       return this.isPolynom_5lmvi0$($receiver, variables);
     return true;
   };
@@ -3170,8 +2896,7 @@ var TWF = function (_, Kotlin) {
           variableChildNumber = i;
         else
           return $receiver.children.size;
-      }
-    }
+      }}
     return variableChildNumber;
   };
   InequalityApproximateSolver.prototype.fastTopResolver_csr4zj$ = function ($receiver, variable) {
@@ -3192,14 +2917,12 @@ var TWF = function (_, Kotlin) {
             if (i !== variableChildNumber) {
               if (equals($receiver.children.get_za3lpa$(i).value, '-')) {
                 first(root.children).addChild_6718cy$(first($receiver.children.get_za3lpa$(i).children).clone());
-              }
-               else {
+              } else {
                 var additive = new ExpressionNode(NodeType$FUNCTION_getInstance(), '-');
                 additive.addChild_6718cy$($receiver.children.get_za3lpa$(i).clone());
                 first(root.children).addChild_6718cy$(additive);
               }
-            }
-          }
+            }}
 
           first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
           break;
@@ -3207,8 +2930,7 @@ var TWF = function (_, Kotlin) {
           if ($receiver.children.size === 1) {
             root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
             first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-          }
-           else {
+          } else {
             if (variableChildNumber === 0) {
               root.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '+'));
               tmp$_1 = get_lastIndex($receiver.children);
@@ -3216,8 +2938,7 @@ var TWF = function (_, Kotlin) {
                 first(root.children).addChild_6718cy$($receiver.children.get_za3lpa$(i_0).clone());
               }
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-            }
-             else {
+            } else {
               if ($receiver.children.size === 2)
                 root.addChild_6718cy$($receiver.children.get_za3lpa$(0).clone());
               else {
@@ -3226,8 +2947,7 @@ var TWF = function (_, Kotlin) {
                 for (var i_1 = 0; i_1 <= tmp$_2; i_1++) {
                   if (i_1 !== variableChildNumber) {
                     first(root.children).addChild_6718cy$($receiver.children.get_za3lpa$(i_1).clone());
-                  }
-                }
+                  }}
               }
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
             }
@@ -3239,20 +2959,16 @@ var TWF = function (_, Kotlin) {
             tmp$_3 = toDoubleOrNull($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).value);
             if (tmp$_3 == null) {
               return null;
-            }
-            var mult = tmp$_3;
+            }var mult = tmp$_3;
             if (mult > 0) {
               root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-            }
-             else if (mult < 0) {
+            } else if (mult < 0) {
               root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-            }
-             else
+            } else
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment());
-          }
-           else
+          } else
             return null;
           break;
         case '/':
@@ -3260,29 +2976,23 @@ var TWF = function (_, Kotlin) {
             tmp$_4 = toDoubleOrNull($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).value);
             if (tmp$_4 == null) {
               return null;
-            }
-            var mult_0 = tmp$_4;
+            }var mult_0 = tmp$_4;
             if (mult_0 > 0) {
               root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-            }
-             else if (mult_0 < 0) {
+            } else if (mult_0 < 0) {
               root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-            }
-          }
-           else
+            }} else
             return null;
           break;
         case '^':
           if (variableChildNumber === 0) {
             root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
             first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-          }
-           else if ($receiver.children.size === 2) {
+          } else if ($receiver.children.size === 2) {
             first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment());
-          }
-           else
+          } else
             return null;
           break;
         case 'exp':
@@ -3303,8 +3013,7 @@ var TWF = function (_, Kotlin) {
                 first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
                 first(first(root.children).children).addChild_6718cy$($receiver.children.get_za3lpa$(variableChildNumber - 1 | 0).clone());
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-              }
-               else
+              } else
                 return null;
               break;
             case 3:
@@ -3316,17 +3025,14 @@ var TWF = function (_, Kotlin) {
               if (tmp$_5 == null) {
                 return null;
               }
-
               var mult_1 = tmp$_5;
               if (mult_1 > 0) {
                 root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-              }
-               else if (mult_1 < 0) {
+              } else if (mult_1 < 0) {
                 root.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '0'));
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-              }
-               else
+              } else
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment());
               break;
             default:first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment());
@@ -3337,8 +3043,7 @@ var TWF = function (_, Kotlin) {
         default:return null;
       }
       return result;
-    }
-     else if ($receiver.children.size > 2)
+    } else if ($receiver.children.size > 2)
       return null;
     else if (equals($receiver.value, '+')) {
       var variableGrandSonNumber = this.findVariableNode_csr4zj$(varChild, variable);
@@ -3349,8 +3054,7 @@ var TWF = function (_, Kotlin) {
             if (varChild.children.size === 1) {
               root.addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
               first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-            }
-             else {
+            } else {
               root.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '+'));
               if (variableGrandSonNumber === 0) {
                 tmp$_6 = get_lastIndex(varChild.children);
@@ -3359,14 +3063,12 @@ var TWF = function (_, Kotlin) {
                 }
                 if (equals($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).value, '-')) {
                   first(root.children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
-                }
-                 else {
+                } else {
                   first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
                   first(first(root.children).children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
                 }
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-              }
-               else {
+              } else {
                 first(root.children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
                 if (varChild.children.size === 2)
                   first(root.children).addChild_6718cy$(varChild.children.get_za3lpa$(0).clone());
@@ -3376,8 +3078,7 @@ var TWF = function (_, Kotlin) {
                   for (var i_3 = 0; i_3 <= tmp$_7; i_3++) {
                     if (i_3 !== variableGrandSonNumber) {
                       first(first(root.children).children).addChild_6718cy$(varChild.children.get_za3lpa$(i_3).clone());
-                    }
-                  }
+                    }}
                 }
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
               }
@@ -3389,13 +3090,11 @@ var TWF = function (_, Kotlin) {
               tmp$_8 = toDoubleOrNull(varChild.children.get_za3lpa$(1 - variableGrandSonNumber | 0).value);
               if (tmp$_8 == null) {
                 return null;
-              }
-              var mult_2 = tmp$_8;
+              }var mult_2 = tmp$_8;
               root.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '/'));
               if (equals($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).value, '-')) {
                 first(root.children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
-              }
-               else {
+              } else {
                 first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '+'));
                 first(first(root.children).children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
                 first(first(first(root.children).children).children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
@@ -3403,22 +3102,18 @@ var TWF = function (_, Kotlin) {
               if (mult_2 > 0) {
                 first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), mult_2.toString()));
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-              }
-               else if (mult_2 < 0) {
+              } else if (mult_2 < 0) {
                 first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), (-mult_2).toString()));
                 first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-              }
-               else {
+              } else {
                 tmp$_9 = toDoubleOrNull($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).value);
                 if (tmp$_9 == null) {
                   return null;
-                }
-                var const_0 = tmp$_9;
+                }var const_0 = tmp$_9;
                 if (const_0 > 0)
                   first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment());
               }
-            }
-             else
+            } else
               return null;
             break;
           case '/':
@@ -3426,14 +3121,12 @@ var TWF = function (_, Kotlin) {
               tmp$_10 = toDoubleOrNull(varChild.children.get_za3lpa$(1 - variableGrandSonNumber | 0).value);
               if (tmp$_10 == null) {
                 return null;
-              }
-              var mult_3 = tmp$_10;
+              }var mult_3 = tmp$_10;
               if (variableGrandSonNumber === 0) {
                 root.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '*'));
                 if (equals($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).value, '-')) {
                   first(root.children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
-                }
-                 else {
+                } else {
                   first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '+'));
                   first(first(root.children).children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
                   first(first(first(root.children).children).children).addChild_6718cy$($receiver.children.get_za3lpa$(1 - variableChildNumber | 0).clone());
@@ -3441,32 +3134,25 @@ var TWF = function (_, Kotlin) {
                 if (mult_3 > 0) {
                   first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), mult_3.toString()));
                   first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(root));
-                }
-                 else if (mult_3 < 0) {
+                } else if (mult_3 < 0) {
                   first(root.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), (-mult_3).toString()));
                   first(result.segmentsUnionsIntersection).segmentsUnion.add_11rb$(new Segment(void 0, root));
-                }
-              }
-               else
+                }} else
                 return null;
-            }
-             else
+            } else
               return null;
             break;
           default:return null;
         }
         return result;
-      }
-       else if (equals(varChild.value, '-')) {
+      } else if (equals(varChild.value, '-')) {
         var variableGreatGrandSonNumber = this.findVariableNode_csr4zj$(varGrandSon, variable);
         var varGreatGrandSon = varChild.children.get_za3lpa$(variableGreatGrandSonNumber);
         if (!equals(varGreatGrandSon.value, variable))
           return null;
-      }
-       else
+      } else
         return null;
-    }
-     else if (!equals($receiver.value, '-'))
+    } else if (!equals($receiver.value, '-'))
       return null;
     return result;
   };
@@ -3483,8 +3169,7 @@ var TWF = function (_, Kotlin) {
       if (fastResolverResult == null) {
         if (!this.isPolynomThatCanHaveDivsOnlyOnTopLevel_5lmvi0$(expression, setOf(variable)))
           result.put_xwzc9p$(variable, new VariableProperties(variable, void 0, true));
-      }
-       else {
+      } else {
         result.put_xwzc9p$(variable, fastResolverResult);
       }
     }
@@ -3493,6 +3178,375 @@ var TWF = function (_, Kotlin) {
   InequalityApproximateSolver.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'InequalityApproximateSolver',
+    interfaces: []
+  };
+  function Segment(leftBorder, rightBorder, point, isLeftBorderIncluded, isRightBorderIncluded) {
+    if (leftBorder === void 0)
+      leftBorder = null;
+    if (rightBorder === void 0)
+      rightBorder = null;
+    if (point === void 0)
+      point = null;
+    if (isLeftBorderIncluded === void 0)
+      isLeftBorderIncluded = true;
+    if (isRightBorderIncluded === void 0)
+      isRightBorderIncluded = true;
+    this.leftBorder = leftBorder;
+    this.rightBorder = rightBorder;
+    this.point = point;
+    this.isLeftBorderIncluded = isLeftBorderIncluded;
+    this.isRightBorderIncluded = isRightBorderIncluded;
+  }
+  Segment.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Segment',
+    interfaces: []
+  };
+  Segment.prototype.component1 = function () {
+    return this.leftBorder;
+  };
+  Segment.prototype.component2 = function () {
+    return this.rightBorder;
+  };
+  Segment.prototype.component3 = function () {
+    return this.point;
+  };
+  Segment.prototype.component4 = function () {
+    return this.isLeftBorderIncluded;
+  };
+  Segment.prototype.component5 = function () {
+    return this.isRightBorderIncluded;
+  };
+  Segment.prototype.copy_r1ee8j$ = function (leftBorder, rightBorder, point, isLeftBorderIncluded, isRightBorderIncluded) {
+    return new Segment(leftBorder === void 0 ? this.leftBorder : leftBorder, rightBorder === void 0 ? this.rightBorder : rightBorder, point === void 0 ? this.point : point, isLeftBorderIncluded === void 0 ? this.isLeftBorderIncluded : isLeftBorderIncluded, isRightBorderIncluded === void 0 ? this.isRightBorderIncluded : isRightBorderIncluded);
+  };
+  Segment.prototype.toString = function () {
+    return 'Segment(leftBorder=' + Kotlin.toString(this.leftBorder) + (', rightBorder=' + Kotlin.toString(this.rightBorder)) + (', point=' + Kotlin.toString(this.point)) + (', isLeftBorderIncluded=' + Kotlin.toString(this.isLeftBorderIncluded)) + (', isRightBorderIncluded=' + Kotlin.toString(this.isRightBorderIncluded)) + ')';
+  };
+  Segment.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.leftBorder) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rightBorder) | 0;
+    result = result * 31 + Kotlin.hashCode(this.point) | 0;
+    result = result * 31 + Kotlin.hashCode(this.isLeftBorderIncluded) | 0;
+    result = result * 31 + Kotlin.hashCode(this.isRightBorderIncluded) | 0;
+    return result;
+  };
+  Segment.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.leftBorder, other.leftBorder) && Kotlin.equals(this.rightBorder, other.rightBorder) && Kotlin.equals(this.point, other.point) && Kotlin.equals(this.isLeftBorderIncluded, other.isLeftBorderIncluded) && Kotlin.equals(this.isRightBorderIncluded, other.isRightBorderIncluded)))));
+  };
+  function SegmentsUnion(segmentsUnion) {
+    if (segmentsUnion === void 0) {
+      segmentsUnion = ArrayList_init();
+    }this.segmentsUnion = segmentsUnion;
+  }
+  SegmentsUnion.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SegmentsUnion',
+    interfaces: []
+  };
+  SegmentsUnion.prototype.component1 = function () {
+    return this.segmentsUnion;
+  };
+  SegmentsUnion.prototype.copy_sve6fy$ = function (segmentsUnion) {
+    return new SegmentsUnion(segmentsUnion === void 0 ? this.segmentsUnion : segmentsUnion);
+  };
+  SegmentsUnion.prototype.toString = function () {
+    return 'SegmentsUnion(segmentsUnion=' + Kotlin.toString(this.segmentsUnion) + ')';
+  };
+  SegmentsUnion.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.segmentsUnion) | 0;
+    return result;
+  };
+  SegmentsUnion.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.segmentsUnion, other.segmentsUnion))));
+  };
+  function VariableProperties(name, segmentsUnionsIntersection, unableToCompute) {
+    if (segmentsUnionsIntersection === void 0) {
+      segmentsUnionsIntersection = ArrayList_init();
+    }if (unableToCompute === void 0)
+      unableToCompute = false;
+    this.name = name;
+    this.segmentsUnionsIntersection = segmentsUnionsIntersection;
+    this.unableToCompute = unableToCompute;
+  }
+  VariableProperties.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VariableProperties',
+    interfaces: []
+  };
+  VariableProperties.prototype.component1 = function () {
+    return this.name;
+  };
+  VariableProperties.prototype.component2 = function () {
+    return this.segmentsUnionsIntersection;
+  };
+  VariableProperties.prototype.component3 = function () {
+    return this.unableToCompute;
+  };
+  VariableProperties.prototype.copy_6l4fbr$ = function (name, segmentsUnionsIntersection, unableToCompute) {
+    return new VariableProperties(name === void 0 ? this.name : name, segmentsUnionsIntersection === void 0 ? this.segmentsUnionsIntersection : segmentsUnionsIntersection, unableToCompute === void 0 ? this.unableToCompute : unableToCompute);
+  };
+  VariableProperties.prototype.toString = function () {
+    return 'VariableProperties(name=' + Kotlin.toString(this.name) + (', segmentsUnionsIntersection=' + Kotlin.toString(this.segmentsUnionsIntersection)) + (', unableToCompute=' + Kotlin.toString(this.unableToCompute)) + ')';
+  };
+  VariableProperties.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.segmentsUnionsIntersection) | 0;
+    result = result * 31 + Kotlin.hashCode(this.unableToCompute) | 0;
+    return result;
+  };
+  VariableProperties.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.segmentsUnionsIntersection, other.segmentsUnionsIntersection) && Kotlin.equals(this.unableToCompute, other.unableToCompute)))));
+  };
+  function PointGenerator(baseOperationsDefinitions, expressions, maxValueMultiplier) {
+    if (baseOperationsDefinitions === void 0)
+      baseOperationsDefinitions = new BaseOperationsDefinitions();
+    if (expressions === void 0) {
+      expressions = ArrayList_init();
+    }if (maxValueMultiplier === void 0)
+      maxValueMultiplier = 10.0;
+    this.baseOperationsDefinitions = baseOperationsDefinitions;
+    this.expressions = expressions;
+    this.maxValueMultiplier = maxValueMultiplier;
+    this.border = 0;
+    this.variablesSet = LinkedHashSet_init();
+    var tmp$;
+    var variablesNamesSet = LinkedHashSet_init();
+    var maxConstant = 1.0;
+    tmp$ = this.expressions.iterator();
+    while (tmp$.hasNext()) {
+      var expression = tmp$.next();
+      variablesNamesSet.addAll_brywnq$(expression.getVariableNames());
+      var a = expression.getMaxConstant();
+      var b = maxConstant;
+      maxConstant = Math_0.max(a, b);
+    }
+    var tmp$_0;
+    tmp$_0 = variablesNamesSet.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      this.variablesSet.add_11rb$(new VariableProperties(element));
+    }
+    this.border = maxConstant * this.maxValueMultiplier;
+  }
+  PointGenerator.prototype.generateNewPoint = function () {
+    var tmp$;
+    var result = LinkedHashMap_init_0();
+    tmp$ = this.variablesSet.iterator();
+    while (tmp$.hasNext()) {
+      var variable = tmp$.next();
+      if (variable.segmentsUnionsIntersection.isEmpty()) {
+        result.put_xwzc9p$(variable.name, random_0(-this.border, this.border).toString());
+      } else {
+        throw new NotImplementedError_init();
+      }
+    }
+    return result;
+  };
+  PointGenerator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PointGenerator',
+    interfaces: []
+  };
+  function VariableInfo(name, value) {
+    if (value === void 0)
+      value = 0.0;
+    this.name = name;
+    this.value = value;
+  }
+  VariableInfo.prototype.clone = function () {
+    return new VariableInfo(this.name, this.value);
+  };
+  VariableInfo.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VariableInfo',
+    interfaces: []
+  };
+  VariableInfo.prototype.component1 = function () {
+    return this.name;
+  };
+  VariableInfo.prototype.component2 = function () {
+    return this.value;
+  };
+  VariableInfo.prototype.copy_io5o9c$ = function (name, value) {
+    return new VariableInfo(name === void 0 ? this.name : name, value === void 0 ? this.value : value);
+  };
+  VariableInfo.prototype.toString = function () {
+    return 'VariableInfo(name=' + Kotlin.toString(this.name) + (', value=' + Kotlin.toString(this.value)) + ')';
+  };
+  VariableInfo.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.value) | 0;
+    return result;
+  };
+  VariableInfo.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.name, other.name) && Kotlin.equals(this.value, other.value)))));
+  };
+  function DomainPointGenerator(expressions, baseOperationsDefinitions, temperatureMultiplier, iterationCount, annealingRuns, attemptsCount, penaltyRestrictionMultiplier) {
+    if (expressions === void 0) {
+      expressions = ArrayList_init();
+    }if (baseOperationsDefinitions === void 0)
+      baseOperationsDefinitions = new BaseOperationsDefinitions();
+    if (temperatureMultiplier === void 0)
+      temperatureMultiplier = 0.99;
+    if (iterationCount === void 0)
+      iterationCount = 1000;
+    if (annealingRuns === void 0)
+      annealingRuns = 2;
+    if (attemptsCount === void 0)
+      attemptsCount = 2;
+    if (penaltyRestrictionMultiplier === void 0)
+      penaltyRestrictionMultiplier = 10.0;
+    this.expressions = expressions;
+    this.baseOperationsDefinitions = baseOperationsDefinitions;
+    this.temperatureMultiplier = temperatureMultiplier;
+    this.iterationCount = iterationCount;
+    this.annealingRuns = annealingRuns;
+    this.attemptsCount = attemptsCount;
+    this.penaltyRestrictionMultiplier = penaltyRestrictionMultiplier;
+    this.variablesList = ArrayList_init();
+    this.pointsInDomain = ArrayList_init();
+    this.maxConstant = 1.0;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var variablesNamesList = ArrayList_init();
+    tmp$ = this.expressions.iterator();
+    while (tmp$.hasNext()) {
+      var expression = tmp$.next();
+      variablesNamesList.addAll_brywnq$(expression.getVariableNames());
+      var a = expression.getMaxConstant();
+      var b = this.maxConstant;
+      this.maxConstant = Math_0.max(a, b);
+    }
+    var tmp$_3;
+    tmp$_3 = variablesNamesList.iterator();
+    while (tmp$_3.hasNext()) {
+      var element = tmp$_3.next();
+      this.variablesList.add_11rb$(new VariableInfo(element));
+    }
+    if (!variablesNamesList.isEmpty()) {
+      tmp$_0 = this.annealingRuns;
+      for (var attemp = 0; attemp < tmp$_0; attemp++) {
+        var tmp$_4;
+        tmp$_4 = this.variablesList.iterator();
+        while (tmp$_4.hasNext()) {
+          var element_0 = tmp$_4.next();
+          element_0.value = random_0(-2.0 * this.maxConstant, 2.0 * this.maxConstant);
+        }
+        tmp$_1 = this.attemptsCount;
+        for (var i = 0; i < tmp$_1; i++) {
+          if (this.runAnnealing_0(this.variablesList, this.temperatureMultiplier, this.iterationCount, this.expressions)) {
+            var values = ArrayList_init();
+            tmp$_2 = this.variablesList.iterator();
+            while (tmp$_2.hasNext()) {
+              var variable = tmp$_2.next();
+              values.add_11rb$(variable.clone());
+            }
+            this.pointsInDomain.add_11rb$(values);
+            break;
+          }}
+      }
+    }}
+  DomainPointGenerator.prototype.hasPointsInDomain = function () {
+    return !this.pointsInDomain.isEmpty();
+  };
+  DomainPointGenerator.prototype.printResults = function () {
+    return '';
+  };
+  DomainPointGenerator.prototype.generateNewPoint_14dthe$ = function (domainArea) {
+    if (domainArea === void 0)
+      domainArea = 1.0E-5;
+    var tmp$, tmp$_0;
+    var result = LinkedHashMap_init_0();
+    if (!this.pointsInDomain.isEmpty()) {
+      var pointIndex = random.nextInt_vux9f0$(0, this.pointsInDomain.size);
+      tmp$ = this.pointsInDomain.get_za3lpa$(pointIndex).iterator();
+      while (tmp$.hasNext()) {
+        var variable = tmp$.next();
+        result.put_xwzc9p$(variable.name, (variable.value + random_0(-domainArea, domainArea)).toString());
+      }
+    } else {
+      tmp$_0 = this.variablesList.iterator();
+      while (tmp$_0.hasNext()) {
+        var variable_0 = tmp$_0.next();
+        result.put_xwzc9p$(variable_0.name, random_0(-this.maxConstant, this.maxConstant).toString());
+      }
+    }
+    return result;
+  };
+  DomainPointGenerator.prototype.runAnnealing_0 = function (variableList, temperatureMultiplier, iterationCount, expressions) {
+    var tmp$, tmp$_0;
+    var currentTemperature = 1.0;
+    var baseOperationsComputationComplex = new BaseOperationsComputation(ComputationType$COMPLEX_getInstance());
+    var currentPenalty = this.calculatePenalty_0(this.variablesList, expressions, baseOperationsComputationComplex);
+    var epsilon = 1.0E-9;
+    if (currentPenalty < epsilon)
+      return true;
+    for (var iterNumber = 0; iterNumber < iterationCount; iterNumber++) {
+      var newPoint = ArrayList_init();
+      tmp$ = variableList.iterator();
+      while (tmp$.hasNext()) {
+        var variable = tmp$.next();
+        newPoint.add_11rb$(variable.clone());
+      }
+      var varIndex = random.nextInt_vux9f0$(0, newPoint.size);
+      newPoint.set_wxm5ur$(varIndex, this.generateNextValue_0(newPoint.get_za3lpa$(varIndex), currentPenalty));
+      var newPenalty = this.calculatePenalty_0(newPoint, expressions, baseOperationsComputationComplex);
+      if (this.newPointGoodEnough_0(currentPenalty, newPenalty, currentTemperature)) {
+        currentPenalty = newPenalty;
+        tmp$_0 = newPoint.size;
+        for (var i = 0; i < tmp$_0; i++)
+          variableList.get_za3lpa$(i).value = newPoint.get_za3lpa$(i).value;
+        this.variablesList = newPoint;
+        if (currentPenalty < epsilon)
+          return true;
+      }currentTemperature *= temperatureMultiplier;
+    }
+    return false;
+  };
+  DomainPointGenerator.prototype.newPointGoodEnough_0 = function (currentPenalty, newPenalty, temperature) {
+    var tmp$ = currentPenalty > newPenalty;
+    if (!tmp$) {
+      var tmp$_0 = random_0(0.0, 1.0);
+      var x = (currentPenalty - newPenalty) / temperature;
+      tmp$ = tmp$_0 < Math_0.exp(x) * 0.5;
+    }return tmp$;
+  };
+  DomainPointGenerator.prototype.calculatePenalty_0 = function (variableList, expressions, baseOperationsComputationComplex) {
+    var tmp$, tmp$_0;
+    var penalty = 0.0;
+    var point = LinkedHashMap_init_0();
+    tmp$ = variableList.iterator();
+    while (tmp$.hasNext()) {
+      var variable = tmp$.next();
+      point.put_xwzc9p$(variable.name, variable.value.toString());
+    }
+    tmp$_0 = expressions.iterator();
+    while (tmp$_0.hasNext()) {
+      var expression = tmp$_0.next();
+      var tmp$_1 = baseOperationsComputationComplex.computeWithPenalty_6718cy$(expression.cloneWithNormalization_1g1bdl$(point, false));
+      var value = tmp$_1.component1()
+      , pen = tmp$_1.component2();
+      penalty += pen;
+    }
+    return penalty;
+  };
+  DomainPointGenerator.prototype.generateNextValue_0 = function (variable, currentPenalty) {
+    var b = abs_0(variable.value) / 10;
+    var c = currentPenalty / this.penaltyRestrictionMultiplier;
+    var step = Math_0.max(1.0, b, c);
+    var a = step;
+    var b_0 = currentPenalty * this.penaltyRestrictionMultiplier;
+    step = Math_0.min(a, b_0);
+    variable.value = random_0(variable.value - step, variable.value + step);
+    return variable;
+  };
+  DomainPointGenerator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DomainPointGenerator',
     interfaces: []
   };
   function CheckedFactColor(checkedFactBackgroundColor, correctFactColor, unconfirmedFactColor, factNotHelpFactColor, factHelpFactColor, wrongFactColor, wrongTransformationFactColor) {
@@ -3632,8 +3686,7 @@ var TWF = function (_, Kotlin) {
   function CheckingKeyWords$Companion_getInstance() {
     if (CheckingKeyWords$Companion_instance === null) {
       new CheckingKeyWords$Companion();
-    }
-    return CheckingKeyWords$Companion_instance;
+    }return CheckingKeyWords$Companion_instance;
   }
   CheckingKeyWords.$metadata$ = {
     kind: Kind_CLASS,
@@ -3935,8 +3988,7 @@ var TWF = function (_, Kotlin) {
       if (leftTree != null && rightTree != null) {
         if (leftTree.children.isEmpty() || rightTree.children.isEmpty()) {
           this.configurationErrors.add_11rb$(new ConfigurationError('function definition rule is empty', 'TreeTransformationRule', "values: '" + functionDefinition.definitionLeftExpression + "' and '" + functionDefinition.definitionRightExpression + "'", -1));
-        }
-         else {
+        } else {
           leftTree.variableReplacement_y0zsll$(this.compiledImmediateVariableReplacements);
           rightTree.variableReplacement_y0zsll$(this.compiledImmediateVariableReplacements);
           applyAllFunctionSubstitutions(rightTree, compiledSubstitutions);
@@ -3945,8 +3997,7 @@ var TWF = function (_, Kotlin) {
           var definitionIdentifier = leftTree.children.get_za3lpa$(0).value + '_' + toString(leftTree.children.get_za3lpa$(0).children.size);
           compiledSubstitutions.put_xwzc9p$(definitionIdentifier, newSubstitution);
         }
-      }
-    }
+      }}
     tmp$_1 = this.functionConfiguration.treeTransformationRules.iterator();
     while (tmp$_1.hasNext()) {
       var treeTransformationRule = tmp$_1.next();
@@ -3960,8 +4011,7 @@ var TWF = function (_, Kotlin) {
           this.compiledImmediateTreeTransformationRules.add_11rb$(newSubstitution_0);
         else
           this.compiledExpressionTreeTransformationRules.add_11rb$(newSubstitution_0);
-      }
-    }
+      }}
     tmp$_2 = this.functionConfiguration.taskContextTreeTransformationRules.iterator();
     while (tmp$_2.hasNext()) {
       var treeTransformationRule_0 = tmp$_2.next();
@@ -3975,8 +4025,7 @@ var TWF = function (_, Kotlin) {
           this.compiledImmediateTreeTransformationRules.add_11rb$(newSubstitution_1);
         else
           this.compiledExpressionTreeTransformationRules.add_11rb$(newSubstitution_1);
-      }
-    }
+      }}
     tmp$_3 = this.factsLogicConfiguration.factsTransformationRules.iterator();
     while (tmp$_3.hasNext()) {
       var factTransformation = tmp$_3.next();
@@ -3988,9 +4037,7 @@ var TWF = function (_, Kotlin) {
         this.compiledFactTreeTransformationRules.add_11rb$(new FactSubstitution(leftTree_2, rightTree_2, factTransformation.weight, void 0, factTransformation.direction, void 0, this.factComporator));
         if (!factTransformation.isOneDirection) {
           this.compiledFactTreeTransformationRules.add_11rb$(new FactSubstitution(rightTree_2, leftTree_2, factTransformation.weight, void 0, factTransformation.direction, void 0, this.factComporator));
-        }
-      }
-    }
+        }}}
   }
   CompiledConfiguration.prototype.parseStringExpression_ivxn3r$ = function (expression, nameForRuleDesignationsPossible) {
     if (nameForRuleDesignationsPossible === void 0)
@@ -4000,8 +4047,7 @@ var TWF = function (_, Kotlin) {
     if (error != null) {
       this.configurationErrors.add_11rb$(new ConfigurationError(error.description, 'TreeTransformationRule', expression, error.position));
       return null;
-    }
-     else {
+    } else {
       return expressionTreeParser.root;
     }
   };
@@ -4257,8 +4303,7 @@ var TWF = function (_, Kotlin) {
   function FunctionIdentifier$Companion_getInstance() {
     if (FunctionIdentifier$Companion_instance === null) {
       new FunctionIdentifier$Companion();
-    }
-    return FunctionIdentifier$Companion_instance;
+    }return FunctionIdentifier$Companion_instance;
   }
   FunctionIdentifier.prototype.getIdentifier = function () {
     return FunctionIdentifier$Companion_getInstance().getIdentifier_bm4lxs$(this.name, this.numberOfArguments);
@@ -4499,8 +4544,7 @@ var TWF = function (_, Kotlin) {
       scopeFilter = setOf('');
     if (notChangesOnVariablesInComparisonFunctionFilter === void 0) {
       notChangesOnVariablesInComparisonFunctionFilter = emptySet();
-    }
-    this.scopeFilter = scopeFilter;
+    }this.scopeFilter = scopeFilter;
     this.notChangesOnVariablesInComparisonFunctionFilter = notChangesOnVariablesInComparisonFunctionFilter;
     var $receiver = mutableListOf([new FunctionIdentifier('', 0), new FunctionIdentifier('', 1), new FunctionIdentifier('+', -1), new FunctionIdentifier('-', -1), new FunctionIdentifier('*', -1), new FunctionIdentifier('/', -1), new FunctionIdentifier('^', -1), new FunctionIdentifier('mod', 2), new FunctionIdentifier('S', 4), new FunctionIdentifier('P', 4), new FunctionIdentifier('and', -1), new FunctionIdentifier('or', -1), new FunctionIdentifier('xor', -1), new FunctionIdentifier('alleq', -1), new FunctionIdentifier('not', 1), new FunctionIdentifier('sin', 1), new FunctionIdentifier('cos', 1), new FunctionIdentifier('sh', 1), new FunctionIdentifier('ch', 1), new FunctionIdentifier('th', 1), new FunctionIdentifier('tg', 1), new FunctionIdentifier('asin', 1), new FunctionIdentifier('acos', 1), new FunctionIdentifier('atg', 1), new FunctionIdentifier('exp', 1), new FunctionIdentifier('ln', 1), new FunctionIdentifier('abs', 1)]);
     var destination = ArrayList_init();
@@ -4577,12 +4621,9 @@ var TWF = function (_, Kotlin) {
         if (stringDefinition.function.numberOfArguments === -1 || stringDefinition.function.numberOfArguments === numberOfArguments || (subAsLast && stringDefinition.function.numberOfArguments === 2)) {
           if (!isBlank(stringDefinition.filter)) {
             return stringDefinition;
-          }
-           else if (result == null || equals(result.filter, '')) {
+          } else if (result == null || equals(result.filter, '')) {
             result = stringDefinition;
-          }
-        }
-    }
+          }}}
     return result;
   };
   FunctionConfiguration.$metadata$ = {
@@ -4637,25 +4678,19 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (transformationWeight.isEmpty()) {
       transformationWeight.add_11rb$(0.0);
-    }
-    if (!$receiver.containsFunction_bm4lxs$('d', 2)) {
+    }if (!$receiver.containsFunction_bm4lxs$('d', 2)) {
       return $receiver;
-    }
-    if ($receiver.nodeType === NodeType$FUNCTION_getInstance() && equals($receiver.value, 'd') && $receiver.children.size === 2 && $receiver.children.get_za3lpa$(1).nodeType === NodeType$VARIABLE_getInstance()) {
+    }if ($receiver.nodeType === NodeType$FUNCTION_getInstance() && equals($receiver.value, 'd') && $receiver.children.size === 2 && $receiver.children.get_za3lpa$(1).nodeType === NodeType$VARIABLE_getInstance()) {
       var variable = $receiver.children.get_za3lpa$(1).value;
       if ($receiver.children.get_za3lpa$(0).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty()) {
         return new ExpressionNode(NodeType$VARIABLE_getInstance(), '0', void 0, void 0, void 0, void 0, void 0, '0');
-      }
-       else if ($receiver.children.get_za3lpa$(0).nodeType === NodeType$VARIABLE_getInstance()) {
+      } else if ($receiver.children.get_za3lpa$(0).nodeType === NodeType$VARIABLE_getInstance()) {
         return new ExpressionNode(NodeType$VARIABLE_getInstance(), '1', void 0, void 0, void 0, void 0, void 0, '1');
-      }
-       else if (equals($receiver.children.get_za3lpa$(0).value, '+') || equals($receiver.children.get_za3lpa$(0).value, '-')) {
+      } else if (equals($receiver.children.get_za3lpa$(0).value, '+') || equals($receiver.children.get_za3lpa$(0).value, '-')) {
         return diffPlusMinus($receiver, variable, transformationWeight);
-      }
-       else if (equals($receiver.children.get_za3lpa$(0).value, '*') && $receiver.children.get_za3lpa$(0).children.size === 2 && ($receiver.children.get_za3lpa$(0).children.get_za3lpa$(0).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty() || $receiver.children.get_za3lpa$(0).children.get_za3lpa$(1).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty())) {
+      } else if (equals($receiver.children.get_za3lpa$(0).value, '*') && $receiver.children.get_za3lpa$(0).children.size === 2 && ($receiver.children.get_za3lpa$(0).children.get_za3lpa$(0).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty() || $receiver.children.get_za3lpa$(0).children.get_za3lpa$(1).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty())) {
         return diffMul($receiver, variable, transformationWeight);
-      }
-      transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + 0.4);
+      }transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + 0.4);
       if (equals($receiver.children.get_za3lpa$(0).value, '*'))
         return diffMul($receiver, variable, transformationWeight);
       transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + 0.15);
@@ -4693,8 +4728,7 @@ var TWF = function (_, Kotlin) {
         case 'cth':
           return diffCth($receiver, variable, transformationWeight);
       }
-    }
-    var result = $receiver.copy_cxgw0k$();
+    }var result = $receiver.copy_coavp6$();
     var maxWeight = 0.0;
     tmp$ = $receiver.children.iterator();
     while (tmp$.hasNext()) {
@@ -4703,8 +4737,7 @@ var TWF = function (_, Kotlin) {
       result.addChild_6718cy$(diff(child, currWeight));
       if (maxWeight < currWeight.get_za3lpa$(0)) {
         maxWeight = currWeight.get_za3lpa$(0);
-      }
-    }
+      }}
     transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + maxWeight);
     return result;
   }
@@ -4891,7 +4924,7 @@ var TWF = function (_, Kotlin) {
   }
   function diffPlusMinus($receiver, variable, transformationWeight) {
     var tmp$;
-    var result = $receiver.children.get_za3lpa$(0).copy_cxgw0k$();
+    var result = $receiver.children.get_za3lpa$(0).copy_coavp6$();
     var maxWeight = 0.0;
     tmp$ = $receiver.children.get_za3lpa$(0).children.iterator();
     while (tmp$.hasNext()) {
@@ -4901,8 +4934,7 @@ var TWF = function (_, Kotlin) {
       result.addChild_6718cy$(diff(newChild, currWeight));
       if (maxWeight < currWeight.get_za3lpa$(0)) {
         maxWeight = currWeight.get_za3lpa$(0);
-      }
-    }
+      }}
     transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + maxWeight);
     return result;
   }
@@ -4921,9 +4953,7 @@ var TWF = function (_, Kotlin) {
           last(result.children).addChild_6718cy$(diff(newChild, currWeight));
           if (maxWeight < currWeight.get_za3lpa$(0)) {
             maxWeight = currWeight.get_za3lpa$(0);
-          }
-        }
-         else {
+          }} else {
           last(result.children).addChild_6718cy$($receiver.children.get_za3lpa$(0).children.get_za3lpa$(i).clone());
         }
       }
@@ -4943,8 +4973,7 @@ var TWF = function (_, Kotlin) {
       last(result.children).addChild_6718cy$($receiver.children.get_za3lpa$(0).children.get_za3lpa$(0).clone());
       last(result.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '2', void 0, void 0, void 0, void 0, void 0, '2'));
       return result;
-    }
-     else {
+    } else {
       var denum = $receiver.children.get_za3lpa$(0).children.get_za3lpa$(1);
       if ($receiver.children.get_za3lpa$(0).children.size > 2) {
         denum = new ExpressionNode(NodeType$FUNCTION_getInstance(), '*');
@@ -4952,8 +4981,7 @@ var TWF = function (_, Kotlin) {
         for (var i = 1; i <= tmp$; i++) {
           denum.addChild_6718cy$($receiver.children.get_za3lpa$(0).children.get_za3lpa$(i));
         }
-      }
-      if ($receiver.children.get_za3lpa$(0).children.get_za3lpa$(0).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty()) {
+      }if ($receiver.children.get_za3lpa$(0).children.get_za3lpa$(0).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty()) {
         var result_0 = new ExpressionNode(NodeType$FUNCTION_getInstance(), '/');
         result_0.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '+'));
         last(result_0.children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '-'));
@@ -4965,8 +4993,7 @@ var TWF = function (_, Kotlin) {
         last(result_0.children).addChild_6718cy$(denum.clone());
         last(result_0.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '2', void 0, void 0, void 0, void 0, void 0, '2'));
         return result_0;
-      }
-       else {
+      } else {
         var result_1 = new ExpressionNode(NodeType$FUNCTION_getInstance(), '/');
         result_1.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '+'));
         last(result_1.children).addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '*'));
@@ -4985,8 +5012,7 @@ var TWF = function (_, Kotlin) {
         last(result_1.children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '2', void 0, void 0, void 0, void 0, void 0, '2'));
         if (weight2.get_za3lpa$(0) > weight1.get_za3lpa$(0)) {
           transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + weight2.get_za3lpa$(0));
-        }
-         else {
+        } else {
           transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + weight1.get_za3lpa$(0));
         }
         return result_1;
@@ -5004,8 +5030,7 @@ var TWF = function (_, Kotlin) {
       for (var i = 1; i <= tmp$; i++) {
         degree.addChild_6718cy$($receiver.children.get_za3lpa$(0).children.get_za3lpa$(i));
       }
-    }
-    if (degree.getContainedVariables_ywdfdh$(setOf(variable)).isEmpty()) {
+    }if (degree.getContainedVariables_ywdfdh$(setOf(variable)).isEmpty()) {
       var result = new ExpressionNode(NodeType$FUNCTION_getInstance(), '*');
       result.addChild_6718cy$(degree.clone());
       result.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), '^'));
@@ -5017,8 +5042,7 @@ var TWF = function (_, Kotlin) {
       var newChild = buildDiffNode($receiver.children.get_za3lpa$(0).children.get_za3lpa$(0), variable);
       last(result.children).addChild_6718cy$(diff(newChild, transformationWeight));
       return result;
-    }
-     else {
+    } else {
       if (!$receiver.children.get_za3lpa$(0).children.get_za3lpa$(0).getContainedVariables_ywdfdh$(setOf(variable)).isEmpty()) {
         if (transformationWeight.size > 1) {
           var result_0 = new ExpressionNode(NodeType$FUNCTION_getInstance(), '+');
@@ -5042,17 +5066,14 @@ var TWF = function (_, Kotlin) {
           last(last(last(last(result_0.children).children).children).children).addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), '1'));
           if (weight2.get_za3lpa$(0) > weight1.get_za3lpa$(0)) {
             transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + weight2.get_za3lpa$(0));
-          }
-           else {
+          } else {
             transformationWeight.set_wxm5ur$(0, transformationWeight.get_za3lpa$(0) + weight1.get_za3lpa$(0));
           }
           return result_0;
-        }
-         else {
+        } else {
           return $receiver.clone();
         }
-      }
-       else {
+      } else {
         var result_1 = new ExpressionNode(NodeType$FUNCTION_getInstance(), '*');
         result_1.addChild_6718cy$($receiver.children.get_za3lpa$(0).clone());
         result_1.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), 'ln'));
@@ -5120,14 +5141,12 @@ var TWF = function (_, Kotlin) {
           var curval = ensureNotNull(this.varDomain.variables.get_11rb$(expressionNode.value));
           this.varDomain.set_7y87zu$(expressionNode.value, parentDomain.intersectWith_1ggb54$(curval));
         }
-
         break;
       case 'FUNCTION':
         tmp$ = knownOpsAssociation.get_11rb$(expressionNode.value);
         if (tmp$ == null) {
           throw UnsupportedOperationException_init('operation %s is not supported');
         }
-
         var domainOp = tmp$;
         var updatedParentDomain = this.scaleDomain_0(expressionNode, parentDomain);
         var index = 0;
@@ -5154,8 +5173,7 @@ var TWF = function (_, Kotlin) {
       var tmp$_0;
       if ((tmp$_0 = this.subtreeConstantValueOrNull_0(element)) != null) {
         destination.add_11rb$(tmp$_0);
-      }
-    }
+      }}
     var constants = destination;
     var tmp$_1;
     var accumulator = parentDomain;
@@ -5308,29 +5326,24 @@ var TWF = function (_, Kotlin) {
   ExpressionComporator.prototype.compareAsIs_98xwbf$ = function (left, right, nameArgsMap, withBracketUnification) {
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    if (withBracketUnification === void 0)
+    }if (withBracketUnification === void 0)
       withBracketUnification = false;
     var normilized = normalizeExpressionsForComparison(left, right);
     if (normilized.first.isNodeSubtreeEquals_7j5kvs$(normilized.second, nameArgsMap)) {
       return true;
-    }
-     else if (!withBracketUnification) {
+    } else if (!withBracketUnification) {
       return false;
-    }
-    var lUnified = normilized.first;
+    }var lUnified = normilized.first;
     lUnified.dropBracketNodesIfOperationsSame();
     var rUnified = normilized.second;
     rUnified.dropBracketNodesIfOperationsSame();
     if (lUnified.isNodeSubtreeEquals_7j5kvs$(rUnified, nameArgsMap)) {
       return true;
-    }
-    lUnified.normalizeSubTree_f8z7ch$(void 0, void 0, true);
+    }lUnified.normalizeSubTree_f8z7ch$(void 0, void 0, true);
     rUnified.normalizeSubTree_f8z7ch$(void 0, void 0, true);
     if (lUnified.isNodeSubtreeEquals_7j5kvs$(rUnified, nameArgsMap)) {
       return true;
-    }
-     else
+    } else
       return false;
   };
   ExpressionComporator.prototype.probabilityTestComparison_at94g6$ = function (leftOrigin, rightOrigin, comparisonType, justInDomainsIntersection, maxMinNumberOfPointsForEquality, allowedPartOfErrorTests, testWithUndefinedResultIncreasingCoef) {
@@ -5344,7 +5357,7 @@ var TWF = function (_, Kotlin) {
       allowedPartOfErrorTests = this.compiledConfiguration.comparisonSettings.allowedPartOfErrorTests;
     if (testWithUndefinedResultIncreasingCoef === void 0)
       testWithUndefinedResultIncreasingCoef = this.compiledConfiguration.comparisonSettings.testWithUndefinedResultIncreasingCoef;
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7;
     var normalized = normalizeExpressionsForComparison(leftOrigin, rightOrigin);
     var left = normalized.first;
     var right = normalized.second;
@@ -5352,12 +5365,11 @@ var TWF = function (_, Kotlin) {
       return true;
     if (right.children.isEmpty() || left.children.isEmpty()) {
       return false;
-    }
-    this.baseOperationsDefinitions.computeExpressionTree_6718cy$(left.children.get_za3lpa$(0));
+    }this.baseOperationsDefinitions.computeExpressionTree_6718cy$(left.children.get_za3lpa$(0));
     this.baseOperationsDefinitions.computeExpressionTree_6718cy$(right.children.get_za3lpa$(0));
-    var domain = new Domain(this.baseOperationsDefinitions, arrayListOf([left, right]));
     var numberOfRemainingTests = left.getCountOfNodes() + right.getCountOfNodes() | 0;
     if (comparisonType === ComparisonType$EQUAL_getInstance()) {
+      var domain = new PointGenerator(this.baseOperationsDefinitions, arrayListOf([left, right]));
       var baseOperationsComputationComplex = new BaseOperationsComputation(ComputationType$COMPLEX_getInstance());
       var baseOperationsComputationDouble = new BaseOperationsComputation(ComputationType$DOUBLE_getInstance());
       var totalTests = numberOfRemainingTests;
@@ -5373,55 +5385,39 @@ var TWF = function (_, Kotlin) {
         if (isNaN_0(lDouble) || isNaN_0(rDouble)) {
           if (isNaN_0(lDouble) !== isNaN_0(rDouble) && justInDomainsIntersection) {
             return false;
-          }
-          var lComplex = Kotlin.isType(tmp$_2 = baseOperationsComputationComplex.compute_6718cy$(left.cloneWithNormalization_1g1bdl$(pointI, false)), Complex) ? tmp$_2 : throwCCE();
+          }var lComplex = Kotlin.isType(tmp$_2 = baseOperationsComputationComplex.compute_6718cy$(left.cloneWithNormalization_1g1bdl$(pointI, false)), Complex) ? tmp$_2 : throwCCE();
           var rComplex = Kotlin.isType(tmp$_3 = baseOperationsComputationComplex.compute_6718cy$(right.cloneWithNormalization_1g1bdl$(pointI, false)), Complex) ? tmp$_3 : throwCCE();
           if (lComplex.equals_i6s3kk$(rComplex)) {
             tmp$_4 = passedTests, passedTests = tmp$_4 + 1;
-          }
-        }
-         else {
+          }} else {
           if (!isFinite(lDouble) || !isFinite(rDouble)) {
             numberOfRemainingTests += testWithUndefinedResultIncreasingCoef;
-          }
-           else if (this.baseOperationsDefinitions.additivelyEqual_lu1900$(lDouble, rDouble)) {
+          } else if (this.baseOperationsDefinitions.additivelyEqual_lu1900$(lDouble, rDouble)) {
             passedTests = passedTests + 1;
-          }
-           else
+          } else
             return false;
         }
         if (passedTests >= minNumberOfPointsForEquality) {
           return true;
-        }
-      }
-      if (passedTests >= totalTests * (1 - allowedPartOfErrorTests) && passedTests >= minNumberOfPointsForEquality || passedTests >= totalTests) {
-        tmp$_5 = true;
-      }
-       else {
-        tmp$_5 = false;
-      }
-      return tmp$_5;
-    }
-     else {
-      while ((tmp$_6 = numberOfRemainingTests, numberOfRemainingTests = tmp$_6 - 1, tmp$_6) > 0) {
-        var pointI_0 = domain.generateNewPoint();
-        tmp$_7 = toDoubleOrNull(this.baseOperationsDefinitions.computeExpressionTree_6718cy$(left.cloneWithNormalization_1g1bdl$(pointI_0, false)).value);
+        }}
+      return passedTests >= totalTests * (1 - allowedPartOfErrorTests) && passedTests >= minNumberOfPointsForEquality || passedTests >= totalTests;
+    } else {
+      var domain_0 = new DomainPointGenerator(arrayListOf([left, right]), this.baseOperationsDefinitions);
+      while ((tmp$_5 = numberOfRemainingTests, numberOfRemainingTests = tmp$_5 - 1, tmp$_5) > 0) {
+        var pointI_0 = domain_0.generateNewPoint_14dthe$();
+        tmp$_6 = toDoubleOrNull(this.baseOperationsDefinitions.computeExpressionTree_6718cy$(left.cloneWithNormalization_1g1bdl$(pointI_0, false)).value);
+        if (tmp$_6 == null) {
+          continue;
+        }var l = tmp$_6;
+        tmp$_7 = toDoubleOrNull(this.baseOperationsDefinitions.computeExpressionTree_6718cy$(right.cloneWithNormalization_1g1bdl$(pointI_0, false)).value);
         if (tmp$_7 == null) {
           continue;
-        }
-        var l = tmp$_7;
-        tmp$_8 = toDoubleOrNull(this.baseOperationsDefinitions.computeExpressionTree_6718cy$(right.cloneWithNormalization_1g1bdl$(pointI_0, false)).value);
-        if (tmp$_8 == null) {
-          continue;
-        }
-        var r = tmp$_8;
+        }var r = tmp$_7;
         if (justInDomainsIntersection && isNaN_0(l) !== isNaN_0(r)) {
           return false;
-        }
-         else if (!isFinite(l) || !isFinite(r)) {
+        } else if (!isFinite(l) || !isFinite(r)) {
           numberOfRemainingTests += testWithUndefinedResultIncreasingCoef;
-        }
-         else {
+        } else {
           switch (comparisonType.name) {
             case 'LEFT_MORE_OR_EQUAL':
               if (l < r)
@@ -5467,8 +5463,7 @@ var TWF = function (_, Kotlin) {
       left.replaceNotDefinedFunctionsOnVariables_g22vlb$(functionIdentifierToVariableMap, definedFunctionNameNumberOfArgs, this);
       right.replaceNotDefinedFunctionsOnVariables_g22vlb$(functionIdentifierToVariableMap, definedFunctionNameNumberOfArgs, this);
       return this.probabilityTestComparison_at94g6$(left, right, comparisonType, justInDomainsIntersection);
-    }
-    return this.compareAsIs_98xwbf$(left, right, void 0, true);
+    }return this.compareAsIs_98xwbf$(left, right, void 0, true);
   };
   ExpressionComporator.prototype.compareWithTreeTransformationRules_ob15jn$ = function (leftOriginal, rightOriginal, transformations, maxTransformationWeight, maxBustCount, minTransformationWeight, expressionChainComparisonType, maxDistBetweenDiffSteps) {
     var tmp$, tmp$_0;
@@ -5483,8 +5478,7 @@ var TWF = function (_, Kotlin) {
         if (!iterator.hasNext()) {
           minBy$result = null;
           break minBy$break;
-        }
-        var minElem = iterator.next();
+        }var minElem = iterator.next();
         var minValue = minElem.weight;
         while (iterator.hasNext()) {
           var e = iterator.next();
@@ -5492,22 +5486,19 @@ var TWF = function (_, Kotlin) {
           if (Kotlin.compareTo(minValue, v) > 0) {
             minElem = e;
             minValue = v;
-          }
-        }
+          }}
         minBy$result = minElem;
       }
        while (false);
       minTransformationWeight = (tmp$_0 = (tmp$ = minBy$result) != null ? tmp$.weight : null) != null ? tmp$_0 : 1.0;
-    }
-    if (expressionChainComparisonType === void 0)
+    }if (expressionChainComparisonType === void 0)
       expressionChainComparisonType = ComparisonType$EQUAL_getInstance();
     if (maxDistBetweenDiffSteps === void 0)
       maxDistBetweenDiffSteps = 1.0;
     var resultForOperandsInOriginalOrder = this.compareWithTreeTransformationRulesInternal_pe5b20$(leftOriginal, rightOriginal, transformations, maxTransformationWeight, maxBustCount, minTransformationWeight, expressionChainComparisonType, false, maxDistBetweenDiffSteps);
     if (resultForOperandsInOriginalOrder) {
       return true;
-    }
-     else {
+    } else {
       var resultForOperandsInSortedOrder = this.compareWithTreeTransformationRulesInternal_pe5b20$(leftOriginal, rightOriginal, transformations, maxTransformationWeight, maxBustCount, minTransformationWeight, expressionChainComparisonType, true, maxDistBetweenDiffSteps);
       return resultForOperandsInSortedOrder;
     }
@@ -5534,8 +5525,7 @@ var TWF = function (_, Kotlin) {
         if (!iterator.hasNext()) {
           minBy$result = null;
           break minBy$break;
-        }
-        var minElem = iterator.next();
+        }var minElem = iterator.next();
         var minValue = minElem.weight;
         while (iterator.hasNext()) {
           var e = iterator.next();
@@ -5543,14 +5533,12 @@ var TWF = function (_, Kotlin) {
           if (Kotlin.compareTo(minValue, v) > 0) {
             minElem = e;
             minValue = v;
-          }
-        }
+          }}
         minBy$result = minElem;
       }
        while (false);
       minTransformationWeight = (tmp$_0 = (tmp$ = minBy$result) != null ? tmp$.weight : null) != null ? tmp$_0 : 1.0;
-    }
-    if (expressionChainComparisonType === void 0)
+    }if (expressionChainComparisonType === void 0)
       expressionChainComparisonType = ComparisonType$EQUAL_getInstance();
     if (sortOperands === void 0)
       sortOperands = false;
@@ -5562,8 +5550,7 @@ var TWF = function (_, Kotlin) {
     applyAllImmediateSubstitutions(right, this.compiledConfiguration);
     if (maxTransformationWeight < 0.5) {
       tmp$_1 = this.compiledConfiguration.noTransformationDefinedFunctionNameNumberOfArgsSet;
-    }
-     else {
+    } else {
       tmp$_1 = this.compiledConfiguration.definedFunctionNameNumberOfArgsSet;
     }
     this.definedFunctionNameNumberOfArgsSet = tmp$_1;
@@ -5579,9 +5566,7 @@ var TWF = function (_, Kotlin) {
       var x = leftDiffWeight.get_za3lpa$(0) - rightDiffWeight.get_za3lpa$(0);
       if (Math_0.abs(x) < maxDistBetweenDiffSteps && this.compareWithoutSubstitutions_15tjed$(leftDiff, rightDiff, expressionChainComparisonType)) {
         return true;
-      }
-    }
-    var functionsInExpression = plus(left.getContainedFunctions(), right.getContainedFunctions());
+      }}var functionsInExpression = plus(left.getContainedFunctions(), right.getContainedFunctions());
     var destination = ArrayList_init();
     var tmp$_6;
     tmp$_6 = transformations.iterator();
@@ -5596,14 +5581,11 @@ var TWF = function (_, Kotlin) {
       var tmp$_7 = !originalTransformation.basedOnTaskContext;
       if (tmp$_7) {
         tmp$_7 = !originalTransformation.leftFunctions.isEmpty();
-      }
-      if (tmp$_7 && intersect(functionsInExpression, originalTransformation.leftFunctions).isEmpty()) {
+      }if (tmp$_7 && intersect(functionsInExpression, originalTransformation.leftFunctions).isEmpty()) {
         continue;
-      }
-      if (sortOperands) {
+      }if (sortOperands) {
         tmp$_3 = new ExpressionSubstitution(originalTransformation.left.cloneWithSortingChildrenForExpressionSubstitutionComparison(), originalTransformation.right.cloneWithSortingChildrenForExpressionSubstitutionComparison(), originalTransformation.weight, originalTransformation.basedOnTaskContext, originalTransformation.name, originalTransformation.comparisonType);
-      }
-       else {
+      } else {
         tmp$_3 = originalTransformation;
       }
       var transformation = tmp$_3;
@@ -5612,17 +5594,14 @@ var TWF = function (_, Kotlin) {
       var direction = getComparingDirection(expressionChainComparisonType, transformation.comparisonType);
       if (direction == null) {
         log_0.add_gqvic5$(expressionChainComparisonType.string, transformation.comparisonType.string, ExpressionComporator$compareWithTreeTransformationRulesInternal$lambda, ExpressionComporator$compareWithTreeTransformationRulesInternal$lambda_0, ExpressionComporator$compareWithTreeTransformationRulesInternal$lambda_1, void 0, void 0, MessageType$USER_getInstance());
-      }
-      if (!equals(direction, SubstitutionDirection$RIGHT_TO_LEFT_getInstance())) {
+      }if (!equals(direction, SubstitutionDirection$RIGHT_TO_LEFT_getInstance())) {
         tmp$_4 = transformation.findAllPossibleSubstitutionPlaces_6718cy$(l);
-      }
-       else {
+      } else {
         tmp$_4 = emptyList();
       }
       if (!equals(direction, SubstitutionDirection$LEFT_TO_RIGHT_getInstance())) {
         tmp$_5 = transformation.findAllPossibleSubstitutionPlaces_6718cy$(r);
-      }
-       else {
+      } else {
         tmp$_5 = emptyList();
       }
       var substitutionPlaces = plus_0(tmp$_4, tmp$_5);
@@ -5631,8 +5610,7 @@ var TWF = function (_, Kotlin) {
         transformation.applySubstitution_55nkop$(substitutionPlaces);
         if (this.compareWithTreeTransformationRulesInternal_pe5b20$(l, r, transformations, maxTransformationWeight - transformation.weight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands))
           return true;
-      }
-       else {
+      } else {
         for (var bitMask = 1; bitMask < bitMaskCount; bitMask++) {
           transformation.applySubstitutionByBitMask_eqestx$(substitutionPlaces, bitMask);
           if (this.compareWithTreeTransformationRulesInternal_pe5b20$(l.clone(), r.clone(), transformations, maxTransformationWeight - transformation.weight, maxBustCount, minTransformationWeight, expressionChainComparisonType, sortOperands))
@@ -5654,8 +5632,7 @@ var TWF = function (_, Kotlin) {
       this.baseOperationsDefinitions.computeExpressionTree_6718cy$(right.children.get_za3lpa$(0));
       if (this.compareWithTreeTransformationRulesInternal_pe5b20$(left, right, this.compiledConfiguration.compiledExpressionTreeTransformationRules, this.compiledConfiguration.comparisonSettings.maxTransformationWeight, this.compiledConfiguration.comparisonSettings.maxBustCount, void 0, expressionChainComparisonType))
         return true;
-    }
-     else {
+    } else {
       if (this.compareWithoutSubstitutions_15tjed$(left, right))
         return true;
     }
@@ -5828,7 +5805,7 @@ var TWF = function (_, Kotlin) {
   NodeValue.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.exactNumber, other.exactNumber))));
   };
-  function ExpressionNode(nodeType, value, startPosition, endPosition, subValue, parent, functionStringDefinition, identifier) {
+  function ExpressionNode(nodeType, value, startPosition, endPosition, subValue, parent, functionStringDefinition, identifier, nodeId) {
     if (startPosition === void 0)
       startPosition = -1;
     if (endPosition === void 0)
@@ -5841,6 +5818,8 @@ var TWF = function (_, Kotlin) {
       functionStringDefinition = null;
     if (identifier === void 0)
       identifier = '';
+    if (nodeId === void 0)
+      nodeId = -1;
     this.nodeType = nodeType;
     this.value = value;
     this.startPosition = startPosition;
@@ -5849,6 +5828,7 @@ var TWF = function (_, Kotlin) {
     this.parent = parent;
     this.functionStringDefinition = functionStringDefinition;
     this.identifier = identifier;
+    this.nodeId = nodeId;
     this.children = ArrayList_init();
     this.rules = ArrayList_init();
     this.parserMark = '';
@@ -5882,6 +5862,26 @@ var TWF = function (_, Kotlin) {
   ExpressionNode.prototype.getNodeValueString = function () {
     return this.value;
   };
+  ExpressionNode.prototype.getTopNode = function () {
+    var result = this;
+    while (result.parent != null) {
+      result = ensureNotNull(result.parent);
+    }
+    return result;
+  };
+  ExpressionNode.prototype.computeNodeIdsAsNumbersInDirectTraversal_za3lpa$ = function (startId) {
+    if (startId === void 0)
+      startId = 0;
+    var tmp$;
+    this.nodeId = startId;
+    var currentStartId = startId + 1 | 0;
+    tmp$ = this.children.iterator();
+    while (tmp$.hasNext()) {
+      var child = tmp$.next();
+      currentStartId = child.computeNodeIdsAsNumbersInDirectTraversal_za3lpa$(currentStartId);
+    }
+    return currentStartId;
+  };
   ExpressionNode.prototype.correctPositions = function () {
     var tmp$;
     tmp$ = this.children.iterator();
@@ -5890,11 +5890,9 @@ var TWF = function (_, Kotlin) {
       child.correctPositions();
       if (child.startPosition < this.startPosition) {
         this.startPosition = child.startPosition;
-      }
-      if (child.endPosition > this.endPosition) {
+      }if (child.endPosition > this.endPosition) {
         this.endPosition = child.endPosition;
-      }
-    }
+      }}
   };
   function ExpressionNode$computeIdentifier$lambda(it) {
     return it.getNodeValueString();
@@ -5905,8 +5903,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.nodeType === NodeType$VARIABLE_getInstance()) {
       this.identifier = getNodeValueString(this);
-    }
-     else {
+    } else {
       this.identifier = this.value + '(';
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
@@ -5917,8 +5914,7 @@ var TWF = function (_, Kotlin) {
         var $receiver = this.identifier;
         var endIndex = this.identifier.length - 1 | 0;
         this.identifier = $receiver.substring(0, endIndex);
-      }
-      this.identifier += ')';
+      }this.identifier += ')';
     }
     return this.identifier;
   };
@@ -5931,8 +5927,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.nodeType === NodeType$VARIABLE_getInstance()) {
       this.identifier = getNodeValueString(this);
-    }
-     else {
+    } else {
       this.identifier = this.value + '(';
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
@@ -5943,8 +5938,7 @@ var TWF = function (_, Kotlin) {
         var $receiver = this.identifier;
         var endIndex = this.identifier.length - 1 | 0;
         this.identifier = $receiver.substring(0, endIndex);
-      }
-      this.identifier += ')';
+      }this.identifier += ')';
     }
     return this.identifier + ('{' + this.startPosition + ';' + this.endPosition + '}');
   };
@@ -5958,10 +5952,9 @@ var TWF = function (_, Kotlin) {
       offset = '';
     var tmp$;
     if (this.nodeType === NodeType$VARIABLE_getInstance()) {
-      this.identifier = offset + getNodeValueString(this) + ('  :  [' + this.startPosition + '; ' + this.endPosition + ')' + '\n');
-    }
-     else {
-      this.identifier = offset + this.value + ('  :  [' + this.startPosition + '; ' + this.endPosition + ')' + '\n');
+      this.identifier = offset + getNodeValueString(this) + ('  :  [' + this.startPosition + '; ' + this.endPosition + '; ' + this.nodeId + ')' + '\n');
+    } else {
+      this.identifier = offset + this.value + ('  :  [' + this.startPosition + '; ' + this.endPosition + '; ' + this.nodeId + ')' + '\n');
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
@@ -5978,13 +5971,23 @@ var TWF = function (_, Kotlin) {
       functionConfiguration = new FunctionConfiguration();
     if (getNodeValueString === void 0)
       getNodeValueString = ExpressionNode$toUserView$lambda;
+    var tmp$;
     var result = this.toUserViewRec_0(functionConfiguration, getNodeValueString);
     if (first_0(result) === 40 && last_0(result) === 41) {
-      var $receiver = result;
-      var endIndex = result.length - 1 | 0;
-      result = $receiver.substring(1, endIndex);
-    }
-    return result;
+      var numberOfOpenBrackets = 1;
+      var currentIndex = 1;
+      while (currentIndex < result.length && numberOfOpenBrackets > 0) {
+        if (result.charCodeAt(currentIndex) === 40) {
+          numberOfOpenBrackets = numberOfOpenBrackets + 1 | 0;
+        } else if (result.charCodeAt(currentIndex) === 41) {
+          tmp$ = numberOfOpenBrackets, numberOfOpenBrackets = tmp$ - 1 | 0;
+        }currentIndex = currentIndex + 1 | 0;
+      }
+      if (currentIndex >= get_lastIndex_0(result)) {
+        var $receiver = result;
+        var endIndex = result.length - 1 | 0;
+        result = $receiver.substring(1, endIndex);
+      }}return result;
   };
   function ExpressionNode$toUserViewRec$lambda(it) {
     return it.getNodeValueString();
@@ -5994,21 +5997,19 @@ var TWF = function (_, Kotlin) {
       functionConfiguration = new FunctionConfiguration();
     if (getNodeValueString === void 0)
       getNodeValueString = ExpressionNode$toUserViewRec$lambda;
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
     var identifier = '';
     if (this.nodeType === NodeType$VARIABLE_getInstance()) {
       identifier = getNodeValueString(this);
-    }
-     else if (equals(this.value, '') && this.children.size === 1) {
+    } else if (equals(this.value, '') && this.children.size === 1) {
       identifier = first(this.children).toUserViewRec_0(functionConfiguration);
-    }
-     else {
+    } else {
       var $receiver = functionConfiguration.functionProperties;
       var destination = ArrayList_init();
-      var tmp$_3;
-      tmp$_3 = $receiver.iterator();
-      while (tmp$_3.hasNext()) {
-        var element = tmp$_3.next();
+      var tmp$_6;
+      tmp$_6 = $receiver.iterator();
+      while (tmp$_6.hasNext()) {
+        var element = tmp$_6.next();
         if (equals(element.function, this.value) && element.defaultStringDefinitionType !== StringDefinitionType$FUNCTION_getInstance())
           destination.add_11rb$(element);
       }
@@ -6016,15 +6017,14 @@ var TWF = function (_, Kotlin) {
         var $receiver_0 = functionConfiguration.functionProperties;
         var firstOrNull$result;
         firstOrNull$break: do {
-          var tmp$_4;
-          tmp$_4 = $receiver_0.iterator();
-          while (tmp$_4.hasNext()) {
-            var element_0 = tmp$_4.next();
+          var tmp$_7;
+          tmp$_7 = $receiver_0.iterator();
+          while (tmp$_7.hasNext()) {
+            var element_0 = tmp$_7.next();
             if (equals(element_0.function, this.value)) {
               firstOrNull$result = element_0;
               break firstOrNull$break;
-            }
-          }
+            }}
           firstOrNull$result = null;
         }
          while (false);
@@ -6034,7 +6034,6 @@ var TWF = function (_, Kotlin) {
             if (this.binaryOperationNeedBrackets_0()) {
               identifier = '(';
             }
-
             tmp$ = this.children.iterator();
             while (tmp$.hasNext()) {
               var child = tmp$.next();
@@ -6043,11 +6042,9 @@ var TWF = function (_, Kotlin) {
                   var $receiver_1 = identifier;
                   var endIndex = identifier.length - functionIdentifier.userRepresentation.length | 0;
                   identifier = $receiver_1.substring(0, endIndex);
-                }
-                identifier += ensureNotNull(functionConfiguration.functionPropertiesByName.get_11rb$(child.value + '_-1')).function;
+                }identifier += ensureNotNull(functionConfiguration.functionPropertiesByName.get_11rb$(child.value + '_-1')).function;
                 identifier += first(child.children).toUserViewRec_0(functionConfiguration) + functionIdentifier.userRepresentation;
-              }
-               else {
+              } else {
                 identifier += child.toUserViewRec_0(functionConfiguration) + functionIdentifier.userRepresentation;
               }
             }
@@ -6057,33 +6054,44 @@ var TWF = function (_, Kotlin) {
               var endIndex_0 = identifier.length - functionIdentifier.userRepresentation.length | 0;
               identifier = $receiver_2.substring(0, endIndex_0);
             }
-
             if (this.binaryOperationNeedBrackets_0()) {
               identifier += ')';
             }
-
             break;
           case 'UNARY_LEFT_OPERATION':
-            identifier = functionIdentifier.userRepresentation + first(this.children).toUserViewRec_0(functionConfiguration);
+            var childUserRepresentation = first(this.children).toUserViewRec_0(functionConfiguration);
+            tmp$_3 = functionIdentifier.userRepresentation;
+            if (isSign(first_0(childUserRepresentation), false)) {
+              tmp$_2 = '(' + childUserRepresentation + ')';
+            } else {
+              tmp$_2 = childUserRepresentation;
+            }
+
+            identifier = tmp$_3 + tmp$_2;
             break;
           case 'UNARY_RIGHT_OPERATION':
-            identifier = first(this.children).toUserViewRec_0(functionConfiguration) + functionIdentifier.userRepresentation;
+            var childUserRepresentation_0 = first(this.children).toUserViewRec_0(functionConfiguration);
+            if (isSign(first_0(childUserRepresentation_0), false)) {
+              tmp$_4 = '(' + childUserRepresentation_0 + ')';
+            } else {
+              tmp$_4 = childUserRepresentation_0;
+            }
+
+            identifier = tmp$_4 + functionIdentifier.userRepresentation;
             break;
         }
-      }
-       else {
+      } else {
         identifier = this.value + '(';
-        tmp$_2 = this.children.iterator();
-        while (tmp$_2.hasNext()) {
-          var child_0 = tmp$_2.next();
+        tmp$_5 = this.children.iterator();
+        while (tmp$_5.hasNext()) {
+          var child_0 = tmp$_5.next();
           identifier += child_0.toUserViewRec_0() + ',';
         }
         if (this.children.size > 0) {
           var $receiver_3 = identifier;
           var endIndex_1 = identifier.length - 1 | 0;
           identifier = $receiver_3.substring(0, endIndex_1);
-        }
-        identifier += ')';
+        }identifier += ')';
       }
     }
     return identifier;
@@ -6107,9 +6115,7 @@ var TWF = function (_, Kotlin) {
       var $receiver = this.children;
       if ($receiver.size > 1) {
         sortWith($receiver, new Comparator$ObjectLiteral(compareBy$lambda(ExpressionNode$sortChildrenAscendingIdentifiers$lambda)));
-      }
-    }
-  };
+      }}};
   function ExpressionNode$sortChildrenForExpressionSubstitutionComparison$lambda(it) {
     return it.isNumberValue() ? '1' + it.identifier : it.nodeType === NodeType$FUNCTION_getInstance() ? '2' + it.value : '3';
   }
@@ -6124,9 +6130,7 @@ var TWF = function (_, Kotlin) {
       var $receiver = this.children;
       if ($receiver.size > 1) {
         sortWith($receiver, new Comparator$ObjectLiteral(compareBy$lambda(ExpressionNode$sortChildrenForExpressionSubstitutionComparison$lambda)));
-      }
-    }
-    return this;
+      }}return this;
   };
   ExpressionNode.prototype.cloneWithSortingChildrenForExpressionSubstitutionComparison = function () {
     return this.clone().sortChildrenForExpressionSubstitutionComparison();
@@ -6145,8 +6149,7 @@ var TWF = function (_, Kotlin) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
     if (this.nodeType === NodeType$VARIABLE_getInstance()) {
       return 1;
-    }
-     else {
+    } else {
       var $receiver = this.children;
       var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
       var tmp$_3;
@@ -6166,8 +6169,7 @@ var TWF = function (_, Kotlin) {
     if (this.nodeType === NodeType$VARIABLE_getInstance()) {
       if (toDoubleOrNull(this.value) == null)
         result.add_11rb$(this.value);
-    }
-     else {
+    } else {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
@@ -6180,15 +6182,13 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.nodeType === NodeType$FUNCTION_getInstance() && !equals(this.value, '')) {
       return false;
-    }
-     else {
+    } else {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
         if (child.containsFunctions()) {
           return false;
-        }
-      }
+        }}
     }
     return true;
   };
@@ -6196,15 +6196,13 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.nodeType === NodeType$FUNCTION_getInstance() && equals(this.value, name) && this.children.size === numberOfArgs) {
       return true;
-    }
-     else {
+    } else {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
         if (child.containsFunction_bm4lxs$(name, numberOfArgs)) {
           return true;
-        }
-      }
+        }}
     }
     return false;
   };
@@ -6217,14 +6215,12 @@ var TWF = function (_, Kotlin) {
     if (!this.children.isEmpty()) {
       if (!isBlank(this.value)) {
         result.add_11rb$(this.value);
-      }
-      tmp$ = this.children.iterator();
+      }tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
         result.addAll_brywnq$(child.getContainedFunctions());
       }
-    }
-    return result;
+    }return result;
   };
   ExpressionNode.prototype.getContainedVariables = function () {
     var tmp$;
@@ -6232,9 +6228,7 @@ var TWF = function (_, Kotlin) {
     if (this.children.isEmpty()) {
       if (toDoubleOrNull(this.value) == null) {
         result.add_11rb$(this.value);
-      }
-    }
-     else {
+      }} else {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
@@ -6250,10 +6244,7 @@ var TWF = function (_, Kotlin) {
       if (toDoubleOrNull(this.value) == null) {
         if (variables.contains_11rb$(this.value)) {
           result.add_11rb$(this.value);
-        }
-      }
-    }
-     else {
+        }}} else {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
@@ -6269,10 +6260,7 @@ var TWF = function (_, Kotlin) {
       if (toDoubleOrNull(this.value) == null) {
         if (!variables.contains_11rb$(this.value)) {
           result.add_11rb$(this.value);
-        }
-      }
-    }
-     else {
+        }}} else {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
@@ -6285,15 +6273,13 @@ var TWF = function (_, Kotlin) {
     var tmp$, tmp$_0;
     if (equals(this.value, '/')) {
       return true;
-    }
-    if (equals(this.value, '^') && this.children.size > 1) {
+    }if (equals(this.value, '^') && this.children.size > 1) {
       tmp$ = get_lastIndex(this.children);
       for (var i = 2; i <= tmp$; i++) {
         if (this.children.get_za3lpa$(i).nodeType === NodeType$FUNCTION_getInstance())
           return true;
       }
-    }
-    tmp$_0 = this.children.iterator();
+    }tmp$_0 = this.children.iterator();
     while (tmp$_0.hasNext()) {
       var child = tmp$_0.next();
       return child.canContainDivisions();
@@ -6305,8 +6291,7 @@ var TWF = function (_, Kotlin) {
     var result = 0.0;
     if (this.children.isEmpty()) {
       result = abs_0((tmp$ = toDoubleOrNull(this.value)) != null ? tmp$ : 0.0);
-    }
-    tmp$_0 = this.children.iterator();
+    }tmp$_0 = this.children.iterator();
     while (tmp$_0.hasNext()) {
       var child = tmp$_0.next();
       var a = result;
@@ -6326,8 +6311,7 @@ var TWF = function (_, Kotlin) {
       currentDeep = 0;
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    }var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     if (this.nodeType === NodeType$FUNCTION_getInstance()) {
       var numberOfDefinitionArguments = (tmp$_1 = (tmp$_0 = (tmp$ = this.functionStringDefinition) != null ? tmp$.function : null) != null ? tmp$_0.numberOfDefinitionArguments : null) != null ? tmp$_1 : 0;
       var childrenNameArgs = ArrayList_init();
@@ -6346,16 +6330,14 @@ var TWF = function (_, Kotlin) {
       }
       if (sorted) {
         this.sortChildrenAscendingIdentifiers();
-      }
-      this.computeIdentifier_t6ztn0$();
+      }this.computeIdentifier_t6ztn0$();
       tmp$_3 = childrenNameArgs.iterator();
       while (tmp$_3.hasNext()) {
         var name = tmp$_3.next();
         nameArgsMap.remove_11rb$(name);
       }
       nameArgsMap.putAll_a2k3zr$(previousNameArgsMap);
-    }
-     else {
+    } else {
       var newValue = nameArgsMap.get_11rb$(this.value);
       if (newValue != null)
         this.value = newValue;
@@ -6365,16 +6347,14 @@ var TWF = function (_, Kotlin) {
   ExpressionNode.prototype.variableReplacement_y0zsll$ = function (replacements) {
     if (replacements === void 0) {
       replacements = LinkedHashMap_init_0();
-    }
-    var tmp$;
+    }var tmp$;
     if (this.nodeType === NodeType$FUNCTION_getInstance()) {
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
         child.variableReplacement_y0zsll$(replacements);
       }
-    }
-     else {
+    } else {
       var newValue = replacements.get_11rb$(this.value);
       if (newValue != null)
         this.value = newValue;
@@ -6383,7 +6363,7 @@ var TWF = function (_, Kotlin) {
   };
   ExpressionNode.prototype.clone = function () {
     var tmp$;
-    var result = this.copy_cxgw0k$();
+    var result = this.copy_coavp6$();
     tmp$ = this.children.iterator();
     while (tmp$.hasNext()) {
       var child = tmp$.next();
@@ -6405,8 +6385,7 @@ var TWF = function (_, Kotlin) {
           newChildren.add_11rb$(childChild);
           childChild.parent = this;
         }
-      }
-       else {
+      } else {
         newChildren.add_11rb$(child);
       }
     }
@@ -6415,27 +6394,25 @@ var TWF = function (_, Kotlin) {
   ExpressionNode.prototype.cloneWithDeepSubstitutions_q0nxk6$ = function (nameArgsMap) {
     var tmp$;
     if (this.nodeType === NodeType$FUNCTION_getInstance()) {
-      var result = this.copy_cxgw0k$();
+      var result = this.copy_coavp6$();
       tmp$ = this.children.iterator();
       while (tmp$.hasNext()) {
         var child = tmp$.next();
         result.addChild_6718cy$(child.cloneWithDeepSubstitutions_q0nxk6$(nameArgsMap));
       }
       return result;
-    }
-     else {
+    } else {
       var newNode = nameArgsMap.get_11rb$(this.value);
       if (newNode != null)
         return newNode.cloneWithNormalization_1g1bdl$(void 0, false);
       else
-        return this.copy_cxgw0k$();
+        return this.copy_coavp6$();
     }
   };
   ExpressionNode.prototype.cloneWithNormalization_1g1bdl$ = function (nameArgsMap, sorted) {
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    return this.clone().normalizeSubTree_f8z7ch$(void 0, nameArgsMap, sorted);
+    }return this.clone().normalizeSubTree_f8z7ch$(void 0, nameArgsMap, sorted);
   };
   ExpressionNode.prototype.cloneWithVariableReplacement_y0zsll$ = function (replacements) {
     return this.clone().variableReplacement_y0zsll$(replacements);
@@ -6443,8 +6420,7 @@ var TWF = function (_, Kotlin) {
   ExpressionNode.prototype.isNodeSubtreeEquals_7j5kvs$ = function (expressionNode, nameArgsMap) {
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
+    }var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
     var actualValue = (tmp$ = nameArgsMap.get_11rb$(this.value)) != null ? tmp$ : this.value;
     var result = equals(actualValue, expressionNode.value);
     if (this.nodeType === NodeType$FUNCTION_getInstance()) {
@@ -6471,8 +6447,7 @@ var TWF = function (_, Kotlin) {
         nameArgsMap.remove_11rb$(name);
       }
       nameArgsMap.putAll_a2k3zr$(previousNameArgsMap);
-    }
-    return result;
+    }return result;
   };
   ExpressionNode.prototype.replaceNotDefinedFunctionsOnVariables_g22vlb$ = function (functionIdentifierToVariableMap, definedFunctionNameNumberOfArgsSet, expressionComporator, hasBoolFunctions) {
     if (expressionComporator === void 0)
@@ -6499,41 +6474,32 @@ var TWF = function (_, Kotlin) {
                 nodeExists = true;
                 this.setVariable_61zpoe$(variable);
                 break;
-              }
-            }
-             else {
+              }} else {
               var hasDifferentArgs = false;
               tmp$_1 = get_lastIndex(this.children);
               for (var i = 0; i <= tmp$_1; i++) {
                 if (!expressionComporator.probabilityTestComparison_at94g6$(this.children.get_za3lpa$(i), expression.children.get_za3lpa$(i), ComparisonType$EQUAL_getInstance())) {
                   hasDifferentArgs = true;
                   break;
-                }
-              }
+                }}
               if (!hasDifferentArgs) {
                 nodeExists = true;
                 this.setVariable_61zpoe$(variable);
                 break;
-              }
-            }
-          }
-           else {
+              }}
+          } else {
             if (this.isNodeSubtreeEquals_7j5kvs$(expression)) {
               nodeExists = true;
               this.setVariable_61zpoe$(variable);
               break;
-            }
-          }
-        }
-      }
+            }}
+        }}
       if (!nodeExists) {
         var variableName = 'sys_def_var_replace_fun_' + functionIdentifierToVariableMap.size;
         var key = this.clone();
         functionIdentifierToVariableMap.put_xwzc9p$(key, variableName);
         this.setVariable_61zpoe$(variableName);
-      }
-    }
-  };
+      }}};
   ExpressionNode.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ExpressionNode',
@@ -6563,8 +6529,11 @@ var TWF = function (_, Kotlin) {
   ExpressionNode.prototype.component8 = function () {
     return this.identifier;
   };
-  ExpressionNode.prototype.copy_cxgw0k$ = function (nodeType, value, startPosition, endPosition, subValue, parent, functionStringDefinition, identifier) {
-    return new ExpressionNode(nodeType === void 0 ? this.nodeType : nodeType, value === void 0 ? this.value : value, startPosition === void 0 ? this.startPosition : startPosition, endPosition === void 0 ? this.endPosition : endPosition, subValue === void 0 ? this.subValue : subValue, parent === void 0 ? this.parent : parent, functionStringDefinition === void 0 ? this.functionStringDefinition : functionStringDefinition, identifier === void 0 ? this.identifier : identifier);
+  ExpressionNode.prototype.component9 = function () {
+    return this.nodeId;
+  };
+  ExpressionNode.prototype.copy_coavp6$ = function (nodeType, value, startPosition, endPosition, subValue, parent, functionStringDefinition, identifier, nodeId) {
+    return new ExpressionNode(nodeType === void 0 ? this.nodeType : nodeType, value === void 0 ? this.value : value, startPosition === void 0 ? this.startPosition : startPosition, endPosition === void 0 ? this.endPosition : endPosition, subValue === void 0 ? this.subValue : subValue, parent === void 0 ? this.parent : parent, functionStringDefinition === void 0 ? this.functionStringDefinition : functionStringDefinition, identifier === void 0 ? this.identifier : identifier, nodeId === void 0 ? this.nodeId : nodeId);
   };
   ExpressionNode.prototype.hashCode = function () {
     var result = 0;
@@ -6576,18 +6545,18 @@ var TWF = function (_, Kotlin) {
     result = result * 31 + Kotlin.hashCode(this.parent) | 0;
     result = result * 31 + Kotlin.hashCode(this.functionStringDefinition) | 0;
     result = result * 31 + Kotlin.hashCode(this.identifier) | 0;
+    result = result * 31 + Kotlin.hashCode(this.nodeId) | 0;
     return result;
   };
   ExpressionNode.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.nodeType, other.nodeType) && Kotlin.equals(this.value, other.value) && Kotlin.equals(this.startPosition, other.startPosition) && Kotlin.equals(this.endPosition, other.endPosition) && Kotlin.equals(this.subValue, other.subValue) && Kotlin.equals(this.parent, other.parent) && Kotlin.equals(this.functionStringDefinition, other.functionStringDefinition) && Kotlin.equals(this.identifier, other.identifier)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.nodeType, other.nodeType) && Kotlin.equals(this.value, other.value) && Kotlin.equals(this.startPosition, other.startPosition) && Kotlin.equals(this.endPosition, other.endPosition) && Kotlin.equals(this.subValue, other.subValue) && Kotlin.equals(this.parent, other.parent) && Kotlin.equals(this.functionStringDefinition, other.functionStringDefinition) && Kotlin.equals(this.identifier, other.identifier) && Kotlin.equals(this.nodeId, other.nodeId)))));
   };
   function ExpressionNodeConstructor(functionConfiguration, compiledImmediateVariableReplacements) {
     if (functionConfiguration === void 0)
       functionConfiguration = new FunctionConfiguration();
     if (compiledImmediateVariableReplacements === void 0) {
       compiledImmediateVariableReplacements = emptyMap();
-    }
-    this.functionConfiguration = functionConfiguration;
+    }this.functionConfiguration = functionConfiguration;
     this.compiledImmediateVariableReplacements = compiledImmediateVariableReplacements;
   }
   ExpressionNodeConstructor.prototype.construct_61zpoe$ = function (identifier) {
@@ -6604,8 +6573,7 @@ var TWF = function (_, Kotlin) {
           if (unboxChar(toBoxedChar(identifier.charCodeAt(index))) === 40) {
             indexOfFirst$result = index;
             break indexOfFirst$break;
-          }
-        }
+          }}
         indexOfFirst$result = -1;
       }
        while (false);
@@ -6618,20 +6586,17 @@ var TWF = function (_, Kotlin) {
         if (openBracketCount === 0 && (identifier.charCodeAt(i) === 59 || identifier.charCodeAt(i) === 41)) {
           newNode.addChild_6718cy$(this.construct_61zpoe$(currentChildIdentifier.toString()));
           currentChildIdentifier = new StringBuilder('');
-        }
-         else {
+        } else {
           currentChildIdentifier.append_s8itvh$(identifier.charCodeAt(i));
           if (identifier.charCodeAt(i) === 40) {
             openBracketCount = openBracketCount + 1 | 0;
-          }
-           else if (identifier.charCodeAt(i) === 41)
+          } else if (identifier.charCodeAt(i) === 41)
             tmp$_0 = openBracketCount, openBracketCount = tmp$_0 - 1 | 0;
         }
       }
       newNode.functionStringDefinition = this.functionConfiguration.fastFindByNameAndNumberOfArguments_bm4lxs$(newNode.value, newNode.children.size);
       return newNode;
-    }
-     else {
+    } else {
       var newValue = this.compiledImmediateVariableReplacements.get_11rb$(identifier);
       if (newValue != null)
         return new ExpressionNode(NodeType$VARIABLE_getInstance(), newValue, void 0, void 0, void 0, void 0, void 0, identifier);
@@ -6658,8 +6623,7 @@ var TWF = function (_, Kotlin) {
       var $receiver = new ExpressionNode(NodeType$FUNCTION_getInstance(), '');
       $receiver.addChild_6718cy$(ordered.second);
       return new Pair(tmp$_0, $receiver);
-    }
-     else
+    } else
       return ordered;
   }
   function subtractionTree(minuend, subtrahend) {
@@ -6793,8 +6757,7 @@ var TWF = function (_, Kotlin) {
       var element = tmp$.next();
       if (element.time >= time) {
         first.add_11rb$(element);
-      }
-       else {
+      } else {
         second.add_11rb$(element);
       }
     }
@@ -6814,8 +6777,7 @@ var TWF = function (_, Kotlin) {
       nodeType = ComparableTransformationPartType$EMPTY_getInstance();
     if (children === void 0) {
       children = ArrayList_init();
-    }
-    this.matchedFactIndex = matchedFactIndex;
+    }this.matchedFactIndex = matchedFactIndex;
     this.nodeType = nodeType;
     this.children = children;
   }
@@ -6854,14 +6816,11 @@ var TWF = function (_, Kotlin) {
       isApplicable = true;
     if (varRuleNameToExpressionValueMap === void 0) {
       varRuleNameToExpressionValueMap = LinkedHashMap_init_0();
-    }
-    if (varRuleFunctionNameArgsToExpressionMap === void 0) {
+    }if (varRuleFunctionNameArgsToExpressionMap === void 0) {
       varRuleFunctionNameArgsToExpressionMap = LinkedHashMap_init_0();
-    }
-    if (varRuleNameToComparableTransformationsPartMap === void 0) {
+    }if (varRuleNameToComparableTransformationsPartMap === void 0) {
       varRuleNameToComparableTransformationsPartMap = LinkedHashMap_init_0();
-    }
-    if (varNamesTimeStorage === void 0)
+    }if (varNamesTimeStorage === void 0)
       varNamesTimeStorage = new VarNamesTimeStorage();
     if (correspondingIndexes === void 0)
       correspondingIndexes = new MatchedNode();
@@ -6951,8 +6910,7 @@ var TWF = function (_, Kotlin) {
     if (b.type() === ComparableTransformationPartType$EXPRESSION_getInstance()) {
       this.varRuleNameToExpressionValueMap_0.put_xwzc9p$(a, (Kotlin.isType(tmp$ = b, Expression) ? tmp$ : throwCCE()).data);
       this.varNamesTimeStorage.addVarName_5gyjt1$(a, SubstitutionInstanceVarType$EXPR_VAR_getInstance());
-    }
-  };
+    }};
   SubstitutionInstance.prototype.getExprVar_61zpoe$ = function (a) {
     return this.varRuleNameToExpressionValueMap_0.get_11rb$(a);
   };
@@ -7071,14 +7029,12 @@ var TWF = function (_, Kotlin) {
   ExpressionSubstitution.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = '[' + this.left.computeIdentifier_t6ztn0$() + '->' + this.right.computeIdentifier_t6ztn0$() + ']';
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   ExpressionSubstitution.prototype.checkCondition_vs93k4$ = function (expressionNode, conditionNode, substitutionInstance, nameArgsMap) {
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    ExpressionSubstitution$Companion_getInstance().checkConditionCompanion_adt859$(expressionNode, conditionNode, substitutionInstance, nameArgsMap, this.basedOnTaskContext);
+    }ExpressionSubstitution$Companion_getInstance().checkConditionCompanion_adt859$(expressionNode, conditionNode, substitutionInstance, nameArgsMap, this.basedOnTaskContext);
   };
   function ExpressionSubstitution$Companion() {
     ExpressionSubstitution$Companion_instance = this;
@@ -7086,17 +7042,14 @@ var TWF = function (_, Kotlin) {
   ExpressionSubstitution$Companion.prototype.checkConditionCompanion_adt859$ = function (expressionNode, conditionNode, substitutionInstance, nameArgsMap, basedOnTaskContext) {
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
+    }var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
     if (conditionNode.isNumberValue()) {
       var expressionValue = toDoubleOrNull(expressionNode.value);
       var conditionValue = toDoubleOrNull(conditionNode.value);
       if (expressionValue == null || conditionValue == null || abs_0(expressionValue - conditionValue) > 1.19E-6) {
         substitutionInstance.isApplicable = false;
         return;
-      }
-    }
-     else if (conditionNode.children.size !== 0) {
+      }} else if (conditionNode.children.size !== 0) {
       if (!basedOnTaskContext && conditionNode.functionStringDefinition != null && ensureNotNull(conditionNode.functionStringDefinition).function.isNameForRuleDesignations) {
         var actualNameArgsMap = LinkedHashMap_init_0();
         var conditionChildrenMap = LinkedHashMap_init_0();
@@ -7115,20 +7068,16 @@ var TWF = function (_, Kotlin) {
         var functionValue = substitutionInstance.getExprFunc_61zpoe$(conditionNode.value + '_' + toString(conditionNode.children.size));
         if (functionValue == null) {
           substitutionInstance.putExprFunc_vkfows$(conditionNode.value + '_' + toString(conditionNode.children.size), expressionNode.cloneWithNormalization_1g1bdl$(actualNameArgsMap, false));
-        }
-         else {
+        } else {
           if (!expressionNode.isNodeSubtreeEquals_7j5kvs$(functionValue, actualNameArgsMap)) {
             substitutionInstance.isApplicable = false;
             return;
-          }
-        }
-      }
-       else {
+          }}
+      } else {
         if (conditionNode.children.size !== expressionNode.children.size || !conditionNode.isNodeValueEquals_6718cy$(expressionNode)) {
           substitutionInstance.isApplicable = false;
           return;
-        }
-        var argumentStartIndex = (tmp$_3 = (tmp$_2 = (tmp$_1 = conditionNode.functionStringDefinition) != null ? tmp$_1.function : null) != null ? tmp$_2.numberOfDefinitionArguments : null) != null ? tmp$_3 : 0;
+        }var argumentStartIndex = (tmp$_3 = (tmp$_2 = (tmp$_1 = conditionNode.functionStringDefinition) != null ? tmp$_1.function : null) != null ? tmp$_2.numberOfDefinitionArguments : null) != null ? tmp$_3 : 0;
         for (var i = 0; i < argumentStartIndex; i++) {
           nameArgsMap.put_xwzc9p$(expressionNode.children.get_za3lpa$(i).value, conditionNode.children.get_za3lpa$(i).value);
         }
@@ -7142,25 +7091,20 @@ var TWF = function (_, Kotlin) {
           nameArgsMap.remove_11rb$(expressionNode.children.get_za3lpa$(i_1).value);
         }
       }
-    }
-     else {
+    } else {
       if (basedOnTaskContext) {
         if (!conditionNode.isNodeSubtreeEquals_7j5kvs$(expressionNode)) {
           substitutionInstance.isApplicable = false;
-        }
-        return;
-      }
-       else {
+        }return;
+      } else {
         var varValue = substitutionInstance.getExprVar_61zpoe$(conditionNode.value);
         if (varValue == null) {
           substitutionInstance.putExprVar_vkfows$(conditionNode.value, expressionNode);
-        }
-         else {
+        } else {
           if (!varValue.isNodeSubtreeEquals_7j5kvs$(expressionNode)) {
             substitutionInstance.isApplicable = false;
             return;
-          }
-        }
+          }}
       }
     }
   };
@@ -7168,11 +7112,9 @@ var TWF = function (_, Kotlin) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10;
     if (right.value.length === 0 && right.children.size === 1) {
       return this.applyRightCompanion_miu9dc$(substitutionInstance, right.children.get_za3lpa$(0));
-    }
-     else if (right.isNumberValue()) {
-      return right.copy_cxgw0k$();
-    }
-     else if (right.children.size !== 0) {
+    } else if (right.isNumberValue()) {
+      return right.copy_coavp6$();
+    } else if (right.children.size !== 0) {
       if (ensureNotNull(right.functionStringDefinition).function.isNameForRuleDesignations) {
         var actualNameArgsMap = LinkedHashMap_init_0();
         var conditionChildrenMap = LinkedHashMap_init_0();
@@ -7182,36 +7124,31 @@ var TWF = function (_, Kotlin) {
           tmp$_1 = (tmp$_0 = substitutionInstance.getExprVar_61zpoe$(right.children.get_za3lpa$(j).value)) != null ? tmp$_0.cloneWithNormalization_1g1bdl$(void 0, false) : null;
           if (tmp$_1 == null) {
             return null;
-          }
-          functionNameArgsToExpressionMap.put_xwzc9p$('sys_def_func_agr_' + j, tmp$_1);
+          }functionNameArgsToExpressionMap.put_xwzc9p$('sys_def_func_agr_' + j, tmp$_1);
         }
         tmp$_4 = (tmp$_3 = (tmp$_2 = substitutionInstance.getExprFunc_61zpoe$(right.value + '_' + toString(right.children.size))) != null ? tmp$_2.cloneWithDeepSubstitutions_q0nxk6$(functionNameArgsToExpressionMap) : null) != null ? tmp$_3.normalizeSubTree_f8z7ch$(void 0, void 0, false) : null;
         if (tmp$_4 == null) {
           return null;
-        }
-        return tmp$_4;
-      }
-       else {
+        }return tmp$_4;
+      } else {
         var argumentStartIndex = (tmp$_7 = (tmp$_6 = (tmp$_5 = right.functionStringDefinition) != null ? tmp$_5.function : null) != null ? tmp$_6.numberOfDefinitionArguments : null) != null ? tmp$_7 : 0;
         for (var i = 0; i < argumentStartIndex; i++) {
           substitutionInstance.putExprVar_vkfows$(right.children.get_za3lpa$(i).value, right.children.get_za3lpa$(i));
         }
-        var result = right.copy_cxgw0k$();
+        var result = right.copy_coavp6$();
         tmp$_8 = get_lastIndex(right.children);
         for (var i_0 = 0; i_0 <= tmp$_8; i_0++) {
           tmp$_9 = this.applyRightCompanion_miu9dc$(substitutionInstance, right.children.get_za3lpa$(i_0));
           if (tmp$_9 == null) {
             return null;
-          }
-          result.addChild_6718cy$(tmp$_9);
+          }result.addChild_6718cy$(tmp$_9);
         }
         for (var i_1 = 0; i_1 < argumentStartIndex; i_1++) {
           substitutionInstance.removeExprVar_61zpoe$(right.children.get_za3lpa$(i_1).value);
         }
         return result;
       }
-    }
-     else {
+    } else {
       return ((tmp$_10 = substitutionInstance.getExprVar_61zpoe$(right.value)) != null ? tmp$_10 : right).cloneWithNormalization_1g1bdl$(void 0, false);
     }
   };
@@ -7224,8 +7161,7 @@ var TWF = function (_, Kotlin) {
   function ExpressionSubstitution$Companion_getInstance() {
     if (ExpressionSubstitution$Companion_instance === null) {
       new ExpressionSubstitution$Companion();
-    }
-    return ExpressionSubstitution$Companion_instance;
+    }return ExpressionSubstitution$Companion_instance;
   }
   ExpressionSubstitution.prototype.checkLeftCondition_6718cy$ = function (expressionNode) {
     var substitutionInstance = new SubstitutionInstance();
@@ -7240,8 +7176,7 @@ var TWF = function (_, Kotlin) {
       var substitutionInstance = this.checkLeftCondition_6718cy$(root.children.get_za3lpa$(i));
       if (substitutionInstance.isApplicable) {
         result.add_11rb$(new SubstitutionPlace(root, i, substitutionInstance, root.children.get_za3lpa$(i)));
-      }
-    }
+      }}
   };
   ExpressionSubstitution.prototype.findAllPossibleSubstitutionPlaces_6718cy$ = function (root) {
     var result = ArrayList_init();
@@ -7256,8 +7191,7 @@ var TWF = function (_, Kotlin) {
       var newValue = this.checkAndApply_6718cy$(substitutionPlace.nodeParent.children.get_za3lpa$(substitutionPlace.nodeChildIndex));
       if (newValue != null) {
         substitutionPlace.nodeParent.children.set_wxm5ur$(substitutionPlace.nodeChildIndex, newValue);
-      }
-    }
+      }}
   };
   ExpressionSubstitution.prototype.applySubstitutionByBitMask_eqestx$ = function (substitutionPlaces, bitMask) {
     var tmp$, tmp$_0;
@@ -7274,8 +7208,7 @@ var TWF = function (_, Kotlin) {
       var newValue = this.applyRight_miu9dc$(substitutionPlace_0.substitutionInstance);
       if (newValue != null) {
         substitutionPlace_0.nodeParent.children.set_wxm5ur$(substitutionPlace_0.nodeChildIndex, newValue);
-      }
-    }
+      }}
   };
   ExpressionSubstitution.prototype.applyRight_miu9dc$ = function (substitutionInstance, right) {
     if (right === void 0)
@@ -7302,8 +7235,7 @@ var TWF = function (_, Kotlin) {
       var substitution = compiledSubstitutions.get_11rb$($receiver.children.get_za3lpa$(i).value + '_' + toString($receiver.children.get_za3lpa$(i).children.size));
       if (substitution != null) {
         $receiver.children.set_wxm5ur$(i, (tmp$ = substitution.checkAndApply_6718cy$($receiver.children.get_za3lpa$(i))) != null ? tmp$ : $receiver.children.get_za3lpa$(i));
-      }
-      i = i + 1 | 0;
+      }i = i + 1 | 0;
     }
   }
   function applyAllSubstitutions($receiver, expressionSubstitutions) {
@@ -7344,11 +7276,9 @@ var TWF = function (_, Kotlin) {
         var tmp$_0 = !intersect(expressionSubstitution.leftFunctions, functionsInExpression).isEmpty();
         if (tmp$_0) {
           tmp$_0 = !expressionSubstitution.findAllPossibleSubstitutionPlaces_6718cy$(currentExpression).isEmpty();
-        }
-        if (tmp$_0) {
+        }if (tmp$_0) {
           appropriateSubstitutions.add_11rb$(expressionSubstitution);
-        }
-      }
+        }}
       var tmp$_1;
       var sum = 0.0;
       tmp$_1 = appropriateSubstitutions.iterator();
@@ -7359,8 +7289,7 @@ var TWF = function (_, Kotlin) {
       var appropriateSubstitutionWeight = sum;
       if (appropriateSubstitutionWeight <= BaseOperationsComputation$Companion_getInstance().epsilon) {
         break;
-      }
-      var selector = random_0(0.0, appropriateSubstitutionWeight);
+      }var selector = random_0(0.0, appropriateSubstitutionWeight);
       var currentSubstitutionIndex = 0;
       while (selector > appropriateSubstitutions.get_za3lpa$(currentSubstitutionIndex).weight) {
         selector -= appropriateSubstitutions.get_za3lpa$(currentSubstitutionIndex).weight;
@@ -7371,8 +7300,7 @@ var TWF = function (_, Kotlin) {
       var places = selectedSubstitution.findAllPossibleSubstitutionPlaces_6718cy$(currentExpression);
       if (places.size === 1) {
         selectedSubstitution.applySubstitution_55nkop$(places);
-      }
-       else {
+      } else {
         var partSize = selectedSubstitution.weight / places.size;
         var index = numberToInt(selector / partSize);
         selectedSubstitution.applySubstitution_55nkop$(places.subList_vux9f0$(index, index + 1 | 0));
@@ -7488,8 +7416,7 @@ var TWF = function (_, Kotlin) {
       var $receiver = value;
       var endIndex = get_lastIndex_0(value);
       value = $receiver.substring(0, endIndex);
-    }
-    value += String.fromCharCode(125);
+    }value += String.fromCharCode(125);
     return value;
   };
   MathMlTagTreeNode.prototype.toString = function () {
@@ -7631,18 +7558,15 @@ var TWF = function (_, Kotlin) {
       functionMet = false;
     if (this.children.isEmpty()) {
       return functionMet ? this : null;
-    }
-     else {
+    } else {
       var tmp$ = this.children.get_za3lpa$(0);
       var tmp$_0 = functionMet;
       if (!tmp$_0) {
         var tmp$_1 = this.type === ExpressionParserNode$Type$FUNCTION_getInstance();
         if (tmp$_1) {
           tmp$_1 = this.value.length > 0;
-        }
-        tmp$_0 = tmp$_1;
-      }
-      return tmp$.getFirstListNodeAfterFunction_6taknv$(tmp$_0);
+        }tmp$_0 = tmp$_1;
+      }return tmp$.getFirstListNodeAfterFunction_6taknv$(tmp$_0);
     }
   };
   ExpressionParserNode.prototype.isFunction = function () {
@@ -7659,14 +7583,11 @@ var TWF = function (_, Kotlin) {
       var child = tmp$.next();
       if (child.startPosition < 0) {
         child.startPosition = actualStartPosition;
-      }
-      if (child.endPosition < 0) {
+      }if (child.endPosition < 0) {
         child.endPosition = actualEndPosition;
-      }
-      if (child.value.length > 0) {
+      }if (child.value.length > 0) {
         resultChildren.add_11rb$(child);
-      }
-       else {
+      } else {
         child.getNonEmptyChildren_mnxts8$(resultChildren, child.startPosition, child.endPosition);
       }
     }
@@ -7711,8 +7632,7 @@ var TWF = function (_, Kotlin) {
       if (child.type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance() && ensureNotNull(child.functionStringDefinition).function.priority <= priority && child.children.size === 0) {
         operationWithMinPriority.functionStringDefinition = child.functionStringDefinition;
         operationWithMinPriority.value = ensureNotNull(child.functionStringDefinition).function.mainFunction;
-      }
-    }
+      }}
     if (operationWithMinPriority.value.length === 0)
       return;
     operationWithMinPriority.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), ''));
@@ -7722,12 +7642,10 @@ var TWF = function (_, Kotlin) {
       if (child_0.type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance() && equals(ensureNotNull(child_0.functionStringDefinition).function.mainFunction, operationWithMinPriority.value)) {
         if (equals(ensureNotNull(child_0.functionStringDefinition).function.function, operationWithMinPriority.value)) {
           operationWithMinPriority.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), ''));
-        }
-         else {
+        } else {
           operationWithMinPriority.addChild_amp9w1$(child_0);
         }
-      }
-       else {
+      } else {
         last(operationWithMinPriority.children).addChild_amp9w1$(child_0);
       }
     }
@@ -7785,17 +7703,14 @@ var TWF = function (_, Kotlin) {
       functionConfiguration = new FunctionConfiguration();
     if (compiledImmediateVariableReplacements === void 0) {
       compiledImmediateVariableReplacements = emptyMap();
-    }
-    if (isMathML === void 0) {
+    }if (isMathML === void 0) {
       var tmp$;
       var tmp$_0 = startsWith_0(trim(Kotlin.isCharSequence(tmp$ = originalExpression) ? tmp$ : throwCCE()).toString(), '<');
       if (!tmp$_0) {
         var tmp$_1;
         tmp$_0 = endsWith(trim(Kotlin.isCharSequence(tmp$_1 = originalExpression) ? tmp$_1 : throwCCE()).toString(), '>');
-      }
-      isMathML = tmp$_0 || contains(originalExpression, '&#');
-    }
-    this.originalExpression = originalExpression;
+      }isMathML = tmp$_0 || contains(originalExpression, '&#');
+    }this.originalExpression = originalExpression;
     this.nameForRuleDesignationsPossible = nameForRuleDesignationsPossible;
     this.functionConfiguration = functionConfiguration;
     this.compiledImmediateVariableReplacements = compiledImmediateVariableReplacements;
@@ -7940,8 +7855,7 @@ var TWF = function (_, Kotlin) {
       var i = tmp$.next();
       if (parserError.position >= i) {
         shift = shift + 1 | 0;
-      }
-    }
+      }}
     var endPosition = parserError.endPosition < 0 ? parserError.endPosition : parserError.endPosition + Kotlin.imul(shift, newLineMspace.length) | 0;
     return new ParserError(parserError.position + Kotlin.imul(shift, newLineMspace.length) | 0, parserError.description, endPosition);
   };
@@ -7956,8 +7870,7 @@ var TWF = function (_, Kotlin) {
       var multipleFunctionsHandlingError = this.multipleFunctionsHandling_0(this.parsedTree_0, this.parsedTreeWithMultiples_0);
       if (multipleFunctionsHandlingError != null)
         return this.normalisePositionInParseError_0(multipleFunctionsHandlingError);
-    }
-     else {
+    } else {
       this.parsedTreeWithMultiples_0 = this.parsedTree_0;
     }
     var mathMlTreeToExpressionTreeError = this.mathMlTreeToExpressionTree_0(this.parsedTreeWithMultiples_0, this.rootNotPrioritized_0);
@@ -7974,6 +7887,7 @@ var TWF = function (_, Kotlin) {
     this.root.correctPositions();
     this.root.computeIdentifier_t6ztn0$();
     this.root.variableReplacement_y0zsll$(this.compiledImmediateVariableReplacements);
+    this.root.computeNodeIdsAsNumbersInDirectTraversal_za3lpa$();
     return null;
   };
   function ExpressionTreeParser$parseMathMlTagTree$lambda(it) {
@@ -7995,8 +7909,7 @@ var TWF = function (_, Kotlin) {
       if (isWhitespace(this.expression.charCodeAt(currentPosition))) {
         currentPosition = currentPosition + 1 | 0;
         continue;
-      }
-      var startPosition = currentPosition;
+      }var startPosition = currentPosition;
       if (this.expression.charCodeAt(currentPosition) === 60 && (this.isComplicatedTag_0(this.expression, currentPosition) || actualParent.type === MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance())) {
         var tagStartPosition = currentPosition;
         currentPosition = currentPosition + 1 | 0;
@@ -8007,18 +7920,14 @@ var TWF = function (_, Kotlin) {
           if (!startsWith(value, 109)) {
             var other = value;
             value = String.fromCharCode(109) + other;
-          }
-          currentPosition = skipFromRemainingExpressionWhile(ExpressionTreeParser$parseMathMlTagTree$lambda_0, this.expression, currentPosition);
+          }currentPosition = skipFromRemainingExpressionWhile(ExpressionTreeParser$parseMathMlTagTree$lambda_0, this.expression, currentPosition);
           if (equals(value, 'mrow') && skipMrowCount > 0 && !equals(substringBefore(actualParent.value, 95), 'mrow')) {
             skipMrowCount = skipMrowCount - 1 | 0;
-          }
-           else {
+          } else {
             if (!equals(substringBefore(actualParent.value, 95), value)) {
               if (!equals(value, 'mrow')) {
                 return new ParserError(startPosition, "Unexpected: '<\/" + value + "'");
-              }
-            }
-             else {
+              }} else {
               actualParent.endPosition = tagStartPosition;
               if (equals(value, 'mrow') && !actualParent.needDoubleChild) {
                 var node = actualParent;
@@ -8027,15 +7936,13 @@ var TWF = function (_, Kotlin) {
                 parent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance(), '', startPosition));
                 last(parent.children).addChild_dsamor$(node);
                 actualParent = parent;
-              }
-               else {
+              } else {
                 actualParent = ensureNotNull(actualParent.parent);
               }
             }
           }
           currentPosition = currentPosition + 1 | 0;
-        }
-         else {
+        } else {
           currentPosition = currentPosition - 1 | 0;
           var actualTag = readOpenTagStringIfItPresent(this.expression, currentPosition);
           var tagData = getTagAttributes(ensureNotNull(actualTag));
@@ -8044,14 +7951,12 @@ var TWF = function (_, Kotlin) {
           tmp$_2 = ensureNotNull(tagData.get_11rb$('name'));
           if (openValue != null) {
             tmp$_1 = '_' + toString(openValue);
-          }
-           else {
+          } else {
             tmp$_1 = '';
           }
           if (closeValue != null) {
             tmp$_3 = '__' + toString(closeValue);
-          }
-           else {
+          } else {
             tmp$_3 = '';
           }
           value = tmp$_2 + tmp$_1 + tmp$_3;
@@ -8060,19 +7965,16 @@ var TWF = function (_, Kotlin) {
             var other_0 = value;
             value = String.fromCharCode(109) + other_0;
             nameNotStartWithM = true;
-          }
-          if (equals(value, 'mrow') && !ExpressionTreeParser$Companion_getInstance().mathMlTags.contains_11rb$(actualParent.value)) {
+          }if (equals(value, 'mrow') && !ExpressionTreeParser$Companion_getInstance().mathMlTags.contains_11rb$(actualParent.value)) {
             currentPosition = currentPosition + ensureNotNull(actualTag).length | 0;
             skipMrowCount = skipMrowCount + 1 | 0;
-          }
-           else {
+          } else {
             currentPosition = currentPosition + ensureNotNull(actualTag).length | 0;
             var newParentNode = equals(value, 'msqrt') || equals(value, 'mrow') || equals(value, 'math') || equals(value, 'mfenced_|__|') ? new MathMlTagTreeNode(MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance(), value, startPosition) : new MathMlTagTreeNode(MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance(), value, startPosition);
             var tmp$_6 = nameNotStartWithM;
             if (tmp$_6) {
               tmp$_6 = !actualParent.children.isEmpty();
-            }
-            if (tmp$_6) {
+            }if (tmp$_6) {
               if (last(actualParent.children).type === MathMlTagTreeNode$Type$EXPRESSION_PART_STRING_getInstance() && (endsWith(last(actualParent.children).value, '<\/mi>') || endsWith(last(actualParent.children).value, '<\/mn>') || endsWith(last(actualParent.children).value, '<\/mo>')) && lastIndexOfAny(last(actualParent.children).value, listOf(['<mi>', '<mo>', '<mn>'])) > 0) {
                 var lastSignIndex = lastIndexOfAny(last(actualParent.children).value, listOf(['<mi>', '<mo>', '<mn>']));
                 var suffix = last(actualParent.children).value.substring(lastSignIndex);
@@ -8080,34 +7982,29 @@ var TWF = function (_, Kotlin) {
                 actualParent.addChild_dsamor$(newParentNode);
                 actualParent = last(actualParent.children);
                 actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$EXPRESSION_PART_STRING_getInstance(), suffix, currentPosition, currentPosition));
-              }
-               else {
+              } else {
                 var currentLastChild = last(actualParent.children);
                 actualParent.children.removeAt_za3lpa$(get_lastIndex(actualParent.children));
                 actualParent.addChild_dsamor$(newParentNode);
                 actualParent = last(actualParent.children);
                 actualParent.addChild_dsamor$(currentLastChild);
               }
-            }
-             else {
+            } else {
               actualParent.addChild_dsamor$(newParentNode);
               actualParent = last(actualParent.children);
             }
           }
         }
-      }
-       else if (this.expression.charCodeAt(currentPosition) === 40) {
+      } else if (this.expression.charCodeAt(currentPosition) === 40) {
         actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance(), '', startPosition));
         actualParent = last(actualParent.children);
         numberOfOpenBrackets = numberOfOpenBrackets + 1 | 0;
         currentPosition = currentPosition + 1 | 0;
-      }
-       else if (this.expression.charCodeAt(currentPosition) === 41) {
+      } else if (this.expression.charCodeAt(currentPosition) === 41) {
         if (actualParent.needOneMoreBracket) {
           actualParent.endPosition = currentPosition + 1 | 0;
           actualParent = ensureNotNull(actualParent.parent);
-        }
-        if (actualParent.type !== MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance()) {
+        }if (actualParent.type !== MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance()) {
           if (equals(actualParent.value, 'mo')) {
             var upFunctionNode = ensureNotNull(actualParent.parent);
             var upBracketNode = ensureNotNull(upFunctionNode.parent);
@@ -8118,56 +8015,45 @@ var TWF = function (_, Kotlin) {
             parent_0.addChild_dsamor$(upFunctionNode);
             upBracketNode.endPosition = currentPosition + 1 | 0;
             actualParent.addChild_dsamor$(upBracketNode);
-          }
-           else
+          } else
             return new ParserError(startPosition, "Unexpected ')'");
-        }
-         else if (!actualParent.needDoubleChild) {
+        } else if (!actualParent.needDoubleChild) {
           var node_0 = actualParent;
           actualParent.endPosition = currentPosition + 1 | 0;
           tmp$_4 = actualParent.parent;
           if (tmp$_4 == null) {
             return new ParserError(startPosition, "Unexpected ')'");
-          }
-          var parent_1 = tmp$_4;
+          }var parent_1 = tmp$_4;
           parent_1.children.removeAt_za3lpa$(get_lastIndex(parent_1.children));
           parent_1.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance(), '', startPosition, currentPosition + 1 | 0));
           last(parent_1.children).addChild_dsamor$(node_0);
           actualParent = parent_1;
-        }
-         else {
+        } else {
           actualParent.endPosition = currentPosition + 1 | 0;
           tmp$_5 = actualParent.parent;
           if (tmp$_5 == null) {
             return new ParserError(startPosition, "Unexpected ')'");
-          }
-          actualParent = tmp$_5;
+          }actualParent = tmp$_5;
         }
         numberOfOpenBrackets = numberOfOpenBrackets - 1 | 0;
         currentPosition = currentPosition + 1 | 0;
         if (currentPosition < this.expression.length && (this.expression.charCodeAt(currentPosition) === 44 || this.expression.charCodeAt(currentPosition) === 61 || actualParent.needDoubleChild)) {
           actualParent.needDoubleChild = true;
-        }
-      }
-       else if (this.expression.charCodeAt(currentPosition) === 44) {
+        }} else if (this.expression.charCodeAt(currentPosition) === 44) {
         if (actualParent.needOneMoreBracket) {
           actualParent.endPosition = currentPosition;
           actualParent = ensureNotNull(actualParent.parent);
-        }
-        if (actualParent.type !== MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance())
+        }if (actualParent.type !== MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance())
           return new ParserError(startPosition, "Unexpected ','");
         currentPosition = currentPosition + 1 | 0;
-      }
-       else if (this.expression.charCodeAt(currentPosition) === 61) {
+      } else if (this.expression.charCodeAt(currentPosition) === 61) {
         if (actualParent.needOneMoreBracket) {
           actualParent.endPosition = currentPosition;
           actualParent = ensureNotNull(actualParent.parent);
-        }
-        if (actualParent.type !== MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance())
+        }if (actualParent.type !== MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance())
           return new ParserError(startPosition, "Unexpected '='");
         currentPosition = currentPosition + 1 | 0;
-      }
-       else {
+      } else {
         while (currentPosition < this.expression.length && (inTag || (!this.isComplicatedTag_0(this.expression, currentPosition) && this.expression.charCodeAt(currentPosition) !== 40 && this.expression.charCodeAt(currentPosition) !== 41 && this.expression.charCodeAt(currentPosition) !== 44 && this.expression.charCodeAt(currentPosition) !== 61 && (this.expression.charCodeAt(currentPosition) !== 60 || actualParent.type !== MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance())))) {
           if (this.expression.charCodeAt(currentPosition) === 60)
             inTag = true;
@@ -8180,18 +8066,14 @@ var TWF = function (_, Kotlin) {
           if (actualParent.needOneMoreBracket) {
             actualParent.endPosition = currentPosition;
             actualParent = ensureNotNull(actualParent.parent);
-          }
-        }
-        if (currentPosition < this.expression.length && (this.expression.charCodeAt(currentPosition) === 44 || this.expression.charCodeAt(currentPosition) === 61 || actualParent.needDoubleChild)) {
+          }}if (currentPosition < this.expression.length && (this.expression.charCodeAt(currentPosition) === 44 || this.expression.charCodeAt(currentPosition) === 61 || actualParent.needDoubleChild)) {
           actualParent.needDoubleChild = true;
           actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance(), '', startPosition));
           last(actualParent.children).addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$EXPRESSION_PART_STRING_getInstance(), value, startPosition, currentPosition));
           if (this.expression.charCodeAt(currentPosition) === 40) {
             actualParent = last(actualParent.children);
             actualParent.needOneMoreBracket = true;
-          }
-        }
-         else {
+          }} else {
           actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$EXPRESSION_PART_STRING_getInstance(), value, startPosition, currentPosition));
         }
       }
@@ -8232,8 +8114,7 @@ var TWF = function (_, Kotlin) {
     if (equals(newTreeActualParent_0.value, 'mrow')) {
       newTreeActualParent_0 = ensureNotNull(newTreeActualParent_0.parent);
       newTreeActualParent_0.children.removeAt_za3lpa$(get_lastIndex(newTreeActualParent_0.children));
-    }
-    tmp$ = oldTreeActualParent.children.iterator();
+    }tmp$ = oldTreeActualParent.children.iterator();
     while (tmp$.hasNext()) {
       var node = tmp$.next();
       if (node.type === MathMlTagTreeNode$Type$EXPRESSION_PART_STRING_getInstance()) {
@@ -8245,28 +8126,23 @@ var TWF = function (_, Kotlin) {
           if (isWhitespace(node.value.charCodeAt(currentPosition))) {
             currentPosition = currentPosition + 1 | 0;
             continue;
-          }
-          if (remainingExpressionStartsWith('&#xA0;', node.value, currentPosition)) {
+          }if (remainingExpressionStartsWith('&#xA0;', node.value, currentPosition)) {
             currentPosition = currentPosition + 6 | 0;
             continue;
-          }
-          if (node.value.charCodeAt(currentPosition) === 60 && !this.isComplicatedTag_0(node.value, currentPosition)) {
+          }if (node.value.charCodeAt(currentPosition) === 60 && !this.isComplicatedTag_0(node.value, currentPosition)) {
             currentPosition = skipFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda, node.value, currentPosition);
             currentPosition = currentPosition + 1 | 0;
             continue;
-          }
-          var startPosition = currentPosition;
+          }var startPosition = currentPosition;
           var completeSign = this.getCompleteBinarySign_0(node.value, currentPosition);
-          var tmp$_0 = this.isBinarySignPart_0(node.value.charCodeAt(currentPosition));
+          var tmp$_0 = isBinarySignPart(node.value.charCodeAt(currentPosition), this.isMathML);
           if (!tmp$_0) {
             tmp$_0 = !isBlank(completeSign);
-          }
-          if (tmp$_0) {
+          }if (tmp$_0) {
             if (isBlank(completeSign)) {
               value += String.fromCharCode(node.value.charCodeAt(currentPosition));
               currentPosition = currentPosition + 1 | 0;
-            }
-             else {
+            } else {
               value += completeSign;
               currentPosition = currentPosition + completeSign.length | 0;
             }
@@ -8275,30 +8151,25 @@ var TWF = function (_, Kotlin) {
                 currentPosition = skipFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda_0, node.value, currentPosition);
                 currentPosition = currentPosition + 1 | 0;
                 continue;
-              }
-              var completeSignWhile = this.getCompleteBinarySign_0(node.value, currentPosition);
-              var tmp$_1 = this.isBinarySignPart_0(node.value.charCodeAt(currentPosition));
+              }var completeSignWhile = this.getCompleteBinarySign_0(node.value, currentPosition);
+              var tmp$_1 = isBinarySignPart(node.value.charCodeAt(currentPosition), this.isMathML);
               if (!tmp$_1) {
                 tmp$_1 = !isBlank(completeSignWhile);
-              }
-              if (tmp$_1) {
+              }if (tmp$_1) {
                 if (isBlank(completeSignWhile)) {
                   value += String.fromCharCode(node.value.charCodeAt(currentPosition));
                   currentPosition = currentPosition + 1 | 0;
-                }
-                 else {
+                } else {
                   value += completeSignWhile;
                   currentPosition = currentPosition + completeSignWhile.length | 0;
                 }
-              }
-               else {
+              } else {
                 actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$OPERATION_getInstance(), value, node.startPosition + startPosition | 0, node.startPosition + currentPosition - 1 | 0, void 0, StringDefinitionType$BINARY_OPERATION_getInstance()));
                 break;
               }
             }
             state = ExpressionTreeParser$ParserState$WAIT_FOR_NUMBER_getInstance();
-          }
-           else if (this.isUnarySignPart_0(node.value.charCodeAt(currentPosition))) {
+          } else if (isUnarySignPart(node.value.charCodeAt(currentPosition))) {
             value += String.fromCharCode(node.value.charCodeAt(currentPosition));
             currentPosition = currentPosition + 1 | 0;
             while (currentPosition < node.value.length) {
@@ -8306,24 +8177,20 @@ var TWF = function (_, Kotlin) {
                 currentPosition = skipFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda_1, node.value, currentPosition);
                 currentPosition = currentPosition + 1 | 0;
                 continue;
-              }
-              if (this.isUnarySignPart_0(node.value.charCodeAt(currentPosition))) {
+              }if (isUnarySignPart(node.value.charCodeAt(currentPosition))) {
                 value += String.fromCharCode(node.value.charCodeAt(currentPosition));
                 currentPosition = currentPosition + 1 | 0;
-              }
-               else {
+              } else {
                 actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$OPERATION_getInstance(), value, node.startPosition + startPosition | 0, node.startPosition + currentPosition - 1 | 0, void 0, state === ExpressionTreeParser$ParserState$WAIT_FOR_NUMBER_getInstance() ? StringDefinitionType$UNARY_LEFT_OPERATION_getInstance() : StringDefinitionType$UNARY_RIGHT_OPERATION_getInstance()));
                 break;
               }
             }
-          }
-           else if (isNameOrNumberPart(node.value.charCodeAt(currentPosition)) || (node.value.charCodeAt(currentPosition) === 38 && this.isMathML)) {
+          } else if (isNameOrNumberPart(node.value.charCodeAt(currentPosition)) || (node.value.charCodeAt(currentPosition) === 38 && this.isMathML)) {
             state = ExpressionTreeParser$ParserState$NUMBER_READ_getInstance();
             if (isNameOrNumberPart(node.value.charCodeAt(currentPosition))) {
               value += String.fromCharCode(node.value.charCodeAt(currentPosition));
               currentPosition = currentPosition + 1 | 0;
-            }
-             else {
+            } else {
               var specialSymbol = readFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda_2, node.value, currentPosition);
               currentPosition = currentPosition + (specialSymbol.length + 1) | 0;
               value += specialSymbol + ';';
@@ -8333,19 +8200,16 @@ var TWF = function (_, Kotlin) {
                 currentPosition = skipFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda_3, node.value, currentPosition);
                 currentPosition = currentPosition + 1 | 0;
                 continue;
-              }
-              if (isNameOrNumberPart(node.value.charCodeAt(currentPosition)) || node.value.charCodeAt(currentPosition) === 46 || (node.value.charCodeAt(currentPosition) === 38 && this.isMathML)) {
+              }if (isNameOrNumberPart(node.value.charCodeAt(currentPosition)) || node.value.charCodeAt(currentPosition) === 46 || (node.value.charCodeAt(currentPosition) === 38 && this.isMathML)) {
                 if (node.value.charCodeAt(currentPosition) !== 38) {
                   value += String.fromCharCode(node.value.charCodeAt(currentPosition));
                   currentPosition = currentPosition + 1 | 0;
-                }
-                 else {
+                } else {
                   var specialSymbol_0 = readFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda_4, node.value, currentPosition);
                   currentPosition = currentPosition + (specialSymbol_0.length + 1) | 0;
                   value += specialSymbol_0 + ';';
                 }
-              }
-               else {
+              } else {
                 var i = 0;
                 while (i < value.length) {
                   var currentValue = '';
@@ -8357,15 +8221,13 @@ var TWF = function (_, Kotlin) {
                     }
                     if (currentValue.length > 0)
                       actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$NAME_getInstance(), currentValue, node.startPosition + startPosition + startI | 0, node.startPosition + startPosition + i | 0));
-                  }
-                   else if (value.charCodeAt(i) === 38) {
+                  } else if (value.charCodeAt(i) === 38) {
                     var specialSymbol_1 = readFromRemainingExpressionWhile(ExpressionTreeParser$parseLeaveStringExpressionParts$lambda_5, value, i);
                     i = i + (specialSymbol_1.length + 1) | 0;
                     currentValue += specialSymbol_1;
                     if (!equals(currentValue, '&#xA0'))
                       actualParent.addChild_dsamor$(new MathMlTagTreeNode(MathMlTagTreeNode$Type$NAME_getInstance(), currentValue, node.startPosition + startPosition + startI | 0, node.startPosition + startPosition + i | 0));
-                  }
-                   else {
+                  } else {
                     while (i < value.length && value.charCodeAt(i) !== 46 && value.charCodeAt(i) !== 38) {
                       currentValue += String.fromCharCode(value.charCodeAt(i));
                       i = i + 1 | 0;
@@ -8377,17 +8239,14 @@ var TWF = function (_, Kotlin) {
                 break;
               }
             }
-          }
-           else {
+          } else {
             return new ParserError(node.startPosition + startPosition | 0, "Unexpected: '" + String.fromCharCode(toBoxedChar(node.value.charCodeAt(currentPosition))) + "'");
           }
           value = '';
         }
         if (newTreeActualParent_0.value.length > 0 && actualParent.children.size === 0) {
           newTreeActualParent_0.children.removeAt_za3lpa$(get_lastIndex(newTreeActualParent_0.children));
-        }
-      }
-       else {
+        }} else {
         if (equals(node.value, 'math') || equals(node.value, 'mn') || equals(node.value, 'mo') || equals(node.value, 'mi') || equals(node.value, 'mspace') || equals(node.value, 'mtext') || equals(node.value, 'mstack') || equals(node.value, 'maction'))
           node.value = '';
         if (!equals(node.value, 'mstyle')) {
@@ -8398,8 +8257,7 @@ var TWF = function (_, Kotlin) {
             return res;
           if (last(newTreeActualParent_0.children).value.length === 0 && last(newTreeActualParent_0.children).children.isEmpty())
             newTreeActualParent_0.children.removeAt_za3lpa$(get_lastIndex(newTreeActualParent_0.children));
-        }
-         else {
+        } else {
           state = ExpressionTreeParser$ParserState$NUMBER_READ_getInstance();
           var res_0 = this.parseLeaveStringExpressionParts_0(node, newTreeActualParent_0);
           if (res_0 != null)
@@ -8419,12 +8277,10 @@ var TWF = function (_, Kotlin) {
       var tmp$_0 = !oldTreeActualParent.children.isEmpty();
       if (tmp$_0) {
         tmp$_0 = !oldTreeActualParent.children.get_za3lpa$(0).children.isEmpty();
-      }
-      var tmp$_1 = tmp$_0;
+      }var tmp$_1 = tmp$_0;
       if (tmp$_1) {
         tmp$_1 = !isBlank(oldTreeActualParent.children.get_za3lpa$(0).children.get_za3lpa$(0).value);
-      }
-      if (tmp$_1 && !contains_0(oldTreeActualParent.toString(), 39)) {
+      }if (tmp$_1 && !contains_0(oldTreeActualParent.toString(), 39)) {
         newTreeActualParent.value = newTreeActualParent.value + oldTreeActualParent.children.get_za3lpa$(0).children.get_za3lpa$(0).value;
         if (oldTreeActualParent.children.get_za3lpa$(0).children.size > 1) {
           var exprParent = new MathMlTagTreeNode(MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance(), '', void 0, void 0, oldTreeActualParent.parent);
@@ -8433,54 +8289,42 @@ var TWF = function (_, Kotlin) {
             exprParent.addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(0).children.get_za3lpa$(j));
           }
           ensureNotNull(oldTreeActualParent.parent).children.add_wxm5ur$(curIndex + 1 | 0, exprParent);
-        }
-        i = i + 1 | 0;
-      }
-       else if (equals(oldTreeActualParent.value, 'msubsup')) {
+        }i = i + 1 | 0;
+      } else if (equals(oldTreeActualParent.value, 'msubsup')) {
         newTreeActualParent.value = newTreeActualParent.value + last(oldTreeActualParent.children).children.get_za3lpa$(0).value;
         newTreeActualParent.type = MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance();
         oldTreeActualParent.children.removeAt_za3lpa$(get_lastIndex(oldTreeActualParent.children));
-      }
-    }
-    while (i < oldTreeActualParent.children.size) {
+      }}while (i < oldTreeActualParent.children.size) {
       if (equals(oldTreeActualParent.children.get_za3lpa$(i).value, 'mfenced')) {
         oldTreeActualParent.children.get_za3lpa$(i).value = '';
-      }
-      var tmp$_2 = (i + 1 | 0) < oldTreeActualParent.children.size && equals(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value, 'msup') && oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$NAME_getInstance();
+      }var tmp$_2 = (i + 1 | 0) < oldTreeActualParent.children.size && equals(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value, 'msup') && oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$NAME_getInstance();
       if (tmp$_2) {
         tmp$_2 = oldTreeActualParent.children.get_za3lpa$(i).value.length > 0;
-      }
-      var tmp$_3 = tmp$_2 && isLetterOrUnderscore(oldTreeActualParent.children.get_za3lpa$(i).value.charCodeAt(0)) && oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.size > 0;
+      }var tmp$_3 = tmp$_2 && isLetterOrUnderscore(oldTreeActualParent.children.get_za3lpa$(i).value.charCodeAt(0)) && oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.size > 0;
       if (tmp$_3) {
         tmp$_3 = oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).value.length === 0;
-      }
-      var tmp$_4 = tmp$_3 && oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).type === MathMlTagTreeNode$Type$NAME_getInstance();
+      }var tmp$_4 = tmp$_3 && oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).type === MathMlTagTreeNode$Type$NAME_getInstance();
       if (tmp$_4) {
         tmp$_4 = oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).value.length > 0;
-      }
-      if (tmp$_4 && isLetterOrUnderscore(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).value.charCodeAt(0))) {
+      }if (tmp$_4 && isLetterOrUnderscore(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).value.charCodeAt(0))) {
         oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).value = oldTreeActualParent.children.get_za3lpa$(i).value + oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).children.get_za3lpa$(0).value;
         i = i + 1 | 0;
         continue;
-      }
-      var newNode = oldTreeActualParent.children.get_za3lpa$(i).copy_axqpv$();
+      }var newNode = oldTreeActualParent.children.get_za3lpa$(i).copy_axqpv$();
       this.multipleFunctionsHandling_0(oldTreeActualParent.children.get_za3lpa$(i), newNode, i);
       if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance() && this.isMultipleTag_0(oldTreeActualParent.children.get_za3lpa$(i).value, 0) && !contains_0(newNode.toString(), 39)) {
         if ((i + 1 | 0) >= oldTreeActualParent.children.size || oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).type === MathMlTagTreeNode$Type$OPERATION_getInstance())
           return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, 'data is not complete');
         if (currentNewNode == null) {
           newTreeActualParent.addChild_dsamor$(newNode);
-        }
-         else {
+        } else {
           currentNewNode.addChild_dsamor$(newNode);
         }
         currentNewNode = newNode;
-      }
-       else {
+      } else {
         if (currentNewNode == null) {
           newTreeActualParent.addChild_dsamor$(newNode);
-        }
-         else {
+        } else {
           currentNewNode.addChild_dsamor$(newNode);
         }
         currentNewNode = null;
@@ -8490,7 +8334,7 @@ var TWF = function (_, Kotlin) {
     return null;
   };
   ExpressionTreeParser.prototype.getExpressionParserNodeOperationType_0 = function (value) {
-    return this.isUnarySignPart_0(value.charCodeAt(0)) ? ExpressionParserNode$Type$UNARY_OPERATION_getInstance() : ExpressionParserNode$Type$BINARY_OPERATION_getInstance();
+    return isUnarySignPart(value.charCodeAt(0)) ? ExpressionParserNode$Type$UNARY_OPERATION_getInstance() : ExpressionParserNode$Type$BINARY_OPERATION_getInstance();
   };
   ExpressionTreeParser.prototype.mathMlTreeToExpressionTree_0 = function (oldTreeActualParent, newTreeActualParent) {
     var tmp$, tmp$_0;
@@ -8510,28 +8354,23 @@ var TWF = function (_, Kotlin) {
                 return res;
               i = i + 1 | 0;
               continue;
-            }
-          }
-        }
-        newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), '', oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition));
+            }}}newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), '', oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition));
         var res_0 = this.mathMlTreeToExpressionTree_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
         if (res_0 != null)
           return res_0;
         i = i + 1 | 0;
         continue;
-      }
-       else if (equals(oldTreeActualParent.children.get_za3lpa$(i).value, 'msub')) {
+      } else if (equals(oldTreeActualParent.children.get_za3lpa$(i).value, 'msub')) {
         var mainValue = oldTreeActualParent.children.get_za3lpa$(i).children.get_za3lpa$(0).getNodeString();
         var subValue = oldTreeActualParent.children.get_za3lpa$(i).children.get_za3lpa$(1).getNodeString();
         var newValue = mainValue + ',' + subValue;
-        if (this.isUnarySignPart_0(newValue.charCodeAt(0)) || this.isBinarySignPart_0(newValue.charCodeAt(0)) || this.isCompleteBinarySign_0(newValue, 0)) {
+        if (isUnarySignPart(newValue.charCodeAt(0)) || isBinarySignPart(newValue.charCodeAt(0), this.isMathML) || this.isCompleteBinarySign_0(newValue, 0)) {
           var functionDefinition_0 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(newValue, ensureNotNull(oldTreeActualParent.children.get_za3lpa$(i).stringDefinitionType), -1);
           if (functionDefinition_0 == null)
             return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Unknown operation: '" + newValue + "'");
           else
             newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(this.getExpressionParserNodeOperationType_0(newValue), functionDefinition_0.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition, void 0, void 0, functionDefinition_0));
-        }
-         else {
+        } else {
           var functionDefinition_1 = null;
           if ((i + 1 | 0) < oldTreeActualParent.children.size)
             functionDefinition_1 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(newValue, StringDefinitionType$FUNCTION_getInstance(), oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.size, this.nameForRuleDesignationsPossible);
@@ -8545,16 +8384,14 @@ var TWF = function (_, Kotlin) {
                 oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).copy_axqpv$());
                 oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value = '';
                 oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).type = MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance();
-              }
-              oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(i).children.get_za3lpa$(1));
+              }oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(i).children.get_za3lpa$(1));
               newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), functionDefinition_1.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).endPosition, void 0, void 0, functionDefinition_1));
               i = i + 1 | 0;
               var res_1 = this.mathMlTreeToExpressionTree_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
               if (res_1 != null)
                 return res_1;
             }
-          }
-           else {
+          } else {
             newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), functionDefinition_1.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).endPosition, void 0, void 0, functionDefinition_1));
             i = i + 1 | 0;
             var res_2 = this.mathMlTreeToExpressionTree_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
@@ -8564,21 +8401,18 @@ var TWF = function (_, Kotlin) {
         }
         i = i + 1 | 0;
         continue;
-      }
-       else if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance()) {
+      } else if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance()) {
         tmp$ = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(oldTreeActualParent.children.get_za3lpa$(i).value, StringDefinitionType$FUNCTION_getInstance(), oldTreeActualParent.children.get_za3lpa$(i).children.size, this.nameForRuleDesignationsPossible);
         if (tmp$ == null) {
           return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Unknown function tag: '" + oldTreeActualParent.children.get_za3lpa$(i).value + "' with '" + toString(oldTreeActualParent.children.get_za3lpa$(i).children.size) + "' arguments");
-        }
-        var functionDefinition_2 = tmp$;
+        }var functionDefinition_2 = tmp$;
         newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), functionDefinition_2.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition, void 0, void 0, functionDefinition_2));
         var res_3 = this.mathMlTreeToExpressionTree_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
         if (res_3 != null)
           return res_3;
         i = i + 1 | 0;
         continue;
-      }
-       else if ((i + 1 | 0) < oldTreeActualParent.children.size && oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).type === MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance() && equals(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value, 'msub')) {
+      } else if ((i + 1 | 0) < oldTreeActualParent.children.size && oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).type === MathMlTagTreeNode$Type$MATH_ML_FUNCTION_getInstance() && equals(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value, 'msub')) {
         var mainValue_0 = oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(0).getNodeString();
         var functionDefinition_3 = null;
         if ((i + 2 | 0) < oldTreeActualParent.children.size) {
@@ -8589,8 +8423,7 @@ var TWF = function (_, Kotlin) {
               oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).copy_axqpv$());
               oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).value = '';
               oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).type = MathMlTagTreeNode$Type$BRACKET_FUNCTION_getInstance();
-            }
-            oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(1));
+            }oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).addChild_dsamor$(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(1));
             newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), functionDefinition_3.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).endPosition, void 0, void 0, functionDefinition_3));
             i = i + 2 | 0;
             var res_4 = this.mathMlTreeToExpressionTree_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
@@ -8598,21 +8431,18 @@ var TWF = function (_, Kotlin) {
               return res_4;
             i = i + 1 | 0;
             continue;
-          }
-        }
-        var iPlusOneTypeOperation = this.isUnarySignPart_0(mainValue_0.charCodeAt(0)) || this.isBinarySignPart_0(mainValue_0.charCodeAt(0)) || this.isCompleteBinarySign_0(mainValue_0, 0);
-        var iTypeOperation = this.isUnarySignPart_0(oldTreeActualParent.children.get_za3lpa$(i).value.charCodeAt(0)) || this.isBinarySignPart_0(oldTreeActualParent.children.get_za3lpa$(i).value.charCodeAt(0)) || this.isCompleteBinarySign_0(oldTreeActualParent.children.get_za3lpa$(i).value, 0);
+          }}var iPlusOneTypeOperation = isUnarySignPart(mainValue_0.charCodeAt(0)) || isBinarySignPart(mainValue_0.charCodeAt(0), this.isMathML) || this.isCompleteBinarySign_0(mainValue_0, 0);
+        var iTypeOperation = isUnarySignPart(oldTreeActualParent.children.get_za3lpa$(i).value.charCodeAt(0)) || isBinarySignPart(oldTreeActualParent.children.get_za3lpa$(i).value.charCodeAt(0), this.isMathML) || this.isCompleteBinarySign_0(oldTreeActualParent.children.get_za3lpa$(i).value, 0);
         if (iPlusOneTypeOperation === iTypeOperation) {
           var subValue_0 = oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).children.get_za3lpa$(1).getNodeString();
           var newValue_0 = oldTreeActualParent.children.get_za3lpa$(i).value + mainValue_0 + ',' + subValue_0;
-          if (this.isUnarySignPart_0(newValue_0.charCodeAt(0)) || this.isBinarySignPart_0(newValue_0.charCodeAt(0)) || this.isCompleteBinarySign_0(newValue_0, 0)) {
+          if (isUnarySignPart(newValue_0.charCodeAt(0)) || isBinarySignPart(newValue_0.charCodeAt(0), this.isMathML) || this.isCompleteBinarySign_0(newValue_0, 0)) {
             var functionDefinition_4 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(newValue_0, ensureNotNull(oldTreeActualParent.children.get_za3lpa$(i).stringDefinitionType), -1);
             if (functionDefinition_4 == null)
               return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Unknown operation: '" + newValue_0 + "'");
             else
               newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(this.getExpressionParserNodeOperationType_0(newValue_0), functionDefinition_4.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).endPosition, void 0, void 0, functionDefinition_4));
-          }
-           else {
+          } else {
             var functionDefinition_5 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(newValue_0, StringDefinitionType$FUNCTION_getInstance(), oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).children.size, this.nameForRuleDesignationsPossible);
             if (functionDefinition_5 == null || (i + 2 | 0) >= oldTreeActualParent.children.size || !equals(oldTreeActualParent.children.get_za3lpa$(i + 2 | 0).value, ''))
               newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$VARIABLE_getInstance(), newValue_0, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).endPosition, subValue_0));
@@ -8626,21 +8456,17 @@ var TWF = function (_, Kotlin) {
           }
           i = i + 1 | 0;
           continue;
-        }
-      }
-      if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$OPERATION_getInstance()) {
+        }}if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$OPERATION_getInstance()) {
         var functionDefinition_6 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(oldTreeActualParent.children.get_za3lpa$(i).value, ensureNotNull(oldTreeActualParent.children.get_za3lpa$(i).stringDefinitionType), ensureNotNull(oldTreeActualParent.children.get_za3lpa$(i).stringDefinitionType) === StringDefinitionType$BINARY_OPERATION_getInstance() ? -1 : 1);
         if (functionDefinition_6 == null)
           return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Unknown operation: '" + oldTreeActualParent.children.get_za3lpa$(i).value + "'");
         else if (i === get_lastIndex(oldTreeActualParent.children) && ensureNotNull(oldTreeActualParent.children.get_za3lpa$(i).stringDefinitionType) !== StringDefinitionType$UNARY_RIGHT_OPERATION_getInstance()) {
           return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Operation: '" + oldTreeActualParent.children.get_za3lpa$(i).value + "' is not right unary");
-        }
-         else
+        } else
           newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(this.getExpressionParserNodeOperationType_0(oldTreeActualParent.children.get_za3lpa$(i).value), functionDefinition_6.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition, void 0, void 0, functionDefinition_6));
         i = i + 1 | 0;
         continue;
-      }
-       else if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$NAME_getInstance()) {
+      } else if (oldTreeActualParent.children.get_za3lpa$(i).type === MathMlTagTreeNode$Type$NAME_getInstance()) {
         if (startsWith_0(oldTreeActualParent.children.get_za3lpa$(i).value, '&')) {
           var functionDefinition_7 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(oldTreeActualParent.children.get_za3lpa$(i).value, StringDefinitionType$BINARY_OPERATION_getInstance(), -1);
           if (functionDefinition_7 == null)
@@ -8654,9 +8480,7 @@ var TWF = function (_, Kotlin) {
             newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$UNARY_OPERATION_getInstance(), functionDefinition_7.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition, void 0, void 0, functionDefinition_7));
             i = i + 1 | 0;
             continue;
-          }
-        }
-        if ((i + 1 | 0) >= oldTreeActualParent.children.size || !equals(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value, ''))
+          }}if ((i + 1 | 0) >= oldTreeActualParent.children.size || !equals(oldTreeActualParent.children.get_za3lpa$(i + 1 | 0).value, ''))
           newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$VARIABLE_getInstance(), oldTreeActualParent.children.get_za3lpa$(i).value, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition));
         else {
           var newParentNode = new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), '');
@@ -8676,13 +8500,11 @@ var TWF = function (_, Kotlin) {
         }
         i = i + 1 | 0;
         continue;
-      }
-       else {
+      } else {
         tmp$_0 = this.functionConfiguration.findFunctionStringDefinition_7zakv9$(oldTreeActualParent.children.get_za3lpa$(i).value, StringDefinitionType$FUNCTION_getInstance(), oldTreeActualParent.children.get_za3lpa$(i).children.size, this.nameForRuleDesignationsPossible);
         if (tmp$_0 == null) {
           return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Unknown function tag: '" + oldTreeActualParent.children.get_za3lpa$(i).value + "' with '" + toString(oldTreeActualParent.children.get_za3lpa$(i).children.size) + "' arguments");
-        }
-        var functionDefinition_9 = tmp$_0;
+        }var functionDefinition_9 = tmp$_0;
         newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$FUNCTION_getInstance(), functionDefinition_9.function.function, oldTreeActualParent.children.get_za3lpa$(i).startPosition, oldTreeActualParent.children.get_za3lpa$(i).endPosition, void 0, void 0, functionDefinition_9));
         var res_8 = this.mathMlTreeToExpressionTree_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
         if (res_8 != null)
@@ -8701,15 +8523,13 @@ var TWF = function (_, Kotlin) {
       if (Kotlin.isType($receiver, Collection) && $receiver.isEmpty()) {
         any$result = false;
         break any$break;
-      }
-      tmp$ = $receiver.iterator();
+      }tmp$ = $receiver.iterator();
       while (tmp$.hasNext()) {
         var element = tmp$.next();
         if (remainingExpressionStartsWith(element, value, currentPosition)) {
           any$result = true;
           break any$break;
-        }
-      }
+        }}
       any$result = false;
     }
      while (false);
@@ -8722,8 +8542,7 @@ var TWF = function (_, Kotlin) {
       var sign = tmp$.next();
       if (remainingExpressionStartsWith(sign, value, currentPosition)) {
         return sign;
-      }
-    }
+      }}
     return '';
   };
   ExpressionTreeParser.prototype.addMultiplications_0 = function (oldTreeActualParent, newTreeActualParent) {
@@ -8747,8 +8566,7 @@ var TWF = function (_, Kotlin) {
       while (i < oldTreeActualParent.children.size) {
         if (oldTreeActualParent.children.get_za3lpa$(i).type !== ExpressionParserNode$Type$BINARY_OPERATION_getInstance() && oldTreeActualParent.children.get_za3lpa$(i - 1 | 0).type !== ExpressionParserNode$Type$BINARY_OPERATION_getInstance()) {
           newTreeActualParent.addChild_amp9w1$(new ExpressionParserNode(ExpressionParserNode$Type$BINARY_OPERATION_getInstance(), '*', oldTreeActualParent.children.get_za3lpa$(i).startPosition - 1 | 0, oldTreeActualParent.children.get_za3lpa$(i).startPosition, void 0, void 0, this.functionConfiguration.findFunctionStringDefinition_7zakv9$('*', StringDefinitionType$BINARY_OPERATION_getInstance(), -1)));
-        }
-         else if (oldTreeActualParent.children.get_za3lpa$(i).type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance() && oldTreeActualParent.children.get_za3lpa$(i - 1 | 0).type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance())
+        } else if (oldTreeActualParent.children.get_za3lpa$(i).type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance() && oldTreeActualParent.children.get_za3lpa$(i - 1 | 0).type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance())
           return new ParserError(oldTreeActualParent.children.get_za3lpa$(i).startPosition, "Unexpected binary operation '" + ensureNotNull(oldTreeActualParent.children.get_za3lpa$(i).functionStringDefinition).definition + "'");
         newTreeActualParent.addChild_amp9w1$(oldTreeActualParent.children.get_za3lpa$(i).copy_i0rkrg$());
         var res_1 = this.addMultiplications_0(oldTreeActualParent.children.get_za3lpa$(i), last(newTreeActualParent.children));
@@ -8772,38 +8590,32 @@ var TWF = function (_, Kotlin) {
         if (currentBottomToken != null) {
           currentBottomToken.addChild_amp9w1$(node);
           currentBottomToken = node;
-        }
-         else
+        } else
           newTreeActualParent.addChild_amp9w1$(node);
         var res = this.combineUnary_0(oldTreeActualParent.children.get_za3lpa$(i), node);
         if (res != null)
           return res;
-      }
-       else if (oldTreeActualParent.children.get_za3lpa$(i).type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance()) {
+      } else if (oldTreeActualParent.children.get_za3lpa$(i).type === ExpressionParserNode$Type$BINARY_OPERATION_getInstance()) {
         state = ExpressionTreeParser$TokenParserState$BINARY_OPERATION_getInstance();
         currentBottomToken = null;
         newTreeActualParent.addChild_amp9w1$(node);
-      }
-       else if (oldTreeActualParent.children.get_za3lpa$(i).type === ExpressionParserNode$Type$UNARY_OPERATION_getInstance()) {
+      } else if (oldTreeActualParent.children.get_za3lpa$(i).type === ExpressionParserNode$Type$UNARY_OPERATION_getInstance()) {
         if (state === ExpressionTreeParser$TokenParserState$BINARY_OPERATION_getInstance()) {
           if (currentBottomToken == null) {
             newTreeActualParent.addChild_amp9w1$(node);
             currentBottomToken = node;
-          }
-           else {
+          } else {
             currentBottomToken.addChild_amp9w1$(node);
             currentBottomToken = node;
           }
-        }
-         else {
+        } else {
           if (currentBottomToken == null) {
             currentBottomToken = node;
             var lastElement = last(newTreeActualParent.children);
             newTreeActualParent.children.removeAt_za3lpa$(get_lastIndex(newTreeActualParent.children));
             node.addChild_amp9w1$(lastElement);
             newTreeActualParent.addChild_amp9w1$(node);
-          }
-           else {
+          } else {
             var parent = ensureNotNull(currentBottomToken.parent);
             node.addChild_amp9w1$(currentBottomToken);
             parent.children.removeAt_za3lpa$(get_lastIndex(parent.children));
@@ -8811,8 +8623,7 @@ var TWF = function (_, Kotlin) {
             currentBottomToken = node;
           }
         }
-      }
-      i = i + 1 | 0;
+      }i = i + 1 | 0;
     }
     return null;
   };
@@ -8833,21 +8644,11 @@ var TWF = function (_, Kotlin) {
       var child = tmp$.next();
       if (child.type === ExpressionParserNode$Type$VARIABLE_getInstance()) {
         newTreeActualParent.addChild_6718cy$(new ExpressionNode(NodeType$VARIABLE_getInstance(), child.value, child.startPosition, child.endPosition, child.subValue, newTreeActualParent));
-      }
-       else {
+      } else {
         newTreeActualParent.addChild_6718cy$(new ExpressionNode(NodeType$FUNCTION_getInstance(), child.value, child.startPosition, child.endPosition, child.subValue, newTreeActualParent, child.functionStringDefinition));
         this.toExpressionTree_0(child, last(newTreeActualParent.children));
       }
     }
-  };
-  ExpressionTreeParser.prototype.isUnarySignPart_0 = function (c) {
-    return c === 33 || c === 35 || c === 39;
-  };
-  ExpressionTreeParser.prototype.isBinarySignPart_0 = function (c) {
-    return c === 43 || c === 45 || c === 42 || c === 47 || c === 94 || c === 37 || c === 124 || c === 92 || (c === 38 && !this.isMathML);
-  };
-  ExpressionTreeParser.prototype.isSign_0 = function ($receiver) {
-    return this.isUnarySignPart_0($receiver) || this.isBinarySignPart_0($receiver);
   };
   ExpressionTreeParser.prototype.isComplicatedTag_0 = function (expression, currentPosition) {
     if (expression === void 0)
@@ -8876,8 +8677,7 @@ var TWF = function (_, Kotlin) {
   function ExpressionTreeParser$Companion_getInstance() {
     if (ExpressionTreeParser$Companion_instance === null) {
       new ExpressionTreeParser$Companion();
-    }
-    return ExpressionTreeParser$Companion_instance;
+    }return ExpressionTreeParser$Companion_instance;
   }
   ExpressionTreeParser.$metadata$ = {
     kind: Kind_CLASS,
@@ -8906,8 +8706,7 @@ var TWF = function (_, Kotlin) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.minusDomain_0 = function (expression, possibleValues) {
@@ -8918,8 +8717,7 @@ var TWF = function (_, Kotlin) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.mulDomain_0 = function (expression, possibleValues) {
@@ -8930,8 +8728,7 @@ var TWF = function (_, Kotlin) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.divDomain_0 = function (expression, possibleValues) {
@@ -8942,8 +8739,7 @@ var TWF = function (_, Kotlin) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.bracketsDomain_0 = function (expression, possibleValues) {
@@ -8957,23 +8753,20 @@ var TWF = function (_, Kotlin) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.powDomain_0 = function (expression, possibleValues) {
     var tmp$;
     if (this.allSegmentsSubzero_0(possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    var childrenDomains = ArrayList_init();
+    }var childrenDomains = ArrayList_init();
     tmp$ = childrenDomains.size - 1 | 0;
     for (var i = 0; i < tmp$; i++) {
       var domain = this.findDomain_0(expression.children.get_za3lpa$(i), LineSegmentHolder$Companion_getInstance().positiveSegment);
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     var lastChildDomain = this.findDomain_0(last(expression.children), LineSegmentHolder$Companion_getInstance().fullSegment);
     childrenDomains.add_11rb$(lastChildDomain);
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
@@ -8988,45 +8781,39 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.pointInSegments_0(possibleValues, 1.0)) {
       throw new NotImplementedError_init('An operation is not implemented: ' + 'One of children should be equal to 0');
-    }
-    var childrenDomains = this.calculateChildrenDomains_0(expression, LineSegmentHolder$Companion_getInstance().fullSegment);
+    }var childrenDomains = this.calculateChildrenDomains_0(expression, LineSegmentHolder$Companion_getInstance().fullSegment);
     tmp$ = childrenDomains.iterator();
     while (tmp$.hasNext()) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.orDomain_0 = function (expression, possibleValues) {
     var tmp$;
     if (this.pointInSegments_0(possibleValues, 1.0)) {
       throw new NotImplementedError_init('An operation is not implemented: ' + 'All children should be equal to 0');
-    }
-    var childrenDomains = this.calculateChildrenDomains_0(expression, LineSegmentHolder$Companion_getInstance().fullSegment);
+    }var childrenDomains = this.calculateChildrenDomains_0(expression, LineSegmentHolder$Companion_getInstance().fullSegment);
     tmp$ = childrenDomains.iterator();
     while (tmp$.hasNext()) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.xorDomain_0 = function (expression, possibleValues) {
     var tmp$;
     if (this.pointInSegments_0(possibleValues, 0.0)) {
       throw new NotImplementedError_init('An operation is not implemented: ' + 'All children should be equal to 0');
-    }
-    var childrenDomains = this.calculateChildrenDomains_0(expression, LineSegmentHolder$Companion_getInstance().fullSegment);
+    }var childrenDomains = this.calculateChildrenDomains_0(expression, LineSegmentHolder$Companion_getInstance().fullSegment);
     tmp$ = childrenDomains.iterator();
     while (tmp$.hasNext()) {
       var domain = tmp$.next();
       if (domain.isEmpty()) {
         return domain;
-      }
-    }
+      }}
     return CageHolder$Companion_getInstance().domainIntersection_p7f0kx$(childrenDomains, this.expressionDimension_0);
   };
   ExpressionTreeAnalyzer.prototype.alleqDomain_0 = function (expression, possibleValues) {
@@ -9035,20 +8822,17 @@ var TWF = function (_, Kotlin) {
   ExpressionTreeAnalyzer.prototype.notDomain_0 = function (expression, possibleValues) {
     if (this.pointInSegments_0(possibleValues, 0.0)) {
       throw new NotImplementedError_init('An operation is not implemented: ' + 'Child should be equal to 0');
-    }
-    return this.findDomain_0(expression.children.get_za3lpa$(0), LineSegmentHolder$Companion_getInstance().fullSegment);
+    }return this.findDomain_0(expression.children.get_za3lpa$(0), LineSegmentHolder$Companion_getInstance().fullSegment);
   };
   ExpressionTreeAnalyzer.prototype.sinDomain_0 = function (expression, possibleValues) {
     if (this.fullyContains_0(new LineSegmentHolder(0.0, 1.0), possibleValues)) {
       return this.findDomain_0(expression.children.get_za3lpa$(0), LineSegmentHolder$Companion_getInstance().fullSegment);
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Problems with periodicity');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Problems with periodicity');
   };
   ExpressionTreeAnalyzer.prototype.cosDomain_0 = function (expression, possibleValues) {
     if (this.fullyContains_0(new LineSegmentHolder(0.0, 1.0), possibleValues)) {
       return this.findDomain_0(expression.children.get_za3lpa$(0), LineSegmentHolder$Companion_getInstance().fullSegment);
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Problems with periodicity');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Problems with periodicity');
   };
   ExpressionTreeAnalyzer.prototype.tanDomain_0 = function (expression, possibleValues) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'Problems with periodicity');
@@ -9059,8 +8843,7 @@ var TWF = function (_, Kotlin) {
   ExpressionTreeAnalyzer.prototype.coshDomain_0 = function (expression, possibleValues) {
     if (this.allSegmentsSubzero_0(possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Unclear how to do');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Unclear how to do');
   };
   ExpressionTreeAnalyzer.prototype.tanhDomain_0 = function (expression, possibleValues) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'Absolutely unclear how to do');
@@ -9068,35 +8851,28 @@ var TWF = function (_, Kotlin) {
   ExpressionTreeAnalyzer.prototype.asinDomain_0 = function (expression, possibleValues) {
     if (this.emptyIntersection_0(new LineSegmentHolder(-math.PI / 2, math.PI / 2), possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    if (this.fullyContains_0(new LineSegmentHolder(-math.PI / 2, math.PI / 2), possibleValues)) {
+    }if (this.fullyContains_0(new LineSegmentHolder(-math.PI / 2, math.PI / 2), possibleValues)) {
       return this.findDomain_0(expression.children.get_za3lpa$(0), new LineSegmentHolder(0.0, 1.0));
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
   };
   ExpressionTreeAnalyzer.prototype.acosDomain_0 = function (expression, possibleValues) {
     if (this.emptyIntersection_0(new LineSegmentHolder(0.0, math.PI), possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    if (this.fullyContains_0(new LineSegmentHolder(0.0, math.PI), possibleValues)) {
+    }if (this.fullyContains_0(new LineSegmentHolder(0.0, math.PI), possibleValues)) {
       return this.findDomain_0(expression.children.get_za3lpa$(0), new LineSegmentHolder(0.0, 1.0));
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
   };
   ExpressionTreeAnalyzer.prototype.atanDomain_0 = function (expression, possibleValues) {
     if (this.emptyIntersection_0(new LineSegmentHolder(-math.PI / 2, math.PI / 2), possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    if (this.fullyContains_0(new LineSegmentHolder(-math.PI / 2, math.PI / 2), possibleValues)) {
+    }if (this.fullyContains_0(new LineSegmentHolder(-math.PI / 2, math.PI / 2), possibleValues)) {
       return this.findDomain_0(expression.children.get_za3lpa$(0), new LineSegmentHolder(0.0, 1.0));
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
   };
   ExpressionTreeAnalyzer.prototype.expDomain_0 = function (expression, possibleValues) {
     if (this.allSegmentsSubzero_0(possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
   };
   ExpressionTreeAnalyzer.prototype.lnDomain_0 = function (expression, possibleValues) {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
@@ -9104,8 +8880,7 @@ var TWF = function (_, Kotlin) {
   ExpressionTreeAnalyzer.prototype.absDomain_0 = function (expression, possibleValues) {
     if (this.allSegmentsSubzero_0(possibleValues)) {
       return CageHolder$Companion_getInstance().emptyCageHolder_za3lpa$(this.expressionDimension_0);
-    }
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
+    }throw new NotImplementedError_init('An operation is not implemented: ' + 'Not so hard');
   };
   ExpressionTreeAnalyzer.prototype.calculateChildrenDomains_0 = function (expression, segment) {
     var tmp$;
@@ -9124,8 +8899,7 @@ var TWF = function (_, Kotlin) {
       var segment = tmp$.next();
       if (segment.pointInSegment_14dthe$(point)) {
         return true;
-      }
-    }
+      }}
     return false;
   };
   ExpressionTreeAnalyzer.prototype.allSegmentsSubzero_0 = function (segments) {
@@ -9135,8 +8909,7 @@ var TWF = function (_, Kotlin) {
       var segment = tmp$.next();
       if (!segment.isSubzero()) {
         return false;
-      }
-    }
+      }}
     return true;
   };
   ExpressionTreeAnalyzer.prototype.fullyContains_0 = function (segment, possibleValues) {
@@ -9146,8 +8919,7 @@ var TWF = function (_, Kotlin) {
       var possibleSegment = tmp$.next();
       if (segment.isSubSegment_271ndl$(possibleSegment)) {
         return true;
-      }
-    }
+      }}
     return false;
   };
   ExpressionTreeAnalyzer.prototype.emptyIntersection_0 = function (segment, possibleValues) {
@@ -9157,8 +8929,7 @@ var TWF = function (_, Kotlin) {
       var possibleSegment = tmp$.next();
       if (segment.hasIntersection_271ndl$(possibleSegment)) {
         return false;
-      }
-    }
+      }}
     return true;
   };
   function ExpressionTreeAnalyzer$functionByName$lambda(this$ExpressionTreeAnalyzer) {
@@ -9516,8 +9287,7 @@ var TWF = function (_, Kotlin) {
       var function_0 = tmp$.next();
       if (this.data.containsFunction_bm4lxs$(function_0.first, function_0.second)) {
         return new GeneralError('Answer contains forbidden function or operation');
-      }
-    }
+      }}
     return null;
   };
   Expression.prototype.isFactorizationForVariables_3b7jn6$ = function (minNumberOfMultipliers, targetVariables, targetExpression, factComporator) {
@@ -9536,30 +9306,25 @@ var TWF = function (_, Kotlin) {
     var comparisonResult = tmp$_0.compareWithoutSubstitutions_15tjed$(tmp$_1, targetExpression, tmp$_2, toSet(destination));
     if (!comparisonResult) {
       return new GeneralError('Answer not equal to original expression');
-    }
-    if (minNumberOfMultipliers <= 1) {
+    }if (minNumberOfMultipliers <= 1) {
       return null;
-    }
-    var topNode = this.data;
+    }var topNode = this.data;
     while (isBlank(topNode.value) && topNode.children.size === 1) {
       topNode = first(topNode.children);
     }
     if (!equals(topNode.value, '*')) {
       return new GeneralError('Answer is not factorized');
-    }
-    var numberOfMultipliers = 0;
+    }var numberOfMultipliers = 0;
     tmp$ = topNode.children.iterator();
     while (tmp$.hasNext()) {
       var child = tmp$.next();
       var containedVariables = this.data.getContainedVariables_ywdfdh$(targetVariables);
       if (!containedVariables.isEmpty()) {
         numberOfMultipliers = numberOfMultipliers + 1 | 0;
-      }
-    }
+      }}
     if (numberOfMultipliers < minNumberOfMultipliers) {
       return new GeneralError('Not enough multipliers in the answer');
-    }
-    return null;
+    }return null;
   };
   Expression.prototype.hasNoFractions_5ah4l7$ = function (maxNumberOfDivisions, targetExpression, factComporator) {
     var tmp$ = factComporator.expressionComporator;
@@ -9576,11 +9341,9 @@ var TWF = function (_, Kotlin) {
     var comparisonResult = tmp$.compareWithoutSubstitutions_15tjed$(tmp$_0, targetExpression, tmp$_1, toSet(destination));
     if (!comparisonResult) {
       return new GeneralError('Answer not equal to original expression');
-    }
-    if (this.data.canContainDivisions()) {
+    }if (this.data.canContainDivisions()) {
       return new GeneralError('Answer contains fraction');
-    }
-    return null;
+    }return null;
   };
   function Expression$isSolutionForVariables$lambda(it) {
     return "'" + it + "'";
@@ -9595,29 +9358,22 @@ var TWF = function (_, Kotlin) {
     if (left) {
       if (this.data.containsFunctions()) {
         return new GeneralError('left part of the result contains functions or operations');
-      }
-      var containedVariables = this.data.getVariableNames();
+      }var containedVariables = this.data.getVariableNames();
       if (containedVariables.size > 1) {
         return new GeneralError('left part of the result contains more than one variable: ' + joinToString(containedVariables, void 0, void 0, void 0, void 0, void 0, Expression$isSolutionForVariables$lambda));
-      }
-       else if (containedVariables.size === 1) {
+      } else if (containedVariables.size === 1) {
         targetVariables.put_xwzc9p$(first_1(containedVariables), true);
-      }
-      return null;
-    }
-     else {
+      }return null;
+    } else {
       var containedVariables_0 = this.data.getContainedVariables_ywdfdh$(targetVariables.keys);
       if (!containedVariables_0.isEmpty()) {
         return new GeneralError('right part of the result contains unknown variables: ' + joinToString(containedVariables_0, void 0, void 0, void 0, void 0, void 0, Expression$isSolutionForVariables$lambda_0));
-      }
-       else {
+      } else {
         if (!allowedVariables.isEmpty()) {
           var notContainedVariables = this.data.getNotContainedVariables_ywdfdh$(allowedVariables);
           if (!notContainedVariables.isEmpty()) {
             return new GeneralError('right part of the result contains unknown variables: ' + joinToString(notContainedVariables, void 0, void 0, void 0, void 0, void 0, Expression$isSolutionForVariables$lambda_1));
-          }
-        }
-      }
+          }}}
       return null;
     }
   };
@@ -9634,8 +9390,7 @@ var TWF = function (_, Kotlin) {
       tmp$_0 = substitutionInstance.getExprVar_61zpoe$(variableName);
       if (tmp$_0 == null) {
         continue;
-      }
-      var node = tmp$_0;
+      }var node = tmp$_0;
       var value = baseOperationsDefinitions.computeExpressionTree_6718cy$(node.clone()).value;
       pointI.put_xwzc9p$(variableName, value);
     }
@@ -9679,8 +9434,7 @@ var TWF = function (_, Kotlin) {
   Expression.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = this.data.computeIdentifier_t6ztn0$();
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   Expression.prototype.computeInIdentifier_6taknv$ = function (recomputeIfComputed) {
     return this.computeIdentifier_6taknv$(recomputeIfComputed);
@@ -9724,8 +9478,7 @@ var TWF = function (_, Kotlin) {
   function Expression$Companion_getInstance() {
     if (Expression$Companion_instance === null) {
       new Expression$Companion();
-    }
-    return Expression$Companion_instance;
+    }return Expression$Companion_instance;
   }
   Expression.$metadata$ = {
     kind: Kind_CLASS,
@@ -9742,8 +9495,7 @@ var TWF = function (_, Kotlin) {
       endPosition = 0;
     if (chain === void 0) {
       chain = ArrayList_init();
-    }
-    if (identifier === void 0)
+    }if (identifier === void 0)
       identifier = '';
     this.startPosition_wh0vy7$_0 = startPosition;
     this.endPosition_pcyana$_0 = endPosition;
@@ -9811,8 +9563,7 @@ var TWF = function (_, Kotlin) {
   ExpressionChain.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = joinToString(this.chain, this.comparisonType.string, void 0, void 0, void 0, void 0, ExpressionChain$computeIdentifier$lambda(recomputeIfComputed));
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   ExpressionChain.prototype.computeInIdentifier_6taknv$ = function (recomputeIfComputed) {
     return this.computeIdentifier_6taknv$(recomputeIfComputed);
@@ -10047,22 +9798,19 @@ var TWF = function (_, Kotlin) {
           if (checkingResult.isCorrect && rule.expressionSubstitution != null) {
             log_0.addMessageWithExpressionSubstitutionShort_ht2yvq$(ExpressionChain$check$lambda_6, ensureNotNull(rule.expressionSubstitution), MessageType$USER_getInstance(), currentLogLevel.v);
             tmp$_1 = ensureNotNull(rule.expressionSubstitution);
-          }
-           else {
+          } else {
             if (!checkingResult.isCorrect) {
               log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_7, MessageType$USER_getInstance(), currentLogLevel.v);
               coloringTasks.addAll_brywnq$(checkingResult.coloringTasks);
               return new ComparisonResult(false, coloringTasks, this.chain.get_za3lpa$(currentLeftIndex), this.chain.get_za3lpa$(currentRightIndex + 1 | 0), 'RULE VERIFICATION_FAILED');
-            }
-             else {
+            } else {
               log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_8, MessageType$USER_getInstance(), currentLogLevel.v);
               log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex + 1 | 0).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factNotHelpFactColor, ExpressionChain$check$lambda_9, ExpressionChain$check$lambda_10, ExpressionChain$check$lambda_11, ExpressionChain$check$lambda_12, currentLogLevel.v);
               coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex + 1 | 0).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factNotHelpFactColor));
               return new ComparisonResult(false, coloringTasks, this.chain.get_za3lpa$(currentLeftIndex), this.chain.get_za3lpa$(currentRightIndex + 1 | 0), 'RULE CANNOT_BE_APPLIED_TO_EXPRESSIONS');
             }
           }
-        }
-         else {
+        } else {
           var ruleName = (Kotlin.isType(tmp$_0 = this.chain.get_za3lpa$(currentRightIndex), RulePointer) ? tmp$_0 : throwCCE()).nameLink;
           log_0.add_f1hiuo$(ruleName, ExpressionChain$check$lambda_13, ExpressionChain$check$lambda_14, currentLogLevel.v, void 0, MessageType$USER_getInstance());
           var destination = ArrayList_init();
@@ -10097,8 +9845,7 @@ var TWF = function (_, Kotlin) {
                 destination_1.add_11rb$(element_0);
             }
             return new ComparisonResult(false, coloringTasks, tmp$_22, tmp$_23, tmp$_24 + joinToString(destination_1, void 0, void 0, void 0, void 0, void 0, ExpressionChain$check$lambda_21));
-          }
-          tmp$_1 = first(rules);
+          }tmp$_1 = first(rules);
         }
         var transformation = tmp$_1;
         currentRightIndex = log_0.assignAndLog_746w4o$(currentRightIndex + 1 | 0, currentLogLevel.v, ExpressionChain$check$lambda_22);
@@ -10113,17 +9860,14 @@ var TWF = function (_, Kotlin) {
           log_0.add_f1hiuo$(transformation.basedOnTaskContext, ExpressionChain$check$lambda_30, ExpressionChain$check$lambda_31, currentLogLevel.v, void 0, MessageType$USER_getInstance());
           if (transformation.basedOnTaskContext) {
             additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, ExpressionChain$check$lambda_32);
-          }
-        }
-         else {
+          }} else {
           log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factNotHelpFactColor, ExpressionChain$check$lambda_33, ExpressionChain$check$lambda_34, ExpressionChain$check$lambda_35, ExpressionChain$check$lambda_36, currentLogLevel.v);
           coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factNotHelpFactColor));
           log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_37, MessageType$USER_getInstance(), currentLogLevel.v);
           return new ComparisonResult(false, coloringTasks, this.chain.get_za3lpa$(currentLeftIndex), this.chain.get_za3lpa$(currentRightIndex), "Unclear transformation between '" + (Kotlin.isType(tmp$_6 = this.chain.get_za3lpa$(currentLeftIndex), Expression) ? tmp$_6 : throwCCE()).data + "' and '" + (Kotlin.isType(tmp$_7 = this.chain.get_za3lpa$(currentRightIndex), Expression) ? tmp$_7 : throwCCE()).data + "' even with rule");
         }
         currentLogLevel.v = currentLogLevel.v - 1 | 0;
-      }
-       else {
+      } else {
         log_0.addMessageWithExpression_kf0d7z$(ExpressionChain$check$lambda_38, (Kotlin.isType(tmp$_8 = this.chain.get_za3lpa$(currentLeftIndex), Expression) ? tmp$_8 : throwCCE()).data, MessageType$USER_getInstance(), currentLogLevel.v);
         log_0.addMessageWithExpression_kf0d7z$(ExpressionChain$check$lambda_39, (Kotlin.isType(tmp$_9 = this.chain.get_za3lpa$(currentRightIndex), Expression) ? tmp$_9 : throwCCE()).data, MessageType$USER_getInstance(), currentLogLevel.v);
         tmp$_14 = factComporator.expressionComporator;
@@ -10151,8 +9895,7 @@ var TWF = function (_, Kotlin) {
           log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor, ExpressionChain$check$lambda_40, ExpressionChain$check$lambda_41, ExpressionChain$check$lambda_42, ExpressionChain$check$lambda_43, currentLogLevel.v);
           coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor));
           log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_44, MessageType$USER_getInstance(), currentLogLevel.v);
-        }
-         else {
+        } else {
           log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_45, MessageType$USER_getInstance(), currentLogLevel.v);
           var resultInContext = factComporator.expressionComporator.compareWithTreeTransformationRules_ob15jn$((Kotlin.isType(tmp$_15 = this.chain.get_za3lpa$(currentLeftIndex), Expression) ? tmp$_15 : throwCCE()).data, (Kotlin.isType(tmp$_16 = this.chain.get_za3lpa$(currentRightIndex), Expression) ? tmp$_16 : throwCCE()).data, plus_0(expressionTransformations, factComporator.compiledConfiguration.compiledExpressionTreeTransformationRules), void 0, void 0, void 0, this.comparisonType, factComporator.compiledConfiguration.comparisonSettings.maxDistBetweenDiffSteps);
           if (resultInContext) {
@@ -10160,8 +9903,7 @@ var TWF = function (_, Kotlin) {
             coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor));
             log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_50, MessageType$USER_getInstance(), currentLogLevel.v);
             additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, ExpressionChain$check$lambda_51);
-          }
-           else {
+          } else {
             log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_52);
             var fullFact = new ExpressionComparison(void 0, void 0, Kotlin.isType(tmp$_17 = this.chain.get_za3lpa$(currentLeftIndex), Expression) ? tmp$_17 : throwCCE(), Kotlin.isType(tmp$_18 = this.chain.get_za3lpa$(currentRightIndex), Expression) ? tmp$_18 : throwCCE(), this.comparisonType);
             var tmp$_29 = new MainLineAndNode();
@@ -10178,8 +9920,7 @@ var TWF = function (_, Kotlin) {
               log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factHelpFactColor, ExpressionChain$check$lambda_53, ExpressionChain$check$lambda_54, ExpressionChain$check$lambda_55, ExpressionChain$check$lambda_56, currentLogLevel.v);
               coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factHelpFactColor));
               additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, ExpressionChain$check$lambda_57);
-            }
-             else {
+            } else {
               log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.wrongTransformationFactColor, ExpressionChain$check$lambda_58, ExpressionChain$check$lambda_59, ExpressionChain$check$lambda_60, ExpressionChain$check$lambda_61, currentLogLevel.v);
               coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.wrongTransformationFactColor));
               log_0.addMessage_bda5c9$(ExpressionChain$check$lambda_62, MessageType$USER_getInstance(), currentLogLevel.v);
@@ -10246,27 +9987,23 @@ var TWF = function (_, Kotlin) {
   ExpressionComparison.prototype.isSolutionWithoutFunctions_cbql57$ = function (forbidden, targetExpression, factComporator) {
     if (!targetExpression.children.isEmpty() && !factComporator.expressionComporator.compareAsIs_98xwbf$(this.leftExpression.data, targetExpression)) {
       return new GeneralError('Wrong start expression');
-    }
-    return this.rightExpression.isSolutionWithoutFunctions_cbql57$(forbidden, targetExpression, factComporator);
+    }return this.rightExpression.isSolutionWithoutFunctions_cbql57$(forbidden, targetExpression, factComporator);
   };
   ExpressionComparison.prototype.isFactorizationForVariables_3b7jn6$ = function (minNumberOfMultipliers, targetVariables, targetExpression, factComporator) {
     if (!factComporator.expressionComporator.compareAsIs_98xwbf$(this.leftExpression.data, targetExpression)) {
       return new GeneralError('Wrong start expression');
-    }
-    return this.rightExpression.isFactorizationForVariables_3b7jn6$(minNumberOfMultipliers, targetVariables, targetExpression, factComporator);
+    }return this.rightExpression.isFactorizationForVariables_3b7jn6$(minNumberOfMultipliers, targetVariables, targetExpression, factComporator);
   };
   ExpressionComparison.prototype.hasNoFractions_5ah4l7$ = function (maxNumberOfDivisions, targetExpression, factComporator) {
     if (!factComporator.expressionComporator.compareAsIs_98xwbf$(this.leftExpression.data, targetExpression)) {
       return new GeneralError('Wrong start expression');
-    }
-    return this.rightExpression.hasNoFractions_5ah4l7$(maxNumberOfDivisions, targetExpression, factComporator);
+    }return this.rightExpression.hasNoFractions_5ah4l7$(maxNumberOfDivisions, targetExpression, factComporator);
   };
   ExpressionComparison.prototype.isSolutionForVariables_axkv0l$$default = function (targetVariables, left, allowedVariables) {
     var error = this.leftExpression.isSolutionForVariables_axkv0l$(targetVariables, true, allowedVariables);
     if (error != null) {
       return error;
-    }
-    return this.rightExpression.isSolutionForVariables_axkv0l$(targetVariables, false, allowedVariables);
+    }return this.rightExpression.isSolutionForVariables_axkv0l$(targetVariables, false, allowedVariables);
   };
   ExpressionComparison.prototype.variableReplacement_y0zsll$ = function (replacements) {
     this.leftExpression.variableReplacement_y0zsll$(replacements);
@@ -10379,8 +10116,7 @@ var TWF = function (_, Kotlin) {
       log_0.add_sf5b3k$(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor, ExpressionComparison$check$lambda_3, ExpressionComparison$check$lambda_4, ExpressionComparison$check$lambda_5, ExpressionComparison$check$lambda_6, currentLogLevel.v);
       coloringTasks.add_11rb$(new ColoringTask(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor));
       log_0.addMessage_bda5c9$(ExpressionComparison$check$lambda_7, MessageType$USER_getInstance(), currentLogLevel.v);
-    }
-     else {
+    } else {
       log_0.addMessage_bda5c9$(ExpressionComparison$check$lambda_8, MessageType$USER_getInstance(), currentLogLevel.v);
       var tmp$_3 = factComporator.expressionComporator;
       var tmp$_4 = this.leftExpression.data;
@@ -10399,8 +10135,7 @@ var TWF = function (_, Kotlin) {
         coloringTasks.add_11rb$(new ColoringTask(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor));
         log_0.addMessage_bda5c9$(ExpressionComparison$check$lambda_13, MessageType$USER_getInstance(), currentLogLevel.v);
         additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, ExpressionComparison$check$lambda_14);
-      }
-       else {
+      } else {
         log_0.addMessage_bda5c9$(ExpressionComparison$check$lambda_15);
         var tmp$_7 = new MainLineAndNode();
         var tmp$_8 = new MainLineAndNode(void 0, void 0, void 0, void 0, mutableListOf([this]));
@@ -10416,8 +10151,7 @@ var TWF = function (_, Kotlin) {
           log_0.add_sf5b3k$(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factHelpFactColor, ExpressionComparison$check$lambda_16, ExpressionComparison$check$lambda_17, ExpressionComparison$check$lambda_18, ExpressionComparison$check$lambda_19, currentLogLevel.v);
           coloringTasks.add_11rb$(new ColoringTask(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.factHelpFactColor));
           additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, ExpressionComparison$check$lambda_20);
-        }
-         else {
+        } else {
           log_0.add_sf5b3k$(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.wrongTransformationFactColor, ExpressionComparison$check$lambda_21, ExpressionComparison$check$lambda_22, ExpressionComparison$check$lambda_23, ExpressionComparison$check$lambda_24, currentLogLevel.v);
           coloringTasks.add_11rb$(new ColoringTask(this.leftExpression.endPosition, this.rightExpression.startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.wrongTransformationFactColor));
           log_0.addMessage_bda5c9$(ExpressionComparison$check$lambda_25, MessageType$USER_getInstance(), currentLogLevel.v);
@@ -10432,13 +10166,11 @@ var TWF = function (_, Kotlin) {
     tmp$ = this.leftExpression.computeIfNumeric_z3m4ac$(substitutionInstance, baseOperationsDefinitions);
     if (tmp$ == null) {
       return null;
-    }
-    var l = tmp$;
+    }var l = tmp$;
     tmp$_0 = this.rightExpression.computeIfNumeric_z3m4ac$(substitutionInstance, baseOperationsDefinitions);
     if (tmp$_0 == null) {
       return null;
-    }
-    var r = tmp$_0;
+    }var r = tmp$_0;
     switch (this.comparisonType.name) {
       case 'EQUAL':
         tmp$_1 = baseOperationsDefinitions.additivelyEqual_lu1900$(l, r);
@@ -10494,8 +10226,7 @@ var TWF = function (_, Kotlin) {
   ExpressionComparison.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = this.leftExpression.computeIdentifier_6taknv$(recomputeIfComputed) + ';ec;' + this.comparisonType.string + ';ec;' + this.rightExpression.computeIdentifier_6taknv$(recomputeIfComputed);
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   ExpressionComparison.prototype.computeInIdentifier_6taknv$ = function (recomputeIfComputed) {
     return this.computeIdentifier_6taknv$(recomputeIfComputed);
@@ -10529,8 +10260,7 @@ var TWF = function (_, Kotlin) {
   function ExpressionComparison$Companion_getInstance() {
     if (ExpressionComparison$Companion_instance === null) {
       new ExpressionComparison$Companion();
-    }
-    return ExpressionComparison$Companion_instance;
+    }return ExpressionComparison$Companion_instance;
   }
   ExpressionComparison.$metadata$ = {
     kind: Kind_CLASS,
@@ -10727,20 +10457,15 @@ var TWF = function (_, Kotlin) {
         if (!factComporator.expressionComporator.compareAsIs_98xwbf$(left.data, right.data)) {
           this.expressionSubstitution = new ExpressionSubstitution(left.data, right.data, void 0, comparisonResult.additionalFactUsed, this.name, first(this.root.expressionTransformationChains).comparisonType);
           log_0.addMessageWithExpressionSubstitutionShort_ht2yvq$(Rule$check$lambda_2, ensureNotNull(this.expressionSubstitution), MessageType$USER_getInstance(), currentLogLevel.v);
-        }
-      }
-       else {
+        }} else {
         if (!this.root.factTransformationChains.isEmpty()) {
           var left_0 = first(first(this.root.factTransformationChains).chain);
           var right_0 = last(first(this.root.factTransformationChains).chain);
           if (!factComporator.compareAsIs_hsjydo$(left_0, right_0)) {
             this.factSubstitution = new FactSubstitution(left_0, right_0, void 0, comparisonResult.additionalFactUsed, void 0, this.name, factComporator);
             log_0.addMessageWithFactSubstitutionDetail_v23yj3$(Rule$check$lambda_3, ensureNotNull(this.factSubstitution), MessageType$USER_getInstance(), currentLogLevel.v);
-          }
-        }
-      }
-    }
-     else {
+          }}}
+    } else {
       log_0.addMessage_bda5c9$(Rule$check$lambda_4(this), void 0, currentLogLevel.v);
     }
     return comparisonResult;
@@ -10766,8 +10491,7 @@ var TWF = function (_, Kotlin) {
   Rule.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = '[' + this.name + ':]';
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   Rule.prototype.computeInIdentifier_6taknv$ = function (recomputeIfComputed) {
     return this.computeIdentifier_6taknv$(recomputeIfComputed);
@@ -10806,8 +10530,7 @@ var TWF = function (_, Kotlin) {
   function MainChain(chain) {
     if (chain === void 0) {
       chain = ArrayList_init();
-    }
-    this.chain = chain;
+    }this.chain = chain;
     this.identifier = '';
   }
   function MainChain$toString$lambda(it) {
@@ -10824,8 +10547,7 @@ var TWF = function (_, Kotlin) {
   MainChain.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier)) {
       this.identifier = joinToString(this.chain, ';', void 0, void 0, void 0, void 0, MainChain$computeIdentifier$lambda(recomputeIfComputed));
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   function MainChain$check$lambda() {
     return 'Start checking fact chain';
@@ -11139,18 +10861,14 @@ var TWF = function (_, Kotlin) {
             if (rule.factSubstitution != null) {
               actualFactsTransformations = listOf_0(ensureNotNull(rule.factSubstitution));
               log_0.addMessageWithFactSubstitutionDetail_v23yj3$(MainChain$check$lambda_7, ensureNotNull(rule.factSubstitution), MessageType$USER_getInstance(), currentLogLevel.v);
-            }
-             else if (rule.expressionSubstitution != null) {
+            } else if (rule.expressionSubstitution != null) {
               actualExpressionTransformations = listOf_0(ensureNotNull(rule.expressionSubstitution));
               log_0.addMessageWithExpressionSubstitutionShort_ht2yvq$(MainChain$check$lambda_8, ensureNotNull(rule.expressionSubstitution), MessageType$USER_getInstance(), currentLogLevel.v);
-            }
-          }
-           else {
+            }} else {
             log_0.addMessage_bda5c9$(MainChain$check$lambda_9, MessageType$USER_getInstance(), currentLogLevel.v);
             new ComparisonResult(false, coloringTasks, this.chain.get_za3lpa$(currentLeftIndex), this.chain.get_za3lpa$(currentRightIndex + 1 | 0), 'RULE VERIFICATION_FAILED');
           }
-        }
-         else {
+        } else {
           var ruleName = (Kotlin.isType(tmp$_0 = this.chain.get_za3lpa$(currentRightIndex), RulePointer) ? tmp$_0 : throwCCE()).nameLink;
           log_0.add_f1hiuo$(ruleName, MainChain$check$lambda_10, MainChain$check$lambda_11, currentLogLevel.v, void 0, MessageType$USER_getInstance());
           var destination = ArrayList_init();
@@ -11194,11 +10912,9 @@ var TWF = function (_, Kotlin) {
                 destination_2.add_11rb$(element_1);
             }
             return new ComparisonResult(false, coloringTasks, tmp$_31, tmp$_32, tmp$_33 + joinToString(destination_2, void 0, void 0, void 0, void 0, void 0, MainChain$check$lambda_18));
-          }
-        }
+          }}
         currentRightIndex = log_0.assignAndLog_746w4o$(currentRightIndex + 1 | 0, currentLogLevel.v, MainChain$check$lambda_19);
-      }
-      actualExpressionTransformations = actualExpressionTransformations != null ? actualExpressionTransformations : expressionTransformations;
+      }actualExpressionTransformations = actualExpressionTransformations != null ? actualExpressionTransformations : expressionTransformations;
       actualFactsTransformations = actualFactsTransformations != null ? actualFactsTransformations : factsTransformations;
       if (this.chain.get_za3lpa$(currentRightIndex).type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() || this.chain.get_za3lpa$(currentRightIndex).type() === ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
         tmp$_2 = (Kotlin.isType(tmp$_1 = this.chain.get_za3lpa$(currentRightIndex), MainLineNode) ? tmp$_1 : throwCCE()).factTransformationChains.iterator();
@@ -11206,8 +10922,7 @@ var TWF = function (_, Kotlin) {
           var transformationChain = tmp$_2.next();
           (Kotlin.isType(tmp$_3 = this.chain.get_za3lpa$(currentRightIndex), MainLineNode) ? tmp$_3 : throwCCE()).inFacts.add_11rb$(first(transformationChain.chain));
         }
-      }
-      log_0.addMessage_bda5c9$(MainChain$check$lambda_20, MessageType$USER_getInstance(), currentLogLevel.v);
+      }log_0.addMessage_bda5c9$(MainChain$check$lambda_20, MessageType$USER_getInstance(), currentLogLevel.v);
       currentLogLevel.v = currentLogLevel.v + 1 | 0;
       log_0.addMessageWithFactDetail_5zaetr$(MainChain$check$lambda_21, this.chain.get_za3lpa$(currentLeftIndex), MessageType$USER_getInstance(), currentLogLevel.v);
       log_0.addMessageWithFactDetail_5zaetr$(MainChain$check$lambda_22, this.chain.get_za3lpa$(currentRightIndex), MessageType$USER_getInstance(), currentLogLevel.v);
@@ -11225,8 +10940,7 @@ var TWF = function (_, Kotlin) {
             if (subtractionResult) {
               transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_26);
               log_0.addMessage_bda5c9$(MainChain$check$lambda_27, MessageType$USER_getInstance(), currentLogLevel.v);
-            }
-            if (!transformationVerified) {
+            }if (!transformationVerified) {
               switch (leftExpressionComparison.comparisonType.name) {
                 case 'EQUAL':
                   var ll = factComporator.expressionComporator.compareWithTreeTransformationRules_ob15jn$(leftExpressionComparison.leftExpression.data, rightExpressionComparison.leftExpression.data, actualExpressionTransformations, void 0, void 0, void 0, void 0, factComporator.compiledConfiguration.comparisonSettings.maxDistBetweenDiffSteps);
@@ -11236,8 +10950,7 @@ var TWF = function (_, Kotlin) {
                   if (ll && rr) {
                     transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_32);
                     log_0.addMessage_bda5c9$(MainChain$check$lambda_33, MessageType$USER_getInstance(), currentLogLevel.v);
-                  }
-                   else {
+                  } else {
                     log_0.addMessage_bda5c9$(MainChain$check$lambda_34);
                     var lr = factComporator.expressionComporator.compareWithTreeTransformationRules_ob15jn$(leftExpressionComparison.leftExpression.data, rightExpressionComparison.rightExpression.data, actualExpressionTransformations, void 0, void 0, void 0, void 0, factComporator.compiledConfiguration.comparisonSettings.maxDistBetweenDiffSteps);
                     log_0.add_f1hiuo$(lr, MainChain$check$lambda_35, MainChain$check$lambda_36, currentLogLevel.v, void 0, MessageType$USER_getInstance());
@@ -11246,8 +10959,7 @@ var TWF = function (_, Kotlin) {
                     if (lr && rl) {
                       transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_39);
                       log_0.addMessage_bda5c9$(MainChain$check$lambda_40, MessageType$USER_getInstance(), currentLogLevel.v);
-                    }
-                     else {
+                    } else {
                       log_0.addMessage_bda5c9$(MainChain$check$lambda_41, MessageType$USER_getInstance(), currentLogLevel.v);
                     }
                   }
@@ -11259,9 +10971,7 @@ var TWF = function (_, Kotlin) {
                     if (divisionResult) {
                       transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_42);
                       log_0.addMessage_bda5c9$(MainChain$check$lambda_43, MessageType$USER_getInstance(), currentLogLevel.v);
-                    }
-                  }
-
+                    }}
                   break;
                 case 'LEFT_MORE':
                 case 'LEFT_MORE_OR_EQUAL':
@@ -11272,8 +10982,7 @@ var TWF = function (_, Kotlin) {
                   if (ll_0 && rr_0) {
                     transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_48);
                     log_0.addMessage_bda5c9$(MainChain$check$lambda_49, MessageType$USER_getInstance(), currentLogLevel.v);
-                  }
-                   else {
+                  } else {
                     log_0.addMessage_bda5c9$(MainChain$check$lambda_50, MessageType$USER_getInstance(), currentLogLevel.v);
                   }
 
@@ -11287,17 +10996,13 @@ var TWF = function (_, Kotlin) {
                   if (ll_1 && rr_1) {
                     transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_55);
                     log_0.addMessage_bda5c9$(MainChain$check$lambda_56, MessageType$USER_getInstance(), currentLogLevel.v);
-                  }
-                   else {
+                  } else {
                     log_0.addMessage_bda5c9$(MainChain$check$lambda_57, MessageType$USER_getInstance(), currentLogLevel.v);
                   }
 
                   break;
               }
-            }
-          }
-        }
-         else {
+            }}} else {
           var leftFacts = null;
           var rightFacts = null;
           var tmp$_36 = this.chain.get_za3lpa$(currentLeftIndex).type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() && (Kotlin.isType(tmp$_6 = this.chain.get_za3lpa$(currentLeftIndex), MainLineAndNode) ? tmp$_6 : throwCCE()).outFacts.size === (Kotlin.isType(tmp$_7 = this.chain.get_za3lpa$(currentRightIndex), MainLineAndNode) ? tmp$_7 : throwCCE()).inFacts.size;
@@ -11309,8 +11014,7 @@ var TWF = function (_, Kotlin) {
               if (Kotlin.isType($receiver, Collection) && $receiver.isEmpty()) {
                 count$result = 0;
                 break count$break;
-              }
-              var count = 0;
+              }var count = 0;
               tmp$_37 = $receiver.iterator();
               while (tmp$_37.hasNext()) {
                 var element_2 = tmp$_37.next();
@@ -11321,8 +11025,7 @@ var TWF = function (_, Kotlin) {
             }
              while (false);
             tmp$_36 = count$result === 0;
-          }
-          var tmp$_38 = tmp$_36;
+          }var tmp$_38 = tmp$_36;
           if (tmp$_38) {
             var $receiver_0 = (Kotlin.isType(tmp$_9 = this.chain.get_za3lpa$(currentRightIndex), MainLineAndNode) ? tmp$_9 : throwCCE()).inFacts;
             var count$result_0;
@@ -11331,8 +11034,7 @@ var TWF = function (_, Kotlin) {
               if (Kotlin.isType($receiver_0, Collection) && $receiver_0.isEmpty()) {
                 count$result_0 = 0;
                 break count$break;
-              }
-              var count_0 = 0;
+              }var count_0 = 0;
               tmp$_39 = $receiver_0.iterator();
               while (tmp$_39.hasNext()) {
                 var element_3 = tmp$_39.next();
@@ -11343,12 +11045,10 @@ var TWF = function (_, Kotlin) {
             }
              while (false);
             tmp$_38 = count$result_0 === 0;
-          }
-          if (tmp$_38) {
+          }if (tmp$_38) {
             leftFacts = (Kotlin.isType(tmp$_10 = this.chain.get_za3lpa$(currentLeftIndex), MainLineAndNode) ? tmp$_10 : throwCCE()).outFacts;
             rightFacts = (Kotlin.isType(tmp$_11 = this.chain.get_za3lpa$(currentRightIndex), MainLineAndNode) ? tmp$_11 : throwCCE()).inFacts;
-          }
-           else {
+          } else {
             var tmp$_40 = this.chain.get_za3lpa$(currentLeftIndex).type() === ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance() && (Kotlin.isType(tmp$_12 = this.chain.get_za3lpa$(currentLeftIndex), MainLineOrNode) ? tmp$_12 : throwCCE()).outFacts.size === (Kotlin.isType(tmp$_13 = this.chain.get_za3lpa$(currentRightIndex), MainLineOrNode) ? tmp$_13 : throwCCE()).inFacts.size;
             if (tmp$_40) {
               var $receiver_1 = (Kotlin.isType(tmp$_14 = this.chain.get_za3lpa$(currentLeftIndex), MainLineOrNode) ? tmp$_14 : throwCCE()).outFacts;
@@ -11358,8 +11058,7 @@ var TWF = function (_, Kotlin) {
                 if (Kotlin.isType($receiver_1, Collection) && $receiver_1.isEmpty()) {
                   count$result_1 = 0;
                   break count$break;
-                }
-                var count_1 = 0;
+                }var count_1 = 0;
                 tmp$_41 = $receiver_1.iterator();
                 while (tmp$_41.hasNext()) {
                   var element_4 = tmp$_41.next();
@@ -11370,8 +11069,7 @@ var TWF = function (_, Kotlin) {
               }
                while (false);
               tmp$_40 = count$result_1 === 0;
-            }
-            var tmp$_42 = tmp$_40;
+            }var tmp$_42 = tmp$_40;
             if (tmp$_42) {
               var $receiver_2 = (Kotlin.isType(tmp$_15 = this.chain.get_za3lpa$(currentRightIndex), MainLineOrNode) ? tmp$_15 : throwCCE()).inFacts;
               var count$result_2;
@@ -11380,8 +11078,7 @@ var TWF = function (_, Kotlin) {
                 if (Kotlin.isType($receiver_2, Collection) && $receiver_2.isEmpty()) {
                   count$result_2 = 0;
                   break count$break;
-                }
-                var count_2 = 0;
+                }var count_2 = 0;
                 tmp$_43 = $receiver_2.iterator();
                 while (tmp$_43.hasNext()) {
                   var element_5 = tmp$_43.next();
@@ -11392,12 +11089,10 @@ var TWF = function (_, Kotlin) {
               }
                while (false);
               tmp$_42 = count$result_2 === 0;
-            }
-            if (tmp$_42) {
+            }if (tmp$_42) {
               leftFacts = (Kotlin.isType(tmp$_16 = this.chain.get_za3lpa$(currentLeftIndex), MainLineOrNode) ? tmp$_16 : throwCCE()).outFacts;
               rightFacts = (Kotlin.isType(tmp$_17 = this.chain.get_za3lpa$(currentRightIndex), MainLineOrNode) ? tmp$_17 : throwCCE()).inFacts;
-            }
-          }
+            }}
           if (leftFacts != null && rightFacts != null) {
             log_0.addMessage_bda5c9$(MainChain$check$lambda_58, MessageType$USER_getInstance(), currentLogLevel.v);
             log_0.logSystemFacts_zi2lc5$(this.chain.get_za3lpa$(currentLeftIndex).type(), leftFacts, MainChain$check$lambda_59, MessageType$USER_getInstance());
@@ -11415,8 +11110,7 @@ var TWF = function (_, Kotlin) {
                 log_0.add_f1hiuo$(i_0, MainChain$check$lambda_63, MainChain$check$lambda_64, currentLogLevel.v, void 0, MessageType$USER_getInstance());
                 hasDifferentComparisonType = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_65);
                 break;
-              }
-            }
+              }}
             if (!hasDifferentComparisonType) {
               log_0.addMessage_bda5c9$(MainChain$check$lambda_66, MessageType$USER_getInstance(), currentLogLevel.v);
               var uncorrectTransformationFound = log_0.assignAndLog_746w4o$(false, currentLogLevel.v, MainChain$check$lambda_67);
@@ -11428,17 +11122,12 @@ var TWF = function (_, Kotlin) {
                   uncorrectTransformationFound = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_68);
                   log_0.add_f1hiuo$(i_1, MainChain$check$lambda_69, MainChain$check$lambda_70, currentLogLevel.v, void 0, MessageType$USER_getInstance());
                   break;
-                }
-              }
+                }}
               if (!uncorrectTransformationFound) {
                 log_0.addMessage_bda5c9$(MainChain$check$lambda_71, MessageType$USER_getInstance(), currentLogLevel.v);
                 transformationVerified = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_72);
-              }
-            }
-          }
-        }
-      }
-      if (!transformationVerified) {
+              }}}}
+      }if (!transformationVerified) {
         log_0.addMessage_bda5c9$(MainChain$check$lambda_73);
         var additionalFactInCurrentTransformationApplicationUsed = ArrayList_init();
         var result_0 = factComporator.compareWithTreeTransformationRules_90aq3c$(this.chain.get_za3lpa$(currentLeftIndex), this.chain.get_za3lpa$(currentRightIndex), additionalFacts, actualFactsTransformations, void 0, void 0, void 0, void 0, additionalFactInCurrentTransformationApplicationUsed);
@@ -11449,16 +11138,13 @@ var TWF = function (_, Kotlin) {
           log_0.add_f1hiuo$(isInTaskContext, MainChain$check$lambda_78, MainChain$check$lambda_79, currentLogLevel.v, void 0, MessageType$USER_getInstance());
           if (isInTaskContext) {
             additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainChain$check$lambda_80);
-          }
-        }
-         else {
+          }} else {
           log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.wrongFactColor, MainChain$check$lambda_81, MainChain$check$lambda_82, MainChain$check$lambda_83, MainChain$check$lambda_84, currentLogLevel.v);
           coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.wrongFactColor));
           log_0.addMessage_bda5c9$(MainChain$check$lambda_85, MessageType$USER_getInstance(), currentLogLevel.v);
           return new ComparisonResult(false, coloringTasks, this.chain.get_za3lpa$(currentLeftIndex), this.chain.get_za3lpa$(currentRightIndex), "Unclear transformation between '" + this.chain.get_za3lpa$(currentLeftIndex) + "' and '" + this.chain.get_za3lpa$(currentRightIndex) + "' ");
         }
-      }
-       else {
+      } else {
         log_0.add_sf5b3k$(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor, MainChain$check$lambda_86, MainChain$check$lambda_87, MainChain$check$lambda_88, MainChain$check$lambda_89, currentLogLevel.v);
         coloringTasks.add_11rb$(new ColoringTask(this.chain.get_za3lpa$(currentLeftIndex).endPosition, this.chain.get_za3lpa$(currentRightIndex).startPosition, factComporator.compiledConfiguration.checkedFactAccentuation.checkedFactColor.correctFactColor));
         log_0.addMessage_bda5c9$(MainChain$check$lambda_90, MessageType$USER_getInstance(), currentLogLevel.v);
@@ -11469,8 +11155,7 @@ var TWF = function (_, Kotlin) {
           var transformationChain_0 = tmp$_27.next();
           (Kotlin.isType(tmp$_28 = this.chain.get_za3lpa$(currentRightIndex), MainLineNode) ? tmp$_28 : throwCCE()).outFacts.add_11rb$(last(transformationChain_0.chain));
         }
-      }
-      currentLogLevel.v = currentLogLevel.v - 1 | 0;
+      }currentLogLevel.v = currentLogLevel.v - 1 | 0;
       currentLeftIndex = log_0.assignAndLog_746w4o$(currentRightIndex, currentLogLevel.v, MainChain$check$lambda_91);
       currentRightIndex = log_0.assignAndLog_746w4o$(currentRightIndex + 1 | 0, currentLogLevel.v, MainChain$check$lambda_92);
     }
@@ -11500,20 +11185,15 @@ var TWF = function (_, Kotlin) {
       parent = null;
     if (factTransformationChains === void 0) {
       factTransformationChains = ArrayList_init();
-    }
-    if (inFacts === void 0) {
+    }if (inFacts === void 0) {
       inFacts = ArrayList_init();
-    }
-    if (outFacts === void 0) {
+    }if (outFacts === void 0) {
       outFacts = ArrayList_init();
-    }
-    if (expressionTransformationChains === void 0) {
+    }if (expressionTransformationChains === void 0) {
       expressionTransformationChains = ArrayList_init();
-    }
-    if (rules === void 0) {
+    }if (rules === void 0) {
       rules = ArrayList_init();
-    }
-    if (identifier === void 0)
+    }if (identifier === void 0)
       identifier = '';
     this.startPosition_6tkjyc$_0 = startPosition;
     this.endPosition_vyyktf$_0 = endPosition;
@@ -11610,11 +11290,9 @@ var TWF = function (_, Kotlin) {
       var isCorrect = tmp$_2;
       if (isCorrect == null) {
         isNull = true;
-      }
-       else if (!isCorrect) {
+      } else if (!isCorrect) {
         return false;
-      }
-    }
+      }}
     return isNull ? null : true;
   };
   MainLineAndNode.prototype.copyNode = function () {
@@ -11877,9 +11555,7 @@ var TWF = function (_, Kotlin) {
         log_0.addMessageWithFactDetail_5zaetr$(MainLineAndNode$check$lambda_3, first(factChain.chain), MessageType$USER_getInstance(), currentLogLevel.v);
         if (checkingResult.additionalFactUsed) {
           additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainLineAndNode$check$lambda_4);
-        }
-      }
-       else {
+        }} else {
         log_0.addMessage_bda5c9$(MainLineAndNode$check$lambda_5, MessageType$USER_getInstance(), currentLogLevel.v);
         log_0.add_f1hiuo$(first(factChain.chain), MainLineAndNode$check$lambda_6, MainLineAndNode$check$lambda_7, currentLogLevel.v);
         return checkingResult;
@@ -11906,8 +11582,7 @@ var TWF = function (_, Kotlin) {
               if (factComporator.compareAsIs_hsjydo$(knownFact, ensureNotNull(rule.factSubstitution).left)) {
                 leftFactIsKnown = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainLineAndNode$check$lambda_12);
                 break;
-              }
-            }
+              }}
             if (leftFactIsKnown) {
               knownFacts.add_11rb$(ensureNotNull(rule.factSubstitution).right);
               log_0.addMessage_bda5c9$(MainLineAndNode$check$lambda_13, MessageType$USER_getInstance(), currentLogLevel.v);
@@ -11916,16 +11591,11 @@ var TWF = function (_, Kotlin) {
                 var expressionSubstitution = new ExpressionSubstitution(ruleData.leftExpression.data, ruleData.rightExpression.data, void 0, true, void 0, ruleData.comparisonType);
                 nodeExpressionTransformations.add_11rb$(expressionSubstitution);
                 log_0.addMessageWithExpressionSubstitutionShort_ht2yvq$(MainLineAndNode$check$lambda_14, expressionSubstitution, void 0, currentLogLevel.v);
-              }
-            }
-          }
-           else {
+              }}} else {
             nodeExpressionTransformations.add_11rb$(ensureNotNull(rule.expressionSubstitution));
             log_0.addMessageWithExpressionSubstitutionShort_ht2yvq$(MainLineAndNode$check$lambda_15, ensureNotNull(rule.expressionSubstitution), MessageType$USER_getInstance(), currentLogLevel.v);
           }
-        }
-      }
-       else {
+        }} else {
         log_0.addMessage_bda5c9$(MainLineAndNode$check$lambda_16, MessageType$USER_getInstance(), currentLogLevel.v);
         log_0.add_f1hiuo$(rule, MainLineAndNode$check$lambda_17, MainLineAndNode$check$lambda_18, currentLogLevel.v);
         return new ComparisonResult(false, coloringTasks, this, this, checkingResult_0.description);
@@ -11942,9 +11612,7 @@ var TWF = function (_, Kotlin) {
         log_0.addMessageWithFactDetail_5zaetr$(MainLineAndNode$check$lambda_20, last(this.outFacts), MessageType$USER_getInstance(), currentLogLevel.v);
         if (checkingResult_1.additionalFactUsed) {
           additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainLineAndNode$check$lambda_21);
-        }
-      }
-       else {
+        }} else {
         log_0.addMessage_bda5c9$(MainLineAndNode$check$lambda_22, MessageType$USER_getInstance(), currentLogLevel.v);
         log_0.add_f1hiuo$(expressionChain, MainLineAndNode$check$lambda_23, MainLineAndNode$check$lambda_24, currentLogLevel.v);
         return new ComparisonResult(false, coloringTasks, this, this, checkingResult_1.description);
@@ -11961,9 +11629,7 @@ var TWF = function (_, Kotlin) {
         log_0.addMessageWithFactDetail_5zaetr$(MainLineAndNode$check$lambda_26, last(this.outFacts), MessageType$USER_getInstance(), currentLogLevel.v);
         if (checkingResult_2.additionalFactUsed) {
           additionalFactUsed = log_0.assignAndLog_746w4o$(true, currentLogLevel.v, MainLineAndNode$check$lambda_27);
-        }
-      }
-       else {
+        }} else {
         log_0.addMessage_bda5c9$(MainLineAndNode$check$lambda_28, MessageType$USER_getInstance(), currentLogLevel.v);
         log_0.add_f1hiuo$(factChain_0, MainLineAndNode$check$lambda_29, MainLineAndNode$check$lambda_30, currentLogLevel.v);
         return new ComparisonResult(false, coloringTasks, this, this, checkingResult_2.description);
@@ -11981,8 +11647,7 @@ var TWF = function (_, Kotlin) {
   MainLineAndNode.prototype.addExpressionComparisonFact_5lkwds$ = function (fact) {
     if (this.factTransformationChains.isEmpty()) {
       this.addStartNewFactChain();
-    }
-    this.getActualChain().add_11rb$(fact);
+    }this.getActualChain().add_11rb$(fact);
   };
   MainLineAndNode.prototype.type = function () {
     return ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance();
@@ -12006,32 +11671,27 @@ var TWF = function (_, Kotlin) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     if (!this.rules.isEmpty()) {
       tmp$ = 'rules:(' + joinToString(this.rules, ';', void 0, void 0, void 0, void 0, MainLineAndNode$toString$lambda) + ');';
-    }
-     else {
+    } else {
       tmp$ = '';
     }
     if (!this.expressionTransformationChains.isEmpty()) {
       tmp$_0 = 'transformation chains:(' + joinToString(this.expressionTransformationChains, ';', void 0, void 0, void 0, void 0, MainLineAndNode$toString$lambda_0) + ');';
-    }
-     else {
+    } else {
       tmp$_0 = '';
     }
     if (!this.factTransformationChains.isEmpty()) {
       tmp$_1 = 'facts chains:(' + joinToString(this.factTransformationChains, ';', void 0, void 0, void 0, void 0, MainLineAndNode$toString$lambda_1) + ')';
-    }
-     else {
+    } else {
       tmp$_1 = '';
     }
     if (!this.inFacts.isEmpty()) {
       tmp$_2 = 'in:(' + joinToString(this.inFacts, ';', void 0, void 0, void 0, void 0, MainLineAndNode$toString$lambda_2) + ')';
-    }
-     else {
+    } else {
       tmp$_2 = '';
     }
     if (!this.outFacts.isEmpty()) {
       tmp$_3 = 'out:(' + joinToString(this.outFacts, ';', void 0, void 0, void 0, void 0, MainLineAndNode$toString$lambda_3) + ')';
-    }
-     else {
+    } else {
       tmp$_3 = '';
     }
     return 'AND_NODE(' + tmp$ + tmp$_0 + tmp$_1 + tmp$_2 + tmp$_3 + ')';
@@ -12049,8 +11709,7 @@ var TWF = function (_, Kotlin) {
   MainLineAndNode.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = 'AND_NODE(' + joinToString(this.inFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineAndNode$computeIdentifier$lambda(recomputeIfComputed)) + ((!this.outFacts.isEmpty() ? ';-->>;(' + joinToString(this.outFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineAndNode$computeIdentifier$lambda_0(recomputeIfComputed)) : '') + ')');
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   function MainLineAndNode$computeInIdentifier$lambda(closure$recomputeIfComputed) {
     return function (it) {
@@ -12060,8 +11719,7 @@ var TWF = function (_, Kotlin) {
   MainLineAndNode.prototype.computeInIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.inIdentifier) || recomputeIfComputed) {
       this.inIdentifier = 'AND_NODE(' + joinToString(this.inFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineAndNode$computeInIdentifier$lambda(recomputeIfComputed)) + ')';
-    }
-    return this.inIdentifier;
+    }return this.inIdentifier;
   };
   function MainLineAndNode$computeOutIdentifier$lambda(closure$recomputeIfComputed) {
     return function (it) {
@@ -12071,8 +11729,7 @@ var TWF = function (_, Kotlin) {
   MainLineAndNode.prototype.computeOutIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.outIdentifier) || recomputeIfComputed) {
       this.outIdentifier = 'AND_NODE(' + joinToString(this.outFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineAndNode$computeOutIdentifier$lambda(recomputeIfComputed)) + ')';
-    }
-    return this.outIdentifier;
+    }return this.outIdentifier;
   };
   function MainLineAndNode$computeSortedOutIdentifier$lambda(it) {
     return it;
@@ -12092,20 +11749,17 @@ var TWF = function (_, Kotlin) {
   MainLineAndNode.prototype.isFactorizationForVariables_3b7jn6$ = function (minNumberOfMultipliers, targetVariables, targetExpression, factComporator) {
     if (!this.outFacts.isEmpty()) {
       return last(this.outFacts).isFactorizationForVariables_3b7jn6$(minNumberOfMultipliers, targetVariables, targetExpression, factComporator);
-    }
-    return new GeneralError('No answer');
+    }return new GeneralError('No answer');
   };
   MainLineAndNode.prototype.isSolutionWithoutFunctions_cbql57$ = function (forbidden, targetExpression, factComporator) {
     if (!this.outFacts.isEmpty()) {
       return last(this.outFacts).isSolutionWithoutFunctions_cbql57$(forbidden, targetExpression, factComporator);
-    }
-    return new GeneralError('No answer');
+    }return new GeneralError('No answer');
   };
   MainLineAndNode.prototype.hasNoFractions_5ah4l7$ = function (maxNumberOfDivisions, targetExpression, factComporator) {
     if (!this.outFacts.isEmpty()) {
       return last(this.outFacts).hasNoFractions_5ah4l7$(maxNumberOfDivisions, targetExpression, factComporator);
-    }
-    return new GeneralError('No answer');
+    }return new GeneralError('No answer');
   };
   function MainLineAndNode$Companion() {
     MainLineAndNode$Companion_instance = this;
@@ -12143,8 +11797,7 @@ var TWF = function (_, Kotlin) {
   function MainLineAndNode$Companion_getInstance() {
     if (MainLineAndNode$Companion_instance === null) {
       new MainLineAndNode$Companion();
-    }
-    return MainLineAndNode$Companion_instance;
+    }return MainLineAndNode$Companion_instance;
   }
   MainLineAndNode.$metadata$ = {
     kind: Kind_CLASS,
@@ -12161,20 +11814,15 @@ var TWF = function (_, Kotlin) {
       parent = null;
     if (factTransformationChains === void 0) {
       factTransformationChains = ArrayList_init();
-    }
-    if (inFacts === void 0) {
+    }if (inFacts === void 0) {
       inFacts = ArrayList_init();
-    }
-    if (outFacts === void 0) {
+    }if (outFacts === void 0) {
       outFacts = ArrayList_init();
-    }
-    if (expressionTransformationChains === void 0) {
+    }if (expressionTransformationChains === void 0) {
       expressionTransformationChains = ArrayList_init();
-    }
-    if (rules === void 0) {
+    }if (rules === void 0) {
       rules = ArrayList_init();
-    }
-    if (identifier === void 0)
+    }if (identifier === void 0)
       identifier = '';
     this.startPosition_t9kio0$_0 = startPosition;
     this.endPosition_pktch3$_0 = endPosition;
@@ -12271,11 +11919,9 @@ var TWF = function (_, Kotlin) {
       var isCorrect = tmp$_2;
       if (isCorrect == null) {
         isNull = true;
-      }
-       else if (isCorrect) {
+      } else if (isCorrect) {
         return true;
-      }
-    }
+      }}
     return isNull ? null : false;
   };
   MainLineOrNode.prototype.copyNode = function () {
@@ -12429,8 +12075,7 @@ var TWF = function (_, Kotlin) {
   MainLineOrNode.prototype.addExpressionComparisonFact_5lkwds$ = function (fact) {
     if (this.factTransformationChains.isEmpty()) {
       this.addStartNewFactChain();
-    }
-    this.getActualChain().add_11rb$(fact);
+    }this.getActualChain().add_11rb$(fact);
   };
   MainLineOrNode.prototype.type = function () {
     return ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance();
@@ -12454,32 +12099,27 @@ var TWF = function (_, Kotlin) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     if (!this.rules.isEmpty()) {
       tmp$ = 'rules:(' + joinToString(this.rules, ';', void 0, void 0, void 0, void 0, MainLineOrNode$toString$lambda) + ');';
-    }
-     else {
+    } else {
       tmp$ = '';
     }
     if (!this.expressionTransformationChains.isEmpty()) {
       tmp$_0 = 'transformation chains:(' + joinToString(this.expressionTransformationChains, ';', void 0, void 0, void 0, void 0, MainLineOrNode$toString$lambda_0) + ');';
-    }
-     else {
+    } else {
       tmp$_0 = '';
     }
     if (!this.factTransformationChains.isEmpty()) {
       tmp$_1 = 'facts chains:(' + joinToString(this.factTransformationChains, ';', void 0, void 0, void 0, void 0, MainLineOrNode$toString$lambda_1) + ')';
-    }
-     else {
+    } else {
       tmp$_1 = '';
     }
     if (!this.inFacts.isEmpty()) {
       tmp$_2 = 'in:(' + joinToString(this.inFacts, ';', void 0, void 0, void 0, void 0, MainLineOrNode$toString$lambda_2) + ')';
-    }
-     else {
+    } else {
       tmp$_2 = '';
     }
     if (!this.outFacts.isEmpty()) {
       tmp$_3 = 'out:(' + joinToString(this.outFacts, ';', void 0, void 0, void 0, void 0, MainLineOrNode$toString$lambda_3) + ')';
-    }
-     else {
+    } else {
       tmp$_3 = '';
     }
     return 'OR_NODE(' + tmp$ + tmp$_0 + tmp$_1 + tmp$_2 + tmp$_3 + ')';
@@ -12497,8 +12137,7 @@ var TWF = function (_, Kotlin) {
   MainLineOrNode.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier) || recomputeIfComputed) {
       this.identifier = 'OR_NODE(' + joinToString(this.inFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineOrNode$computeIdentifier$lambda(recomputeIfComputed)) + ((!this.outFacts.isEmpty() ? ';-->>;(' + joinToString(this.outFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineOrNode$computeIdentifier$lambda_0(recomputeIfComputed)) : '') + ')');
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   function MainLineOrNode$computeInIdentifier$lambda(closure$recomputeIfComputed) {
     return function (it) {
@@ -12508,8 +12147,7 @@ var TWF = function (_, Kotlin) {
   MainLineOrNode.prototype.computeInIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.inIdentifier) || recomputeIfComputed) {
       this.inIdentifier = 'OR_NODE(' + joinToString(this.inFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineOrNode$computeInIdentifier$lambda(recomputeIfComputed)) + ')';
-    }
-    return this.inIdentifier;
+    }return this.inIdentifier;
   };
   function MainLineOrNode$computeOutIdentifier$lambda(closure$recomputeIfComputed) {
     return function (it) {
@@ -12519,8 +12157,7 @@ var TWF = function (_, Kotlin) {
   MainLineOrNode.prototype.computeOutIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.outIdentifier) || recomputeIfComputed) {
       this.outIdentifier = 'OR_NODE(' + joinToString(this.outFacts, ';mn;', void 0, void 0, void 0, void 0, MainLineOrNode$computeOutIdentifier$lambda(recomputeIfComputed)) + ')';
-    }
-    return this.outIdentifier;
+    }return this.outIdentifier;
   };
   function MainLineOrNode$computeSortedOutIdentifier$lambda(it) {
     return it;
@@ -12573,26 +12210,22 @@ var TWF = function (_, Kotlin) {
   function MainLineOrNode$Companion_getInstance() {
     if (MainLineOrNode$Companion_instance === null) {
       new MainLineOrNode$Companion();
-    }
-    return MainLineOrNode$Companion_instance;
+    }return MainLineOrNode$Companion_instance;
   }
   MainLineOrNode.prototype.isFactorizationForVariables_3b7jn6$ = function (minNumberOfMultipliers, targetVariables, targetExpression, factComporator) {
     if (!this.outFacts.isEmpty()) {
       return last(this.outFacts).isFactorizationForVariables_3b7jn6$(minNumberOfMultipliers, targetVariables, targetExpression, factComporator);
-    }
-    return new GeneralError('No answer');
+    }return new GeneralError('No answer');
   };
   MainLineOrNode.prototype.isSolutionWithoutFunctions_cbql57$ = function (forbidden, targetExpression, factComporator) {
     if (!this.outFacts.isEmpty()) {
       return last(this.outFacts).isSolutionWithoutFunctions_cbql57$(forbidden, targetExpression, factComporator);
-    }
-    return new GeneralError('No answer');
+    }return new GeneralError('No answer');
   };
   MainLineOrNode.prototype.hasNoFractions_5ah4l7$ = function (maxNumberOfDivisions, targetExpression, factComporator) {
     if (!this.outFacts.isEmpty()) {
       return last(this.outFacts).hasNoFractions_5ah4l7$(maxNumberOfDivisions, targetExpression, factComporator);
-    }
-    return new GeneralError('No answer');
+    }return new GeneralError('No answer');
   };
   MainLineOrNode.$metadata$ = {
     kind: Kind_CLASS,
@@ -12630,8 +12263,7 @@ var TWF = function (_, Kotlin) {
       tmp$_0 = parseFromFactIdentifier(part, parent, functionConfiguration);
       if (tmp$_0 == null) {
         continue;
-      }
-      result.add_11rb$(tmp$_0);
+      }result.add_11rb$(tmp$_0);
     }
     return result;
   }
@@ -12642,14 +12274,11 @@ var TWF = function (_, Kotlin) {
       functionConfiguration = new FunctionConfiguration();
     if (startsWith_0(string, 'AND_NODE(')) {
       return MainLineAndNode$Companion_getInstance().parseFromFactIdentifier_yhp8gb$(string, parent, functionConfiguration);
-    }
-     else if (startsWith_0(string, 'OR_NODE(')) {
+    } else if (startsWith_0(string, 'OR_NODE(')) {
       return MainLineOrNode$Companion_getInstance().parseFromFactIdentifier_yhp8gb$(string, parent, functionConfiguration);
-    }
-     else if (contains(string, ';ec;')) {
+    } else if (contains(string, ';ec;')) {
       return ExpressionComparison$Companion_getInstance().parseFromFactIdentifier_yhp8gb$(string, parent, functionConfiguration);
-    }
-     else {
+    } else {
       return Expression$Companion_getInstance().parseFromFactIdentifier_yhp8gb$(string, parent, functionConfiguration);
     }
   }
@@ -12668,26 +12297,22 @@ var TWF = function (_, Kotlin) {
       $receiver.inFacts.add_11rb$(ordered.second);
       $receiver.outFacts.add_11rb$(ordered.second);
       return new Pair(tmp$_0, $receiver);
-    }
-     else
+    } else
       return ordered;
   }
   function factWrapperForCheckingTransformations(fact, checkOutMainLineNodePart) {
     var tmp$, tmp$_0;
     if (fact.type() !== ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() && fact.type() !== ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
       tmp$ = mutableListOf([fact]);
-    }
-     else if (checkOutMainLineNodePart) {
+    } else if (checkOutMainLineNodePart) {
       tmp$ = getOutFactsFromMainLineNode(fact);
-    }
-     else {
+    } else {
       tmp$ = getInFactsFromMainLineNode(fact);
     }
     var actualFacts = tmp$;
     if (fact.type() !== ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
       tmp$_0 = new MainLineAndNode(void 0, void 0, void 0, void 0, actualFacts, actualFacts);
-    }
-     else {
+    } else {
       tmp$_0 = new MainLineAndNode(void 0, void 0, void 0, void 0, actualFacts, actualFacts);
     }
     var wrapper = tmp$_0;
@@ -12752,12 +12377,10 @@ var TWF = function (_, Kotlin) {
       if (it.type() === ComparableTransformationPartType$EXPRESSION_getInstance()) {
         tmp$_0 = Kotlin.isType(tmp$ = it, Expression) ? tmp$ : throwCCE();
         return this$FactConstructorViewer.constructFactUserView_5lkwds$(tmp$_0);
-      }
-       else if (it.type() === ComparableTransformationPartType$RULE_getInstance()) {
+      } else if (it.type() === ComparableTransformationPartType$RULE_getInstance()) {
         tmp$_2 = Kotlin.isType(tmp$_1 = it, Rule) ? tmp$_1 : throwCCE();
         return this$FactConstructorViewer.constructFactUserView_5lkwds$(tmp$_2);
-      }
-       else {
+      } else {
         tmp$_4 = Kotlin.isType(tmp$_3 = it, RulePointer) ? tmp$_3 : throwCCE();
         return this$FactConstructorViewer.constructFactUserView_5lkwds$(tmp$_4);
       }
@@ -12780,43 +12403,36 @@ var TWF = function (_, Kotlin) {
         if (tmp$_6) {
           tmp$_6 = !fact.outFacts.isEmpty();
         }
-
         if (tmp$_6) {
           var inFactsIdentifier = joinToString(fact.inFacts, '; ', void 0, void 0, void 0, void 0, FactConstructorViewer$constructFactUserView$lambda(this));
           var outFactsIdentifier = joinToString(fact.outFacts, '; ', void 0, void 0, void 0, void 0, FactConstructorViewer$constructFactUserView$lambda_0(this));
           if (equals(inFactsIdentifier, outFactsIdentifier)) {
             result.append_gw00v9$(inFactsIdentifier);
-          }
-           else {
+          } else {
             result.append_gw00v9$(inFactsIdentifier);
             result.append_gw00v9$(' --> ');
             result.append_gw00v9$(outFactsIdentifier);
           }
           result.append_gw00v9$(this.mainLineNodePartSuffix);
         }
-
         if (!fact.rules.isEmpty()) {
           result.append_gw00v9$('RULES: ');
           result.append_gw00v9$(joinToString(fact.rules, '', void 0, void 0, void 0, void 0, FactConstructorViewer$constructFactUserView$lambda_1(this)));
           result.append_gw00v9$(this.mainLineNodePartSuffix);
         }
-
         if (!fact.factTransformationChains.isEmpty()) {
           result.append_gw00v9$('FACTS_CHAINS: ');
           result.append_gw00v9$(joinToString(fact.factTransformationChains, '; ', void 0, void 0, void 0, void 0, FactConstructorViewer$constructFactUserView$lambda_2(this)));
           result.append_gw00v9$(this.mainLineNodePartSuffix);
         }
-
         if (!fact.expressionTransformationChains.isEmpty()) {
           result.append_gw00v9$('EXPRESSION_CHAINS: ');
           result.append_gw00v9$(joinToString(fact.expressionTransformationChains, '; ', void 0, void 0, void 0, void 0, FactConstructorViewer$constructFactUserView$lambda_3(this)));
           result.append_gw00v9$(this.mainLineNodePartSuffix);
         }
-
         if (endsWith_0(result, 123)) {
           tmp$_0 = result.toString() + '}';
-        }
-         else {
+        } else {
           tmp$_0 = dropLast(result, this.mainLineNodePartSuffix.length).toString() + '}';
         }
 
@@ -12836,17 +12452,14 @@ var TWF = function (_, Kotlin) {
         if (fact.factSubstitution != null || fact.expressionSubstitution != null) {
           if (fact.factSubstitution != null) {
             '[' + this.constructFactUserView_5lkwds$(ensureNotNull(fact.factSubstitution).left) + ' ' + toUserString(ensureNotNull(fact.factSubstitution).direction) + ' ' + this.constructFactUserView_5lkwds$(ensureNotNull(fact.factSubstitution).right) + ', actual ' + ((ensureNotNull(fact.factSubstitution).basedOnTaskContext ? 'only in task context' : 'everywhere') + ']');
-          }
-           else {
+          } else {
             if (fact.expressionSubstitution != null) {
               tmp$_4 = '[' + ensureNotNull(fact.expressionSubstitution).left + ' -> ' + ensureNotNull(fact.expressionSubstitution).right + ', ' + ('actual in ' + ensureNotNull(fact.expressionSubstitution).comparisonType + ' context') + ((ensureNotNull(fact.expressionSubstitution).basedOnTaskContext ? 'only in task' : 'everywhere') + ']');
-            }
-             else
+            } else
               tmp$_4 = '';
             '' + tmp$_4;
           }
-        }
-         else {
+        } else {
           '[' + fact.name + ':' + this.constructFactUserView_5lkwds$(fact.root) + ']';
         }
 
@@ -12886,12 +12499,10 @@ var TWF = function (_, Kotlin) {
       if (it.type() === ComparableTransformationPartType$EXPRESSION_getInstance()) {
         tmp$_0 = Kotlin.isType(tmp$ = it, Expression) ? tmp$ : throwCCE();
         return '{' + this$FactConstructorViewer.constructIdentifierByFact_5lkwds$(tmp$_0) + '}';
-      }
-       else if (it.type() === ComparableTransformationPartType$RULE_getInstance()) {
+      } else if (it.type() === ComparableTransformationPartType$RULE_getInstance()) {
         tmp$_2 = Kotlin.isType(tmp$_1 = it, Rule) ? tmp$_1 : throwCCE();
         return '{' + this$FactConstructorViewer.constructIdentifierByFact_5lkwds$(tmp$_2) + '}';
-      }
-       else {
+      } else {
         tmp$_4 = Kotlin.isType(tmp$_3 = it, RulePointer) ? tmp$_3 : throwCCE();
         return '{' + this$FactConstructorViewer.constructIdentifierByFact_5lkwds$(tmp$_4) + '}';
       }
@@ -12949,14 +12560,12 @@ var TWF = function (_, Kotlin) {
         if (fact.expressionSubstitution != null) {
           var subst = ensureNotNull(fact.expressionSubstitution);
           tmp$_3 = '{' + subst.left + '}{' + subst.right + '}{' + subst.comparisonType.string + '}{' + this.data_1v8dcc$(subst.basedOnTaskContext) + '}{' + subst.weight + '}';
-        }
-         else
+        } else
           tmp$_3 = '';
         if (fact.factSubstitution != null) {
           var subst_0 = ensureNotNull(fact.factSubstitution);
           tmp$_5 = '{' + this.constructIdentifierByFact_5lkwds$(subst_0.left) + '}{' + this.constructIdentifierByFact_5lkwds$(subst_0.right) + '}{' + subst_0.direction + '}{' + this.data_1v8dcc$(subst_0.basedOnTaskContext) + '}{' + subst_0.weight + '}';
-        }
-         else
+        } else
           tmp$_5 = '';
         result.append_gw00v9$(tmp$_4 + ('{EXPRESSION_SUBSTITUTION' + tmp$_3 + '}') + ('{FACT_SUBSTITUTION' + tmp$_5 + '}') + '}');
         break;
@@ -12983,8 +12592,7 @@ var TWF = function (_, Kotlin) {
       if (equals(factType, ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance().toString()) || equals(factType, ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance().toString())) {
         if (equals(factType, ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance().toString())) {
           tmp$ = new MainLineAndNode(0, 0, parent, void 0, void 0, void 0, void 0, void 0, identifier);
-        }
-         else {
+        } else {
           tmp$ = new MainLineOrNode(0, 0, parent, void 0, void 0, void 0, void 0, void 0, identifier);
         }
         var newFact = tmp$;
@@ -13082,18 +12690,15 @@ var TWF = function (_, Kotlin) {
           }
         }
         return newFact;
-      }
-       else if (equals(factType, ComparableTransformationPartType$EXPRESSION_COMPARISON_getInstance().toString())) {
+      } else if (equals(factType, ComparableTransformationPartType$EXPRESSION_COMPARISON_getInstance().toString())) {
         var newFact_0 = new ExpressionComparison(void 0, void 0, emptyExpression(), emptyExpression(), valueOfComparisonType(identifierData.list.get_za3lpa$(1)), parent);
         newFact_0.leftExpression = Kotlin.isType(tmp$_20 = this.constructFactByIdentifier_7q4i4t$(identifierData.list.get_za3lpa$(0), parent), Expression) ? tmp$_20 : throwCCE();
         newFact_0.rightExpression = Kotlin.isType(tmp$_21 = this.constructFactByIdentifier_7q4i4t$(identifierData.list.get_za3lpa$(2), parent), Expression) ? tmp$_21 : throwCCE();
         return newFact_0;
-      }
-       else {
+      } else {
         throw new NotImplementedError_init('An operation is not implemented: ' + 'unexpected behaviour, should be handled better');
       }
-    }
-     else {
+    } else {
       return new Expression(0, 0, this.expressionNodeConstructor.construct_61zpoe$(identifier), identifier, parent);
     }
   };
@@ -13301,8 +12906,7 @@ var TWF = function (_, Kotlin) {
   FactComporator.prototype.compareAsIs_hsjydo$ = function (left, right, additionalFactsSortedIdentifiers, compareExpressionsWithProbabilityTest) {
     if (additionalFactsSortedIdentifiers === void 0) {
       additionalFactsSortedIdentifiers = emptyList();
-    }
-    if (compareExpressionsWithProbabilityTest === void 0)
+    }if (compareExpressionsWithProbabilityTest === void 0)
       compareExpressionsWithProbabilityTest = false;
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
     log_0.addMessage_bda5c9$(FactComporator$compareAsIs$lambda, void 0, void 0, 1);
@@ -13311,8 +12915,7 @@ var TWF = function (_, Kotlin) {
     log_0.addMessage_bda5c9$(FactComporator$compareAsIs$lambda_0(currentLogLevel), void 0, currentLogLevel.v);
     if (left.type() !== right.type()) {
       return false;
-    }
-    switch (left.type().name) {
+    }switch (left.type().name) {
       case 'EXPRESSION':
         log_0.addMessage_bda5c9$(FactComporator$compareAsIs$lambda_1, void 0, currentLogLevel.v);
         tmp$_5 = this.expressionComporator.probabilityTestComparison_at94g6$((Kotlin.isType(tmp$ = left, Expression) ? tmp$ : throwCCE()).data.clone(), (Kotlin.isType(tmp$_0 = right, Expression) ? tmp$_0 : throwCCE()).data.clone());
@@ -13327,8 +12930,7 @@ var TWF = function (_, Kotlin) {
         if (leftOriginal && rightOriginal && leftComparison.comparisonType === rightComparison.comparisonType) {
           log_0.addMessage_bda5c9$(FactComporator$compareAsIs$lambda_6, void 0, currentLogLevel.v);
           tmp$_5 = true;
-        }
-         else {
+        } else {
           log_0.addMessage_bda5c9$(FactComporator$compareAsIs$lambda_7, void 0, currentLogLevel.v);
           var leftEqualRight = this.compareAsIs_hsjydo$(leftComparison.leftExpression, rightComparison.rightExpression, additionalFactsSortedIdentifiers);
           log_0.add_f1hiuo$(leftEqualRight, FactComporator$compareAsIs$lambda_8, FactComporator$compareAsIs$lambda_9, currentLogLevel.v);
@@ -13375,14 +12977,11 @@ var TWF = function (_, Kotlin) {
               orderIsDifferent = true;
               log_0.add_f1hiuo$(i, FactComporator$compareAsIs$lambda_15, FactComporator$compareAsIs$lambda_16, currentLogLevel.v);
               break;
-            }
-          }
+            }}
         }
-
         if (!orderIsDifferent && leftNodeOutFacts.size === rightNodeInFacts.size) {
           tmp$_5 = true;
-        }
-         else {
+        } else {
           log_0.addMessage_bda5c9$(FactComporator$compareAsIs$lambda_17);
           var leftNodeOutFactsSorted = sortedWith(leftNodeOutFacts, new Comparator$ObjectLiteral_0(compareBy$lambda_0(FactComporator$compareAsIs$lambda_18)));
           var rightNodeOutFactsSorted = sortedWith(rightNodeInFacts, new Comparator$ObjectLiteral_0(compareBy$lambda_0(FactComporator$compareAsIs$lambda_19)));
@@ -13397,32 +12996,26 @@ var TWF = function (_, Kotlin) {
             if (equals(leftIdentifier, rightIdentifier)) {
               leftCounter = leftCounter + 1 | 0;
               rightCounter = rightCounter + 1 | 0;
-            }
-             else if (left.type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance()) {
+            } else if (left.type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance()) {
               if (Kotlin.compareTo(leftIdentifier, rightIdentifier) < 0) {
                 if (binarySearch(additionalFactsSortedIdentifiers, leftIdentifier) >= 0) {
                   log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_22, FactComporator$compareAsIs$lambda_23, FactComporator$compareAsIs$lambda_24, currentLogLevel.v);
                   leftCounter = leftCounter + 1 | 0;
-                }
-                 else {
+                } else {
                   discrepancyFound = true;
                   log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_25, FactComporator$compareAsIs$lambda_26, FactComporator$compareAsIs$lambda_27, currentLogLevel.v);
                   break;
                 }
-              }
-               else if (Kotlin.compareTo(leftIdentifier, rightIdentifier) > 0) {
+              } else if (Kotlin.compareTo(leftIdentifier, rightIdentifier) > 0) {
                 if (binarySearch(additionalFactsSortedIdentifiers, rightIdentifier) >= 0) {
                   log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_28, FactComporator$compareAsIs$lambda_29, FactComporator$compareAsIs$lambda_30, currentLogLevel.v);
                   tmp$_4 = rightCounter, rightCounter = tmp$_4 + 1 | 0;
-                }
-                 else {
+                } else {
                   log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_31, FactComporator$compareAsIs$lambda_32, FactComporator$compareAsIs$lambda_33, currentLogLevel.v);
                   discrepancyFound = true;
                   break;
                 }
-              }
-            }
-             else {
+              }} else {
               log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_34, FactComporator$compareAsIs$lambda_35, FactComporator$compareAsIs$lambda_36, currentLogLevel.v);
               discrepancyFound = true;
               break;
@@ -13431,12 +13024,10 @@ var TWF = function (_, Kotlin) {
           if (left.type() !== ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() && (leftCounter < leftNodeOutFactsSorted.size || rightCounter < rightNodeOutFactsSorted.size)) {
             log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_37, FactComporator$compareAsIs$lambda_38, FactComporator$compareAsIs$lambda_39, currentLogLevel.v);
             discrepancyFound = true;
-          }
-          while (!discrepancyFound && leftCounter < leftNodeOutFactsSorted.size) {
+          }while (!discrepancyFound && leftCounter < leftNodeOutFactsSorted.size) {
             if (binarySearch(additionalFactsSortedIdentifiers, leftNodeOutFactsSorted.get_za3lpa$(leftCounter).computeSortedOutIdentifier_6taknv$(true)) >= 0) {
               leftCounter = leftCounter + 1 | 0;
-            }
-             else {
+            } else {
               log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_40, FactComporator$compareAsIs$lambda_41, FactComporator$compareAsIs$lambda_42, currentLogLevel.v);
               discrepancyFound = true;
               break;
@@ -13445,8 +13036,7 @@ var TWF = function (_, Kotlin) {
           while (!discrepancyFound && rightCounter < rightNodeOutFactsSorted.size) {
             if (binarySearch(additionalFactsSortedIdentifiers, rightNodeOutFactsSorted.get_za3lpa$(rightCounter).computeSortedOutIdentifier_6taknv$(true)) >= 0) {
               rightCounter = rightCounter + 1 | 0;
-            }
-             else {
+            } else {
               log_0.add_gqvic5$(leftCounter, rightCounter, FactComporator$compareAsIs$lambda_43, FactComporator$compareAsIs$lambda_44, FactComporator$compareAsIs$lambda_45, currentLogLevel.v);
               discrepancyFound = true;
               break;
@@ -13495,8 +13085,7 @@ var TWF = function (_, Kotlin) {
         destination.add_11rb$(item.computeOutIdentifier_6taknv$(true));
       }
       additionalFactsSortedIdentifiers = sorted(destination);
-    }
-    log_0.addMessage_bda5c9$(FactComporator$compareWithoutSubstitutions$lambda, void 0, void 0, 1);
+    }log_0.addMessage_bda5c9$(FactComporator$compareWithoutSubstitutions$lambda, void 0, void 0, 1);
     log_0.logFactsCompareAsIsParams_eu4irh$(left, right, additionalFactsSortedIdentifiers);
     var currentLogLevel = {v: log_0.currentLevel};
     log_0.addMessage_bda5c9$(FactComporator$compareWithoutSubstitutions$lambda_0(currentLogLevel), void 0, currentLogLevel.v);
@@ -13506,8 +13095,7 @@ var TWF = function (_, Kotlin) {
     log_0.addMessageWithFactShort_5zaetr$(FactComporator$compareWithoutSubstitutions$lambda_2, r, void 0, currentLogLevel.v);
     if (this.compiledConfiguration.comparisonSettings.compareExpressionsAndFactsWithProbabilityRules) {
       throw new NotImplementedError_init('An operation is not implemented: ' + 'implement');
-    }
-     else if (this.compiledConfiguration.comparisonSettings.compareExpressionsWithProbabilityRulesWhenComparingFacts) {
+    } else if (this.compiledConfiguration.comparisonSettings.compareExpressionsWithProbabilityRulesWhenComparingFacts) {
       var functionIdentifierToVariableMap = LinkedHashMap_init_0();
       l.replaceNotDefinedFunctionsOnVariables_1vzej0$(functionIdentifierToVariableMap, this.expressionComporator.definedFunctionNameNumberOfArgsSet);
       r.replaceNotDefinedFunctionsOnVariables_1vzej0$(functionIdentifierToVariableMap, this.expressionComporator.definedFunctionNameNumberOfArgsSet);
@@ -13515,14 +13103,12 @@ var TWF = function (_, Kotlin) {
       log_0.addMessageWithFactShort_5zaetr$(FactComporator$compareWithoutSubstitutions$lambda_4, r, void 0, currentLogLevel.v);
       if (this.compareAsIs_hsjydo$(l, r, additionalFactsSortedIdentifiers, true)) {
         return true;
-      }
-      l.computeExpressionTrees_dq72cu$(this.expressionComporator.baseOperationsDefinitions);
+      }l.computeExpressionTrees_dq72cu$(this.expressionComporator.baseOperationsDefinitions);
       r.computeExpressionTrees_dq72cu$(this.expressionComporator.baseOperationsDefinitions);
       log_0.addMessage_bda5c9$(FactComporator$compareWithoutSubstitutions$lambda_5, void 0, currentLogLevel.v);
       var res = this.compareAsIs_hsjydo$(l, r, additionalFactsSortedIdentifiers, true);
       return res;
-    }
-     else {
+    } else {
       var res_0 = this.compareAsIs_hsjydo$(l, r, additionalFactsSortedIdentifiers);
       return res_0;
     }
@@ -13623,8 +13209,7 @@ var TWF = function (_, Kotlin) {
         if (!iterator.hasNext()) {
           minBy$result = null;
           break minBy$break;
-        }
-        var minElem = iterator.next();
+        }var minElem = iterator.next();
         var minValue = minElem.weight;
         while (iterator.hasNext()) {
           var e = iterator.next();
@@ -13632,14 +13217,12 @@ var TWF = function (_, Kotlin) {
           if (Kotlin.compareTo(minValue, v) > 0) {
             minElem = e;
             minValue = v;
-          }
-        }
+          }}
         minBy$result = minElem;
       }
        while (false);
       minPossibleTransformationWeight = (tmp$_0 = (tmp$ = minBy$result) != null ? tmp$.weight : null) != null ? tmp$_0 : 1.0;
-    }
-    if (additionalFactsSortedIdentifiers === void 0) {
+    }if (additionalFactsSortedIdentifiers === void 0) {
       var destination = ArrayList_init_0(collectionSizeOrDefault(additionalFacts, 10));
       var tmp$_2;
       tmp$_2 = additionalFacts.iterator();
@@ -13648,8 +13231,7 @@ var TWF = function (_, Kotlin) {
         destination.add_11rb$(item.computeOutIdentifier_6taknv$(true));
       }
       additionalFactsSortedIdentifiers = sorted(destination);
-    }
-    var left = leftOriginal.clone();
+    }var left = leftOriginal.clone();
     var right = rightOriginal.clone();
     log_0.addMessage_bda5c9$(FactComporator$compareWithTreeTransformationRules$lambda, MessageType$USER_getInstance(), void 0, 1);
     log_0.logFactsCompareAsIsParams_9vkx2o$(left, right, additionalFacts, maxTransformationWeight, maxBustCount, minPossibleTransformationWeight, additionalFactUsed);
@@ -13698,11 +13280,8 @@ var TWF = function (_, Kotlin) {
           if (!additionalFactInCurrentTransformationApplicationUsed.isEmpty()) {
             additionalFactUsed.add_11rb$(true);
             log_0.addMessage_bda5c9$(FactComporator$compareWithTreeTransformationRules$lambda_17, MessageType$USER_getInstance(), transformationLogLevel);
-          }
-          return true;
-        }
-      }
-       else {
+          }return true;
+        }} else {
         for (var bitMask = 1; bitMask < bitMaskCount; bitMask++) {
           log_0.add_gqvic5$(toString_0(bitMask, 2), toString_0(bitMaskCount, 2), FactComporator$compareWithTreeTransformationRules$lambda_18, FactComporator$compareWithTreeTransformationRules$lambda_19, FactComporator$compareWithTreeTransformationRules$lambda_20, transformationLogLevel, void 0, MessageType$USER_getInstance());
           var additionalFactInCurrentTransformationApplicationUsed_0 = ArrayList_init();
@@ -13714,10 +13293,8 @@ var TWF = function (_, Kotlin) {
             if (!additionalFactInCurrentTransformationApplicationUsed_0.isEmpty()) {
               additionalFactUsed.add_11rb$(true);
               log_0.addMessage_bda5c9$(FactComporator$compareWithTreeTransformationRules$lambda_24, MessageType$USER_getInstance(), transformationLogLevel);
-            }
-            return true;
-          }
-        }
+            }return true;
+          }}
       }
     }
     log_0.addMessage_bda5c9$(FactComporator$compareWithTreeTransformationRules$lambda_25, MessageType$USER_getInstance(), currentLogLevel.v);
@@ -13731,24 +13308,18 @@ var TWF = function (_, Kotlin) {
       if (this.compareWithTreeTransformationRules_90aq3c$(left, right, additionalFacts, this.compiledConfiguration.compiledFactTreeTransformationRules, this.compiledConfiguration.comparisonSettings.maxTransformationWeight, this.compiledConfiguration.comparisonSettings.maxBustCount, void 0, void 0, additionalFactInCurrentTransformationApplicationUsed)) {
         if (!additionalFactInCurrentTransformationApplicationUsed.isEmpty()) {
           additionalFactUsed.add_11rb$(true);
-        }
-        return true;
-      }
-      additionalFactInCurrentTransformationApplicationUsed.clear();
+        }return true;
+      }additionalFactInCurrentTransformationApplicationUsed.clear();
       left.computeExpressionTrees_dq72cu$(this.expressionComporator.baseOperationsDefinitions);
       right.computeExpressionTrees_dq72cu$(this.expressionComporator.baseOperationsDefinitions);
       if (this.compareWithTreeTransformationRules_90aq3c$(left, right, additionalFacts, this.compiledConfiguration.compiledFactTreeTransformationRules, this.compiledConfiguration.comparisonSettings.maxTransformationWeight, this.compiledConfiguration.comparisonSettings.maxBustCount, void 0, void 0, additionalFactInCurrentTransformationApplicationUsed)) {
         if (!additionalFactInCurrentTransformationApplicationUsed.isEmpty()) {
           additionalFactUsed.add_11rb$(true);
-        }
-        return true;
-      }
-    }
-     else {
+        }return true;
+      }} else {
       if (this.compareWithoutSubstitutions_y9i8qm$(left, right, additionalFacts)) {
         return true;
-      }
-    }
+      }}
     return false;
   };
   FactComporator.$metadata$ = {
@@ -13875,27 +13446,21 @@ var TWF = function (_, Kotlin) {
   FactSubstitution.prototype.computeIdentifier_6taknv$ = function (recomputeIfComputed) {
     if (isBlank(this.identifier)) {
       this.identifier = '[' + this.left.computeIdentifier_6taknv$(recomputeIfComputed) + this.direction.beginString + (this.basedOnTaskContext ? 'InTaskContext' : '') + this.direction.endString + this.right.computeIdentifier_6taknv$(recomputeIfComputed) + ']';
-    }
-    return this.identifier;
+    }return this.identifier;
   };
   FactSubstitution.prototype.checkCondition_enijgy$ = function (factNode, inputConditionNode, substitutionInstance, nameArgsMap, checkOutMainLineNodePart, additionalFacts, correspondingIndexes) {
     if (nameArgsMap === void 0) {
       nameArgsMap = LinkedHashMap_init_0();
-    }
-    if (additionalFacts === void 0) {
+    }if (additionalFacts === void 0) {
       additionalFacts = emptyList();
-    }
-    if (correspondingIndexes === void 0) {
+    }if (correspondingIndexes === void 0) {
       correspondingIndexes = ArrayList_init();
-    }
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11, tmp$_12, tmp$_13, tmp$_14, tmp$_15, tmp$_16, tmp$_17, tmp$_18, tmp$_19, tmp$_20;
+    }var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10, tmp$_11, tmp$_12, tmp$_13, tmp$_14, tmp$_15, tmp$_16, tmp$_17, tmp$_18, tmp$_19, tmp$_20;
     var conditionNode = inputConditionNode;
     if (inputConditionNode.type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() || inputConditionNode.type() === ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
       if ((Kotlin.isType(tmp$ = inputConditionNode, MainLineNode) ? tmp$ : throwCCE()).outFacts.size === 1 && factNode.type() !== ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() && factNode.type() !== ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
         conditionNode = first(inputConditionNode.outFacts);
-      }
-    }
-     else if (factNode.type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() || factNode.type() === ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
+      }} else if (factNode.type() === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance() || factNode.type() === ComparableTransformationPartType$MAIN_LINE_OR_NODE_getInstance()) {
       var actualFacts = checkOutMainLineNodePart ? getOutFactsFromMainLineNode(factNode) : getInFactsFromMainLineNode(factNode);
       if (actualFacts.size === 1) {
         switch (factNode.type().name) {
@@ -13909,53 +13474,42 @@ var TWF = function (_, Kotlin) {
             break;
         }
         conditionNode = tmp$_2;
-      }
-    }
-    if (conditionNode.type() === ComparableTransformationPartType$EXPRESSION_getInstance()) {
+      }}if (conditionNode.type() === ComparableTransformationPartType$EXPRESSION_getInstance()) {
       Kotlin.isType(tmp$_3 = conditionNode, Expression) ? tmp$_3 : throwCCE();
       if (this.basedOnTaskContext) {
         if (!(factNode.type() !== ComparableTransformationPartType$EXPRESSION_getInstance()) ? !conditionNode.data.isNodeSubtreeEquals_7j5kvs$((Kotlin.isType(tmp$_4 = factNode, Expression) ? tmp$_4 : throwCCE()).data) : true) {
           substitutionInstance.isApplicable = false;
           return;
-        }
-      }
-       else {
+        }} else {
         var designationName = conditionNode.getDesignation();
         if (designationName.length > 0) {
           var varValue = substitutionInstance.getComparableVar_61zpoe$(designationName);
           if (varValue == null) {
             if (substitutionInstance.getExprVar_61zpoe$(designationName) == null) {
               substitutionInstance.putComparableVar_10y352$(designationName, factNode);
-            }
-             else {
+            } else {
               substitutionInstance.isApplicable = false;
               return;
             }
-          }
-           else {
+          } else {
             if (!this.factComporator.compareAsIs_hsjydo$(Kotlin.isType(tmp$_5 = varValue, MainChainPart) ? tmp$_5 : throwCCE(), Kotlin.isType(tmp$_6 = factNode, MainChainPart) ? tmp$_6 : throwCCE(), emptyList())) {
               substitutionInstance.isApplicable = false;
               return;
-            }
-          }
-        }
-         else {
+            }}
+        } else {
           if (conditionNode.type() !== factNode.type()) {
             substitutionInstance.isApplicable = false;
             return;
-          }
-          ExpressionSubstitution$Companion_getInstance().checkConditionCompanion_adt859$((Kotlin.isType(tmp$_7 = factNode, Expression) ? tmp$_7 : throwCCE()).data, (Kotlin.isType(tmp$_8 = conditionNode, Expression) ? tmp$_8 : throwCCE()).data, substitutionInstance, nameArgsMap, this.basedOnTaskContext);
+          }ExpressionSubstitution$Companion_getInstance().checkConditionCompanion_adt859$((Kotlin.isType(tmp$_7 = factNode, Expression) ? tmp$_7 : throwCCE()).data, (Kotlin.isType(tmp$_8 = conditionNode, Expression) ? tmp$_8 : throwCCE()).data, substitutionInstance, nameArgsMap, this.basedOnTaskContext);
           if (!substitutionInstance.isApplicable)
             return;
         }
       }
-    }
-     else {
+    } else {
       if (conditionNode.type() !== factNode.type()) {
         substitutionInstance.isApplicable = false;
         return;
-      }
-      loop_label: switch (conditionNode.type().name) {
+      }loop_label: switch (conditionNode.type().name) {
         case 'EXPRESSION_COMPARISON':
           var isApplicable = false;
           var currentTime = substitutionInstance.varNamesTimeStorage.time;
@@ -13964,9 +13518,7 @@ var TWF = function (_, Kotlin) {
             this.checkCondition_enijgy$(factNode.rightExpression, conditionNode.rightExpression, substitutionInstance, nameArgsMap, checkOutMainLineNodePart);
             if (substitutionInstance.isApplicable) {
               isApplicable = true;
-            }
-          }
-
+            }}
           if (!isApplicable) {
             substitutionInstance.isApplicable = false;
             switch (conditionNode.comparisonType.name) {
@@ -13998,14 +13550,10 @@ var TWF = function (_, Kotlin) {
               this.checkCondition_enijgy$(factNode.rightExpression, conditionNode.leftExpression, substitutionInstance, nameArgsMap, checkOutMainLineNodePart);
               if (substitutionInstance.isApplicable) {
                 isApplicable = true;
-              }
-            }
-            if (!isApplicable) {
+              }}if (!isApplicable) {
               substitutionInstance.isApplicable = false;
               return;
-            }
-          }
-
+            }}
           break loop_label;
         case 'MAIN_LINE_AND_NODE':
         case 'MAIN_LINE_OR_NODE':
@@ -14031,8 +13579,7 @@ var TWF = function (_, Kotlin) {
               this.checkCondition_enijgy$(actualFact, conditionFact, substitutionInstance, nameArgsMap, checkOutMainLineNodePart);
               if (substitutionInstance.isApplicable) {
                 nodesCorrespondingToConditionFacts[j].add_11rb$(i_0);
-              }
-              substitutionInstance.dropExtraVarsAfter_za3lpa$(startFactCheckingTime);
+              }substitutionInstance.dropExtraVarsAfter_za3lpa$(startFactCheckingTime);
             }
             tmp$_13 = get_lastIndex(additionalFacts);
             for (var i_1 = 0; i_1 <= tmp$_13; i_1++) {
@@ -14042,13 +13589,11 @@ var TWF = function (_, Kotlin) {
               this.checkCondition_enijgy$(actualFact_0, conditionFact, substitutionInstance, nameArgsMap, checkOutMainLineNodePart);
               if (substitutionInstance.isApplicable) {
                 nodesCorrespondingToConditionFacts[j].add_11rb$(actualFacts_0.size + i_1 | 0);
-              }
-              substitutionInstance.dropExtraVarsAfter_za3lpa$(startFactCheckingTime_0);
+              }substitutionInstance.dropExtraVarsAfter_za3lpa$(startFactCheckingTime_0);
             }
             if (nodesCorrespondingToConditionFacts[j].isEmpty()) {
               notMatchedConditionFactsIndexes.add_11rb$(j);
-            }
-          }
+            }}
 
           var all$result;
           all$break: do {
@@ -14058,8 +13603,7 @@ var TWF = function (_, Kotlin) {
               if (!(element.size <= 1)) {
                 all$result = false;
                 break all$break;
-              }
-            }
+              }}
             all$result = true;
           }
            while (false);
@@ -14069,14 +13613,12 @@ var TWF = function (_, Kotlin) {
             for (var j_0 = 0; j_0 <= tmp$_14; j_0++) {
               if (notMatchedConditionFactsIndexes.contains_11rb$(j_0)) {
                 continue;
-              }
-              var conditionFact_0 = conditionFacts.get_za3lpa$(j_0);
+              }var conditionFact_0 = conditionFacts.get_za3lpa$(j_0);
               var matchingFactIndex = first_1(nodesCorrespondingToConditionFacts[j_0]);
               if (matchingFactIndex >= actualFacts_0.size) {
                 substitutionInstance.varNamesTimeStorage.addVarName_5gyjt1$(additionalFactUsedVarName, SubstitutionInstanceVarType$INFO_getInstance());
                 tmp$_15 = additionalFacts.get_za3lpa$(matchingFactIndex - actualFacts_0.size | 0);
-              }
-               else {
+              } else {
                 tmp$_15 = actualFacts_0.get_za3lpa$(matchingFactIndex);
               }
               var actualFact_1 = tmp$_15;
@@ -14086,8 +13628,7 @@ var TWF = function (_, Kotlin) {
               if (!substitutionInstance.isApplicable) {
                 substitutionInstance.dropExtraVarsAfter_za3lpa$(currentStartGeneratingResultTime);
                 notMatchedConditionFactsIndexes.add_11rb$(j_0);
-              }
-              correspondingIndexes.add_11rb$(new MatchedNode(matchingFactIndex, actualFact_1.type()));
+              }correspondingIndexes.add_11rb$(new MatchedNode(matchingFactIndex, actualFact_1.type()));
             }
             tmp$_16 = notMatchedConditionFactsIndexes.iterator();
             while (tmp$_16.hasNext()) {
@@ -14109,11 +13650,9 @@ var TWF = function (_, Kotlin) {
                 substitutionInstance.isApplicable = false;
                 substitutionInstance.dropExtraVarsAfter_za3lpa$(startGeneratingResultTime);
                 return;
-              }
-            }
+              }}
             substitutionInstance.isApplicable = true;
-          }
-           else {
+          } else {
             var j_2 = 0;
             var startGeneratingResultTime_0 = substitutionInstance.varNamesTimeStorage.time;
             while (j_2 < conditionFacts.size) {
@@ -14122,13 +13661,11 @@ var TWF = function (_, Kotlin) {
                 substitutionInstance.isApplicable = false;
                 substitutionInstance.dropExtraVarsAfter_za3lpa$(startGeneratingResultTime_0);
                 return;
-              }
-              var matchingFactIndex_0 = first_1(nodesCorrespondingToConditionFacts[j_2]);
+              }var matchingFactIndex_0 = first_1(nodesCorrespondingToConditionFacts[j_2]);
               if (matchingFactIndex_0 >= actualFacts_0.size) {
                 substitutionInstance.varNamesTimeStorage.addVarName_5gyjt1$(additionalFactUsedVarName, SubstitutionInstanceVarType$INFO_getInstance());
                 tmp$_20 = additionalFacts.get_za3lpa$(matchingFactIndex_0 - actualFacts_0.size | 0);
-              }
-               else {
+              } else {
                 tmp$_20 = actualFacts_0.get_za3lpa$(matchingFactIndex_0);
               }
               var actualFact_2 = tmp$_20;
@@ -14139,8 +13676,7 @@ var TWF = function (_, Kotlin) {
                 substitutionInstance.dropExtraVarsAfter_za3lpa$(startFactCheckingTime_1);
                 nodesCorrespondingToConditionFacts[j_2].remove_11rb$(matchingFactIndex_0);
                 continue;
-              }
-              var tmp$_23;
+              }var tmp$_23;
               for (tmp$_23 = 0; tmp$_23 !== nodesCorrespondingToConditionFacts.length; ++tmp$_23) {
                 var element_0 = nodesCorrespondingToConditionFacts[tmp$_23];
                 element_0.remove_11rb$(matchingFactIndex_0);
@@ -14190,10 +13726,8 @@ var TWF = function (_, Kotlin) {
         if (substitutionInstance.isApplicable) {
           substitutionInstance.logValue_d8wcre$(FactSubstitution$findAllPossibleSubstitutionPlaces$lambda_2, void 0, currentLogLevel.v);
           result.add_11rb$(new FactSubstitutionPlace(actualFacts, i, substitutionInstance, checkOutMainLineNodePart, actualFacts.get_za3lpa$(i)));
-        }
-      }
-    }
-  };
+        }}
+    }};
   function FactSubstitution$findAllPossibleSubstitutionPlaces$lambda_3() {
     return 'search places for transformation';
   }
@@ -14222,9 +13756,7 @@ var TWF = function (_, Kotlin) {
         }
         if (!destination.isEmpty() && additionalFactUsed.isEmpty()) {
           additionalFactUsed.add_11rb$(true);
-        }
-      }
-    }
+        }}}
   };
   FactSubstitution.prototype.applySubstitutionByBitMask_s1ctej$ = function (substitutionPlaces, bitMask, additionalFactUsed) {
     var tmp$, tmp$_0;
@@ -14252,9 +13784,7 @@ var TWF = function (_, Kotlin) {
         }
         if (!destination.isEmpty() && additionalFactUsed.isEmpty()) {
           additionalFactUsed.add_11rb$(true);
-        }
-      }
-    }
+        }}}
   };
   FactSubstitution.prototype.applyRight_8yl8ki$ = function (substitutionInstance, checkOutMainLineNodePart, right, factNode) {
     if (factNode === void 0)
@@ -14280,15 +13810,12 @@ var TWF = function (_, Kotlin) {
               tmp$_2 = ExpressionSubstitution$Companion_getInstance().applyRightCompanion_miu9dc$(substitutionInstance, fact.leftExpression.data);
               if (tmp$_2 == null) {
                 return null;
-              }
-              tmp$_5 = new Expression(void 0, void 0, tmp$_2);
-            }
-             else {
+              }tmp$_5 = new Expression(void 0, void 0, tmp$_2);
+            } else {
               tmp$_3 = substitutionInstance.getComparableVar_61zpoe$(leftDesignationName);
               if (tmp$_3 == null) {
                 return null;
-              }
-              tmp$_5 = Kotlin.isType(tmp$_4 = tmp$_3.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_4 : throwCCE();
+              }tmp$_5 = Kotlin.isType(tmp$_4 = tmp$_3.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_4 : throwCCE();
             }
 
             res.leftExpression = tmp$_5;
@@ -14296,15 +13823,12 @@ var TWF = function (_, Kotlin) {
               tmp$_6 = ExpressionSubstitution$Companion_getInstance().applyRightCompanion_miu9dc$(substitutionInstance, fact.rightExpression.data);
               if (tmp$_6 == null) {
                 return null;
-              }
-              tmp$_9 = new Expression(void 0, void 0, tmp$_6);
-            }
-             else {
+              }tmp$_9 = new Expression(void 0, void 0, tmp$_6);
+            } else {
               tmp$_7 = substitutionInstance.getComparableVar_61zpoe$(rightDesignationName);
               if (tmp$_7 == null) {
                 return null;
-              }
-              tmp$_9 = Kotlin.isType(tmp$_8 = tmp$_7.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_8 : throwCCE();
+              }tmp$_9 = Kotlin.isType(tmp$_8 = tmp$_7.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_8 : throwCCE();
             }
 
             res.rightExpression = tmp$_9;
@@ -14319,7 +13843,6 @@ var TWF = function (_, Kotlin) {
             if (tmp$_11 == null) {
               return null;
             }
-
             tmp$_13 = Kotlin.isType(tmp$_12 = tmp$_11.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), MainChainPart) ? tmp$_12 : throwCCE();
             break;
           default:tmp$_13 = null;
@@ -14328,8 +13851,7 @@ var TWF = function (_, Kotlin) {
         var child = tmp$_13;
         if (child == null) {
           return null;
-        }
-        resultFacts.add_11rb$(child);
+        }resultFacts.add_11rb$(child);
       }
       if (factNode != null && right.type() === substitutionInstance.correspondingIndexes.nodeType) {
         var actualFacts = checkOutMainLineNodePart ? getOutFactsFromMainLineNode(factNode) : getInFactsFromMainLineNode(factNode);
@@ -14346,12 +13868,9 @@ var TWF = function (_, Kotlin) {
         for (var i = 0; i < tmp$_14; i++) {
           if (!correspondingIndexesSet.contains_11rb$(i)) {
             resultFacts.add_11rb$(actualFacts.get_za3lpa$(i));
-          }
-        }
-      }
-      return Kotlin.isType(tmp$_15 = result, MainChainPart) ? tmp$_15 : throwCCE();
-    }
-     else if (right.type() === ComparableTransformationPartType$EXPRESSION_COMPARISON_getInstance()) {
+          }}
+      }return Kotlin.isType(tmp$_15 = result, MainChainPart) ? tmp$_15 : throwCCE();
+    } else if (right.type() === ComparableTransformationPartType$EXPRESSION_COMPARISON_getInstance()) {
       var res_0 = Kotlin.isType(tmp$_16 = right.copyNode(), ExpressionComparison) ? tmp$_16 : throwCCE();
       var leftDesignationName_0 = (Kotlin.isType(tmp$_17 = right, ExpressionComparison) ? tmp$_17 : throwCCE()).leftExpression.getDesignation();
       var rightDesignationName_0 = (Kotlin.isType(tmp$_18 = right, ExpressionComparison) ? tmp$_18 : throwCCE()).rightExpression.getDesignation();
@@ -14359,44 +13878,36 @@ var TWF = function (_, Kotlin) {
         tmp$_19 = ExpressionSubstitution$Companion_getInstance().applyRightCompanion_miu9dc$(substitutionInstance, right.leftExpression.data);
         if (tmp$_19 == null) {
           return null;
-        }
-        tmp$_22 = new Expression(void 0, void 0, tmp$_19);
-      }
-       else {
+        }tmp$_22 = new Expression(void 0, void 0, tmp$_19);
+      } else {
         tmp$_20 = substitutionInstance.getComparableVar_61zpoe$(leftDesignationName_0);
         if (tmp$_20 == null) {
           return null;
-        }
-        tmp$_22 = Kotlin.isType(tmp$_21 = tmp$_20.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_21 : throwCCE();
+        }tmp$_22 = Kotlin.isType(tmp$_21 = tmp$_20.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_21 : throwCCE();
       }
       res_0.leftExpression = tmp$_22;
       if (isBlank(rightDesignationName_0) || substitutionInstance.getComparableVar_61zpoe$(rightDesignationName_0) == null) {
         tmp$_23 = ExpressionSubstitution$Companion_getInstance().applyRightCompanion_miu9dc$(substitutionInstance, right.rightExpression.data);
         if (tmp$_23 == null) {
           return null;
-        }
-        tmp$_26 = new Expression(void 0, void 0, tmp$_23);
-      }
-       else {
+        }tmp$_26 = new Expression(void 0, void 0, tmp$_23);
+      } else {
         tmp$_24 = substitutionInstance.getComparableVar_61zpoe$(rightDesignationName_0);
         if (tmp$_24 == null) {
           return null;
-        }
-        tmp$_26 = Kotlin.isType(tmp$_25 = tmp$_24.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_25 : throwCCE();
+        }tmp$_26 = Kotlin.isType(tmp$_25 = tmp$_24.cloneWithNormalization_1g1bdl$(LinkedHashMap_init_0(), false), Expression) ? tmp$_25 : throwCCE();
       }
       res_0.rightExpression = tmp$_26;
       res_0.identifier = res_0.computeIdentifier_6taknv$(false);
       return res_0;
-    }
-    return null;
+    }return null;
   };
   FactSubstitution.prototype.checkAndApply_hkzcsw$ = function (factNode, checkOutMainLineNodePart, additionalFacts) {
     if (checkOutMainLineNodePart === void 0)
       checkOutMainLineNodePart = true;
     if (additionalFacts === void 0) {
       additionalFacts = emptyList();
-    }
-    var substitutionInstance = this.checkLeftCondition_j8spiw$(factNode, checkOutMainLineNodePart, additionalFacts);
+    }var substitutionInstance = this.checkLeftCondition_j8spiw$(factNode, checkOutMainLineNodePart, additionalFacts);
     if (substitutionInstance.isApplicable)
       return this.applyRight_8yl8ki$(substitutionInstance, checkOutMainLineNodePart, this.right, factNode);
     else
@@ -14419,8 +13930,7 @@ var TWF = function (_, Kotlin) {
       factsLogicConfiguration = new FactsLogicConfiguration();
     if (compiledImmediateVariableReplacements === void 0) {
       compiledImmediateVariableReplacements = emptyMap();
-    }
-    if (transformationChain === void 0)
+    }if (transformationChain === void 0)
       transformationChain = originalTransformationChain;
     this.originalTransformationChain = originalTransformationChain;
     this.nameForRuleDesignationsPossible = nameForRuleDesignationsPossible;
@@ -14516,8 +14026,7 @@ var TWF = function (_, Kotlin) {
   TransformationChainParser.prototype.assignAndLogParserState_0 = function (parserState, logLevel, currentValue) {
     if (parserState !== currentValue) {
       this.logParserStateChange_0(parserState, logLevel, currentValue);
-    }
-    return parserState;
+    }return parserState;
   };
   function TransformationChainParser$SemanticRangeShift(rangeStart, rangeEnd, start, end) {
     if (rangeStart === void 0)
@@ -15033,11 +14542,9 @@ var TWF = function (_, Kotlin) {
         var tmp$_9;
         if (currentPosition < mainLineNode.endPosition && remainingExpressionStartsWith(closeCommentShort, this.transformationChain, currentPosition)) {
           tmp$_9 = closeCommentShort.length;
-        }
-         else if (currentPosition < mainLineNode.endPosition && remainingExpressionStartsWith(closeCommentMathML, this.transformationChain, currentPosition)) {
+        } else if (currentPosition < mainLineNode.endPosition && remainingExpressionStartsWith(closeCommentMathML, this.transformationChain, currentPosition)) {
           tmp$_9 = closeCommentMathML.length;
-        }
-         else
+        } else
           tmp$_9 = 0;
         currentPosition = tmp$_8 + tmp$_9 | 0;
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_4, TransformationChainParser$splitOnMainLevelParts$lambda_5, currentLogLevel);
@@ -15048,19 +14555,16 @@ var TWF = function (_, Kotlin) {
         var endIndex = this.transformationChain.length;
         this.transformationChain = tmp$_10 + $receiver.substring(startIndex, endIndex);
         continue;
-      }
-      if (remainingExpressionStartsWith(newWhiteSpace, this.transformationChain, currentPosition)) {
+      }if (remainingExpressionStartsWith(newWhiteSpace, this.transformationChain, currentPosition)) {
         currentPosition = currentPosition + newWhiteSpace.length | 0;
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_6, TransformationChainParser$splitOnMainLevelParts$lambda_7, currentLogLevel);
         semanticRangeShift.addTagShift_vux9f0$(newWhiteSpace.length, 0);
         continue;
-      }
-      if (isWhitespace(this.transformationChain.charCodeAt(currentPosition))) {
+      }if (isWhitespace(this.transformationChain.charCodeAt(currentPosition))) {
         currentPosition = currentPosition + 1 | 0;
         semanticRangeShift.addTagShift_vux9f0$(1, 0);
         continue;
-      }
-      if (remainingExpressionStartsWith('<math', this.transformationChain, currentPosition)) {
+      }if (remainingExpressionStartsWith('<math', this.transformationChain, currentPosition)) {
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_8, TransformationChainParser$splitOnMainLevelParts$lambda_9, currentLogLevel);
         var currentPositionStamp = currentPosition;
         currentPosition = skipFromRemainingExpressionWhile(TransformationChainParser$splitOnMainLevelParts$lambda_10, this.transformationChain, currentPosition);
@@ -15069,8 +14573,7 @@ var TWF = function (_, Kotlin) {
         currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_13);
         semanticRangeShift.addTagShift_vux9f0$(currentPosition - currentPositionStamp | 0, 7);
         continue;
-      }
-       else if (remainingExpressionStartsWith('<\/math', this.transformationChain, currentPosition)) {
+      } else if (remainingExpressionStartsWith('<\/math', this.transformationChain, currentPosition)) {
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_14, TransformationChainParser$splitOnMainLevelParts$lambda_15, currentLogLevel);
         if (parserState !== TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance()) {
           if (currentPartStartPosition < currentPosition) {
@@ -15078,22 +14581,18 @@ var TWF = function (_, Kotlin) {
             if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
               if (!equals(ensureNotNull(this.parserError).description, this.somethingUnexpectedCode_0))
                 return this.parserError;
-          }
-          parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance(), currentLogLevel, parserState);
-        }
-        currentPosition = skipFromRemainingExpressionWhile(TransformationChainParser$splitOnMainLevelParts$lambda_17, this.transformationChain, currentPosition);
+          }parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance(), currentLogLevel, parserState);
+        }currentPosition = skipFromRemainingExpressionWhile(TransformationChainParser$splitOnMainLevelParts$lambda_17, this.transformationChain, currentPosition);
         currentPosition = currentPosition + 1 | 0;
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_18, TransformationChainParser$splitOnMainLevelParts$lambda_19, currentLogLevel);
         continue;
-      }
-       else if (remainingExpressionStartsWith('<\/mtable', this.transformationChain, currentPosition)) {
+      } else if (remainingExpressionStartsWith('<\/mtable', this.transformationChain, currentPosition)) {
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_20, TransformationChainParser$splitOnMainLevelParts$lambda_21, currentLogLevel);
         currentPosition = skipFromRemainingExpressionWhile(TransformationChainParser$splitOnMainLevelParts$lambda_22, this.transformationChain, currentPosition);
         currentPosition = currentPosition + 1 | 0;
         log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_23, TransformationChainParser$splitOnMainLevelParts$lambda_24, currentLogLevel);
         continue;
-      }
-      if (parserState === TransformationChainParser$ParserState$IN_EXPRESSION_getInstance() || parserState === TransformationChainParser$ParserState$EXPRESSION_START_getInstance() || parserState === TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance() || parserState === TransformationChainParser$ParserState$NOT_IN_EXPRESSION_END_getInstance()) {
+      }if (parserState === TransformationChainParser$ParserState$IN_EXPRESSION_getInstance() || parserState === TransformationChainParser$ParserState$EXPRESSION_START_getInstance() || parserState === TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance() || parserState === TransformationChainParser$ParserState$NOT_IN_EXPRESSION_END_getInstance()) {
         if (remainingExpressionStartsWith('<mo>', this.transformationChain, currentPosition)) {
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_25, TransformationChainParser$splitOnMainLevelParts$lambda_26, currentLogLevel);
           var newCurrentPosition = currentPosition + 4 | 0;
@@ -15103,17 +14602,14 @@ var TWF = function (_, Kotlin) {
               log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_29, void 0, currentLogLevel);
               if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
                 return this.parserError;
-            }
-            var tmp$_11;
+            }var tmp$_11;
             tmp$_11 = currentPosition;
             var tmp$_12;
             if (remainingExpressionStartsWith('<mo>&#x21D2;<\/mo>', this.transformationChain, currentPosition)) {
               tmp$_12 = 17;
-            }
-             else if (remainingExpressionStartsWith('<mo>=<\/mo><mo>&gt;<\/mo>', this.transformationChain, currentPosition)) {
+            } else if (remainingExpressionStartsWith('<mo>=<\/mo><mo>&gt;<\/mo>', this.transformationChain, currentPosition)) {
               tmp$_12 = 23;
-            }
-             else {
+            } else {
               tmp$_12 = 52;
             }
             currentPosition = tmp$_11 + tmp$_12 | 0;
@@ -15127,8 +14623,7 @@ var TWF = function (_, Kotlin) {
               currentPosition = internalEnd + 10 | 0;
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_35, TransformationChainParser$splitOnMainLevelParts$lambda_36, currentLogLevel);
               waitingForFollowingSignDoubling = log_0.assignAndLog_746w4o$(true, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_37);
-            }
-             else if (remainingExpressionStartsWith('<mfenced open="[" close="]">', this.transformationChain, currentPosition)) {
+            } else if (remainingExpressionStartsWith('<mfenced open="[" close="]">', this.transformationChain, currentPosition)) {
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_38, TransformationChainParser$splitOnMainLevelParts$lambda_39, currentLogLevel);
               currentPosition = currentPosition + 28 | 0;
               var internalEnd_0 = skipFromRemainingExpressionWhileClosingTagNotFound('mfenced', this.transformationChain, currentPosition);
@@ -15136,8 +14631,7 @@ var TWF = function (_, Kotlin) {
               currentPosition = internalEnd_0 + 10 | 0;
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_40, TransformationChainParser$splitOnMainLevelParts$lambda_41, currentLogLevel);
               waitingForFollowingSignDoubling = log_0.assignAndLog_746w4o$(true, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_42);
-            }
-             else if (remainingExpressionStartsWith('<mtext>', this.transformationChain, currentPosition)) {
+            } else if (remainingExpressionStartsWith('<mtext>', this.transformationChain, currentPosition)) {
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_43, TransformationChainParser$splitOnMainLevelParts$lambda_44, currentLogLevel);
               var ruleLinkNameStartPosition = currentPosition;
               currentPosition = currentPosition + 7 | 0;
@@ -15151,29 +14645,23 @@ var TWF = function (_, Kotlin) {
               log_0.add_f1hiuo$(last(currentMainLineNode.getActualChain()), TransformationChainParser$splitOnMainLevelParts$lambda_45, TransformationChainParser$splitOnMainLevelParts$lambda_46, currentLogLevel);
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_47, TransformationChainParser$splitOnMainLevelParts$lambda_48, currentLogLevel);
               waitingForFollowingSignDoubling = log_0.assignAndLog_746w4o$(true, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_49);
-            }
-            if (waitingForFollowingSignDoubling) {
+            }if (waitingForFollowingSignDoubling) {
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_50, TransformationChainParser$splitOnMainLevelParts$lambda_51, currentLogLevel);
               if (remainingExpressionStartsWith('<mo>&#x21D2;<\/mo>', this.transformationChain, currentPosition)) {
                 tmp$_1 = '<mo>&#x21D2;<\/mo>';
-              }
-               else if (remainingExpressionStartsWith('<mo>=<\/mo><mo>&gt;<\/mo>', this.transformationChain, currentPosition)) {
+              } else if (remainingExpressionStartsWith('<mo>=<\/mo><mo>&gt;<\/mo>', this.transformationChain, currentPosition)) {
                 tmp$_1 = '<mo>=<\/mo><mo>&gt;<\/mo>';
-              }
-               else if (remainingExpressionStartsWith('<mo>=<\/mo><mo>&gt;<\/mo><mspace linebreak="newline"/>', this.transformationChain, currentPosition)) {
+              } else if (remainingExpressionStartsWith('<mo>=<\/mo><mo>&gt;<\/mo><mspace linebreak="newline"/>', this.transformationChain, currentPosition)) {
                 tmp$_1 = '<mo>=<\/mo><mo>&gt;<\/mo><mspace linebreak="newline"/>';
-              }
-               else
+              } else
                 return new ParserError(currentPosition, 'Following statement duplication expected', currentPosition);
               var currentSplittingSign = tmp$_1;
               currentPosition = currentPosition + currentSplittingSign.length | 0;
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_52, TransformationChainParser$splitOnMainLevelParts$lambda_53, currentLogLevel);
-            }
-            currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_54);
+            }currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_54);
             parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance(), currentLogLevel, parserState);
             continue;
-          }
-           else if (remainingExpressionStartsWith('<mo>[<\/mo>', this.transformationChain, currentPosition)) {
+          } else if (remainingExpressionStartsWith('<mo>[<\/mo>', this.transformationChain, currentPosition)) {
             log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_55, TransformationChainParser$splitOnMainLevelParts$lambda_56, currentLogLevel);
             currentPosition = currentPosition + 10 | 0;
             log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_57, TransformationChainParser$splitOnMainLevelParts$lambda_58, currentLogLevel);
@@ -15185,10 +14673,8 @@ var TWF = function (_, Kotlin) {
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_61, TransformationChainParser$splitOnMainLevelParts$lambda_62, currentLogLevel);
               currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_63);
               parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
-            }
-            continue;
-          }
-           else {
+            }continue;
+          } else {
             parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$IN_EXPRESSION_getInstance(), currentLogLevel, parserState);
             tmp$_3 = this.factsLogicConfiguration.signsPointersOnNotEndedExpression.iterator();
             while (tmp$_3.hasNext()) {
@@ -15199,17 +14685,13 @@ var TWF = function (_, Kotlin) {
                   log_0.add_gqvic5$(sign, currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_64, TransformationChainParser$splitOnMainLevelParts$lambda_65, TransformationChainParser$splitOnMainLevelParts$lambda_66, currentLogLevel);
                   parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$NOT_IN_EXPRESSION_END_getInstance(), currentLogLevel, parserState);
                   break;
-                }
-              }
-            }
+                }}}
             if (parserState !== TransformationChainParser$ParserState$NOT_IN_EXPRESSION_END_getInstance()) {
               currentPosition = newCurrentPosition;
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_67, TransformationChainParser$splitOnMainLevelParts$lambda_68, currentLogLevel);
-            }
-            continue;
+            }continue;
           }
-        }
-         else if (remainingExpressionStartsWith('<mspace linebreak="newline"/>', this.transformationChain, currentPosition)) {
+        } else if (remainingExpressionStartsWith('<mspace linebreak="newline"/>', this.transformationChain, currentPosition)) {
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_69, TransformationChainParser$splitOnMainLevelParts$lambda_70, currentLogLevel);
           if (parserState !== TransformationChainParser$ParserState$NOT_IN_EXPRESSION_END_getInstance()) {
             var tmp$_13 = currentPartStartPosition < currentPosition;
@@ -15218,40 +14700,33 @@ var TWF = function (_, Kotlin) {
               var startIndex_1 = currentPartStartPosition;
               var endIndex_1 = currentPosition;
               tmp$_13 = !isBlank($receiver_1.substring(startIndex_1, endIndex_1));
-            }
-            if (tmp$_13) {
+            }if (tmp$_13) {
               log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_71, void 0, currentLogLevel);
               if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
                 return this.parserError;
-            }
-            currentPosition = currentPosition + 29 | 0;
+            }currentPosition = currentPosition + 29 | 0;
             currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_72);
             if (currentMainLineNode.parent != null) {
               currentMainLineNode.addStartNewFactChain();
               log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_73, void 0, currentLogLevel);
-            }
-            parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
-          }
-           else {
+            }parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
+          } else {
             currentPosition = currentPosition + 29 | 0;
           }
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_74, TransformationChainParser$splitOnMainLevelParts$lambda_75, currentLogLevel);
           continue;
-        }
-         else if (remainingExpressionStartsWith('<\/mtd><\/mtr>', this.transformationChain, currentPosition)) {
+        } else if (remainingExpressionStartsWith('<\/mtd><\/mtr>', this.transformationChain, currentPosition)) {
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_76, TransformationChainParser$splitOnMainLevelParts$lambda_77, currentLogLevel);
           if (parserState !== TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance() && currentPartStartPosition < currentPosition) {
             log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_78, void 0, currentLogLevel);
             if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
               return this.parserError;
-          }
-          currentPosition = currentPosition + 12 | 0;
+          }currentPosition = currentPosition + 12 | 0;
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_79, TransformationChainParser$splitOnMainLevelParts$lambda_80, currentLogLevel);
           currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_81);
           parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$AFTER_ROW_END_getInstance(), currentLogLevel, parserState);
           continue;
-        }
-         else if (remainingExpressionStartsWith('<\/mfenced>', this.transformationChain, currentPosition)) {
+        } else if (remainingExpressionStartsWith('<\/mfenced>', this.transformationChain, currentPosition)) {
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_82, TransformationChainParser$splitOnMainLevelParts$lambda_83, currentLogLevel);
           if (currentPosition === currentMainLineNode.endPosition) {
             currentPosition = currentPosition + 10 | 0;
@@ -15260,24 +14735,19 @@ var TWF = function (_, Kotlin) {
                 log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_84, void 0, currentLogLevel);
                 if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
                   return this.parserError;
-              }
-            }
-            log_0.add_f1hiuo$(currentMainLineNode.parent == null ? 'null' : 'not null', TransformationChainParser$splitOnMainLevelParts$lambda_85, TransformationChainParser$splitOnMainLevelParts$lambda_86, currentLogLevel);
+              }}log_0.add_f1hiuo$(currentMainLineNode.parent == null ? 'null' : 'not null', TransformationChainParser$splitOnMainLevelParts$lambda_85, TransformationChainParser$splitOnMainLevelParts$lambda_86, currentLogLevel);
             tmp$_4 = currentMainLineNode.parent;
             if (tmp$_4 == null) {
               return new ParserError(currentPosition, 'Unexpected system closing');
-            }
-            currentMainLineNode = tmp$_4;
+            }currentMainLineNode = tmp$_4;
             currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_87);
             parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
-          }
-           else {
+          } else {
             currentPosition = currentPosition + 10 | 0;
           }
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_88, TransformationChainParser$splitOnMainLevelParts$lambda_89, currentLogLevel);
           continue;
-        }
-         else {
+        } else {
           var actualTag = readOpenTagStringIfItPresent(this.transformationChain, currentPosition);
           if (actualTag != null && parserState !== TransformationChainParser$ParserState$IN_EXPRESSION_getInstance()) {
             log_0.add_gqvic5$(actualTag, currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_90, TransformationChainParser$splitOnMainLevelParts$lambda_91, TransformationChainParser$splitOnMainLevelParts$lambda_92, currentLogLevel);
@@ -15290,35 +14760,30 @@ var TWF = function (_, Kotlin) {
                   log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_97, void 0, currentLogLevel);
                   if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
                     return this.parserError;
-                }
-                currentPosition = currentPosition + actualTag.length | 0;
+                }currentPosition = currentPosition + actualTag.length | 0;
                 log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_98, TransformationChainParser$splitOnMainLevelParts$lambda_99, currentLogLevel);
                 var internalEnd_3 = skipFromRemainingExpressionWhileClosingTagNotFound('mfenced', this.transformationChain, currentPosition);
                 log_0.add_f1hiuo$(internalEnd_3, TransformationChainParser$splitOnMainLevelParts$lambda_100, TransformationChainParser$splitOnMainLevelParts$lambda_101, currentLogLevel);
                 if (equals(tagData.get_11rb$('open'), '"{"')) {
                   log_0.add_gqvic5$(currentPosition, internalEnd_3, TransformationChainParser$splitOnMainLevelParts$lambda_102, TransformationChainParser$splitOnMainLevelParts$lambda_103, TransformationChainParser$splitOnMainLevelParts$lambda_104, currentLogLevel);
                   tmp$_5 = new MainLineAndNode(currentPosition, internalEnd_3, currentMainLineNode);
-                }
-                 else if (equals(tagData.get_11rb$('open'), '"["')) {
+                } else if (equals(tagData.get_11rb$('open'), '"["')) {
                   log_0.add_gqvic5$(currentPosition, internalEnd_3, TransformationChainParser$splitOnMainLevelParts$lambda_105, TransformationChainParser$splitOnMainLevelParts$lambda_106, TransformationChainParser$splitOnMainLevelParts$lambda_107, currentLogLevel);
                   tmp$_5 = new MainLineOrNode(currentPosition, internalEnd_3, currentMainLineNode);
-                }
-                 else
+                } else
                   return new ParserError(currentPosition, 'Undefined system');
                 var childMainLineNode = tmp$_5;
                 currentMainLineNode.addExpressionComparisonFact_5lkwds$(childMainLineNode);
                 log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_108, void 0, currentLogLevel);
                 currentMainLineNode = childMainLineNode;
                 parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
-              }
-               else if (equals(tagData.get_11rb$('name'), 'mfenced') && equals(tagData.get_11rb$('close'), '"]"') && equals(tagData.get_11rb$('open'), '"["')) {
+              } else if (equals(tagData.get_11rb$('name'), 'mfenced') && equals(tagData.get_11rb$('close'), '"]"') && equals(tagData.get_11rb$('open'), '"["')) {
                 log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_109, void 0, currentLogLevel);
                 if (parserState === TransformationChainParser$ParserState$EXPRESSION_START_getInstance() && currentPartStartPosition < currentPosition) {
                   log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_110, void 0, currentLogLevel);
                   if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
                     return this.parserError;
-                }
-                currentPosition = currentPosition + actualTag.length | 0;
+                }currentPosition = currentPosition + actualTag.length | 0;
                 log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_111, TransformationChainParser$splitOnMainLevelParts$lambda_112, currentLogLevel);
                 if (parserState === TransformationChainParser$ParserState$EXPRESSION_START_getInstance() && currentPartStartPosition < currentPosition) {
                   log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_113, void 0, currentLogLevel);
@@ -15329,33 +14794,26 @@ var TWF = function (_, Kotlin) {
                   log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_116, TransformationChainParser$splitOnMainLevelParts$lambda_117, currentLogLevel);
                   currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_118);
                   parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
-                }
-              }
-               else {
+                }} else {
                 currentPosition = currentPosition + actualTag.length | 0;
               }
-            }
-             else if (equals(tagData.get_11rb$('name'), 'mtable') || equals(tagData.get_11rb$('name'), 'mtr') || equals(tagData.get_11rb$('name'), 'mtd')) {
+            } else if (equals(tagData.get_11rb$('name'), 'mtable') || equals(tagData.get_11rb$('name'), 'mtr') || equals(tagData.get_11rb$('name'), 'mtd')) {
               currentPosition = currentPosition + actualTag.length | 0;
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_119, TransformationChainParser$splitOnMainLevelParts$lambda_120, currentLogLevel);
               if (parserState === TransformationChainParser$ParserState$EXPRESSION_START_getInstance()) {
                 currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_121);
-              }
-            }
-             else {
+              }} else {
               currentPosition = currentPosition + actualTag.length | 0;
               log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_122, TransformationChainParser$splitOnMainLevelParts$lambda_123, currentLogLevel);
             }
             continue;
-          }
-           else {
+          } else {
             currentPosition = currentPosition + 1 | 0;
             parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$IN_EXPRESSION_getInstance(), currentLogLevel, parserState);
             continue;
           }
         }
-      }
-       else if (parserState === TransformationChainParser$ParserState$AFTER_ROW_END_getInstance()) {
+      } else if (parserState === TransformationChainParser$ParserState$AFTER_ROW_END_getInstance()) {
         log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_124, void 0, currentLogLevel);
         if (remainingExpressionStartsWith('<mtr><mtd>', this.transformationChain, currentPosition)) {
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_125, TransformationChainParser$splitOnMainLevelParts$lambda_126, currentLogLevel);
@@ -15365,32 +14823,26 @@ var TWF = function (_, Kotlin) {
           if (currentMainLineNode.parent != null) {
             currentMainLineNode.addStartNewFactChain();
             log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_128, void 0, currentLogLevel);
-          }
-          parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
+          }parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_129, TransformationChainParser$splitOnMainLevelParts$lambda_130, currentLogLevel);
           continue;
-        }
-         else if (remainingExpressionStartsWith('<\/mfenced>', this.transformationChain, currentPosition)) {
+        } else if (remainingExpressionStartsWith('<\/mfenced>', this.transformationChain, currentPosition)) {
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_131, TransformationChainParser$splitOnMainLevelParts$lambda_132, currentLogLevel);
           if (currentPosition === currentMainLineNode.endPosition) {
             log_0.add_f1hiuo$(currentMainLineNode.parent == null ? 'null' : 'not null', TransformationChainParser$splitOnMainLevelParts$lambda_133, TransformationChainParser$splitOnMainLevelParts$lambda_134, currentLogLevel);
             tmp$_7 = currentMainLineNode.parent;
             if (tmp$_7 == null) {
               return new ParserError(currentPosition, 'Unexpected system closing');
-            }
-            currentMainLineNode = tmp$_7;
+            }currentMainLineNode = tmp$_7;
             currentPosition = currentPosition + 10 | 0;
             currentPartStartPosition = log_0.assignAndLog_746w4o$(currentPosition, currentLogLevel, TransformationChainParser$splitOnMainLevelParts$lambda_135);
             parserState = this.assignAndLogParserState_0(TransformationChainParser$ParserState$EXPRESSION_START_getInstance(), currentLogLevel, parserState);
-          }
-           else {
+          } else {
             currentPosition = currentPosition + 10 | 0;
           }
           log_0.add_f1hiuo$(currentPosition, TransformationChainParser$splitOnMainLevelParts$lambda_136, TransformationChainParser$splitOnMainLevelParts$lambda_137, currentLogLevel);
           continue;
-        }
-      }
-      return new ParserError(currentPosition, 'Unexpected action');
+        }}return new ParserError(currentPosition, 'Unexpected action');
     }
     log_0.addMessage_bda5c9$(TransformationChainParser$splitOnMainLevelParts$lambda_138, void 0, currentLogLevel);
     if (parserState !== TransformationChainParser$ParserState$IN_END_OF_FOLLOWING_STATEMENT_getInstance()) {
@@ -15400,9 +14852,7 @@ var TWF = function (_, Kotlin) {
         if (this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(currentPartStartPosition, currentPosition, currentMainLineNode, semanticRangeShift.currentShiftKeepsSemantic_vux9f0$(currentPartStartPosition, currentPosition)) == null)
           if (!equals(ensureNotNull(this.parserError).description, this.somethingUnexpectedCode_0))
             return this.parserError;
-      }
-    }
-    log_0.addMessageWithFactDetail_5zaetr$(TransformationChainParser$splitOnMainLevelParts$lambda_143, mainLineNode, void 0, currentLogLevel);
+      }}log_0.addMessageWithFactDetail_5zaetr$(TransformationChainParser$splitOnMainLevelParts$lambda_143, mainLineNode, void 0, currentLogLevel);
     return null;
   };
   function TransformationChainParser$parseRule$lambda() {
@@ -15481,8 +14931,7 @@ var TWF = function (_, Kotlin) {
       currentPosition = currentPosition + 6 | 0;
       currentEndPosition = currentEndPosition - 7 | 0;
       log_0.add_gqvic5$(currentPosition, currentEndPosition, TransformationChainParser$parseRule$lambda_2, TransformationChainParser$parseRule$lambda_3, TransformationChainParser$parseRule$lambda_4, currentLogLevel);
-    }
-    if (remainingExpressionStartsWith('<mtext>', this.transformationChain, currentPosition)) {
+    }if (remainingExpressionStartsWith('<mtext>', this.transformationChain, currentPosition)) {
       var nameStartPosition = currentPosition;
       currentPosition = currentPosition + 7 | 0;
       currentPosition = skipFromRemainingExpressionWhileClosingTagNotFound('mtext', this.transformationChain, currentPosition);
@@ -15493,11 +14942,9 @@ var TWF = function (_, Kotlin) {
         var name = $receiver.substring(startIndex, endIndex);
         currentPosition = currentPosition + 8 | 0;
         tmp$ = name;
-      }
-       else
+      } else
         tmp$ = '';
-    }
-     else
+    } else
       tmp$ = '';
     var ruleName = tmp$;
     log_0.add_gqvic5$(ruleName, currentPosition, TransformationChainParser$parseRule$lambda_5, TransformationChainParser$parseRule$lambda_6, TransformationChainParser$parseRule$lambda_7, currentLogLevel);
@@ -15509,16 +14956,13 @@ var TWF = function (_, Kotlin) {
         this.parserError = error;
         log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseRule$lambda_9, TransformationChainParser$parseRule$lambda_10, currentLogLevel);
         return null;
-      }
-      ruleChain.add_11rb$(new Rule(startPosition, currentEndPosition, parent, ruleRoot, ruleName));
+      }ruleChain.add_11rb$(new Rule(startPosition, currentEndPosition, parent, ruleRoot, ruleName));
       log_0.add_f1hiuo$(last(ruleChain).toString(), TransformationChainParser$parseRule$lambda_11, TransformationChainParser$parseRule$lambda_12, currentLogLevel);
-    }
-     else {
+    } else {
       if (!isBlank(ruleName)) {
         ruleChain.add_11rb$(new RulePointer(startPosition, currentEndPosition, parent, ruleName));
         log_0.add_f1hiuo$(last(ruleChain).toString(), TransformationChainParser$parseRule$lambda_13, TransformationChainParser$parseRule$lambda_14, currentLogLevel);
-      }
-       else {
+      } else {
         this.parserError = new ParserError(startPosition, 'Unexpected rule end', endPosition);
         log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseRule$lambda_15, TransformationChainParser$parseRule$lambda_16, currentLogLevel);
         return null;
@@ -15728,8 +15172,7 @@ var TWF = function (_, Kotlin) {
       log_0.add_f1hiuo$(partString, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_3, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda$lambda_4, currentLogLevel);
       if ((tmp$_0_0 = partString.length === 0 ? null : element) != null) {
         destination.add_11rb$(tmp$_0_0);
-      }
-    }
+      }}
     var parts = destination;
     log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_5, void 0, currentLogLevel);
     if (parts.size === 2 && !expressionChainExpected) {
@@ -15748,8 +15191,7 @@ var TWF = function (_, Kotlin) {
         this.parserError = new ParserError(error.position + parts.get_za3lpa$(0).startPosition | 0, error.description, parts.get_za3lpa$(0).endPosition);
         log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_9, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_10, currentLogLevel);
         return null;
-      }
-      log_0.add_f1hiuo$(leftPartParser.root, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_11, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_12, currentLogLevel);
+      }log_0.add_f1hiuo$(leftPartParser.root, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_11, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_12, currentLogLevel);
       var $receiver_2 = this.transformationChain;
       var startIndex_2 = parts.get_za3lpa$(1).startPosition;
       var endIndex_2 = parts.get_za3lpa$(1).endPosition;
@@ -15764,8 +15206,7 @@ var TWF = function (_, Kotlin) {
         this.parserError = new ParserError(error.position + parts.get_za3lpa$(1).startPosition | 0, error.description, parts.get_za3lpa$(1).endPosition);
         log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_15, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_16, currentLogLevel);
         return null;
-      }
-      log_0.add_f1hiuo$(rightPartParser.root, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_17, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_18, currentLogLevel);
+      }log_0.add_f1hiuo$(rightPartParser.root, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_17, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_18, currentLogLevel);
       var sign = valueFromMathMLString(ensureNotNull(parts.get_za3lpa$(0).splittingSubstring));
       log_0.add_f1hiuo$(sign, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_19, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_20, currentLogLevel);
       if (this.factsLogicConfiguration.alwaysLetTwoPartsComparisonsAsExpressionComparisons) {
@@ -15774,18 +15215,15 @@ var TWF = function (_, Kotlin) {
         currentMainLineNode.addExpressionComparisonFact_5lkwds$(result);
         log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_22, void 0, currentLogLevel);
         return result;
-      }
-       else {
+      } else {
         log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_23, void 0, currentLogLevel);
         if (!true) {
           var result_0 = new ExpressionComparison(startPosition, endPosition, new Expression(parts.get_za3lpa$(0).startPosition, parts.get_za3lpa$(0).endPosition, leftPartParser.root), new Expression(parts.get_za3lpa$(1).startPosition, parts.get_za3lpa$(1).endPosition, rightPartParser.root), sign);
           currentMainLineNode.addExpressionComparisonFact_5lkwds$(result_0);
           log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_24, void 0, currentLogLevel);
           return result_0;
-        }
-      }
-    }
-     else if (parts.size >= 2) {
+        }}
+    } else if (parts.size >= 2) {
       log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_25, void 0, currentLogLevel);
       var expressions = ArrayList_init();
       var hasEquality = false;
@@ -15804,24 +15242,20 @@ var TWF = function (_, Kotlin) {
           var ruleNameLink = partString_0.substring(7, endIndex_5);
           log_0.add_f1hiuo$(ruleNameLink, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_28, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_29, currentLogLevel);
           expressions.add_11rb$(new RulePointer(part.startPosition, part.endPosition, null, ruleNameLink));
-        }
-         else if (startsWith_0(partString_0, '<mo>[<\/mo>') && endsWith(partString_0, '<mo>]<\/mo>')) {
+        } else if (startsWith_0(partString_0, '<mo>[<\/mo>') && endsWith(partString_0, '<mo>]<\/mo>')) {
           log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_30, void 0, currentLogLevel);
           this.parseRule_0(part.startPosition + 10 | 0, part.endPosition - 10 | 0, expressions, null);
-        }
-         else if (startsWith_0(partString_0, '<mfenced open="[" close="]">') && endsWith(partString_0, '<\/mfenced>')) {
+        } else if (startsWith_0(partString_0, '<mfenced open="[" close="]">') && endsWith(partString_0, '<\/mfenced>')) {
           log_0.addMessage_bda5c9$(TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_31, void 0, currentLogLevel);
           this.parseRule_0(part.startPosition + 28 | 0, part.endPosition - 10 | 0, expressions, null);
-        }
-         else {
+        } else {
           var partParser = new ExpressionTreeParser(partString_0, void 0, this.functionConfiguration, this.compiledImmediateVariableReplacements);
           var error_0 = partParser.parse();
           if (error_0 != null) {
             this.parserError = new ParserError(error_0.position + part.startPosition | 0, error_0.description, part.endPosition);
             log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_32, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_33, currentLogLevel);
             return null;
-          }
-          log_0.add_f1hiuo$(partParser.root, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_34, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_35, currentLogLevel);
+          }log_0.add_f1hiuo$(partParser.root, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_34, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_35, currentLogLevel);
           log_0.add_f1hiuo$(toString(part.splittingSubstring), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_36, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_37, currentLogLevel);
           if (part.splittingSubstring != null) {
             var sign_0 = valueFromMathMLString(ensureNotNull(part.splittingSubstring));
@@ -15844,34 +15278,28 @@ var TWF = function (_, Kotlin) {
                 hasLeftLess = log_0.assignAndLog_746w4o$(true, currentLogLevel, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_44);
                 break;
             }
-          }
-          if (hasLeftMore && hasLeftLess) {
+          }if (hasLeftMore && hasLeftLess) {
             this.parserError = new ParserError(startPosition, "Expression transformation chain cannot contains both signs '<' and '>'", endPosition);
             log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_45, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_46, currentLogLevel);
             return null;
-          }
-          expressions.add_11rb$(new Expression(part.startPosition, part.endPosition, partParser.root));
+          }expressions.add_11rb$(new Expression(part.startPosition, part.endPosition, partParser.root));
         }
       }
       if (hasEquality) {
         tmp$_0 = hasLeftMore ? ComparisonType$LEFT_MORE_OR_EQUAL_getInstance() : hasLeftLess ? ComparisonType$LEFT_LESS_OR_EQUAL_getInstance() : ComparisonType$EQUAL_getInstance();
-      }
-       else
+      } else
         tmp$_0 = hasLeftMore ? ComparisonType$LEFT_MORE_getInstance() : ComparisonType$LEFT_LESS_getInstance();
       var sign_1 = tmp$_0;
       var result_1 = new ExpressionChain(startPosition, endPosition, sign_1, expressions);
       currentMainLineNode.expressionTransformationChains.add_11rb$(result_1);
       log_0.add_f1hiuo$(result_1.toString(), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_47, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_48, currentLogLevel);
       return result_1;
-    }
-    var actualTag = readOpenTagStringIfItPresent(this.transformationChain, startPosition);
+    }var actualTag = readOpenTagStringIfItPresent(this.transformationChain, startPosition);
     if (actualTag != null) {
       var tagData = getTagAttributes(actualTag);
       if (endsWith(significantPart, '<\/' + toString(tagData.get_11rb$('name')) + '>') && (equals(tagData.get_11rb$('name'), 'mfenced') || equals(tagData.get_11rb$('name'), 'mrow'))) {
         return this.parseExpressionComparisonOrExpressionChainFromTransformationChain_0(startPosition + actualTag.length | 0, endPosition - ('<\/' + toString(tagData.get_11rb$('name')) + '>').length | 0, currentMainLineNode, expressionChainExpected);
-      }
-    }
-    this.parserError = new ParserError(startPosition, this.somethingUnexpectedCode_0, endPosition);
+      }}this.parserError = new ParserError(startPosition, this.somethingUnexpectedCode_0, endPosition);
     log_0.add_f1hiuo$(toString(this.parserError), TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_49, TransformationChainParser$parseExpressionComparisonOrExpressionChainFromTransformationChain$lambda_50, currentLogLevel);
     return null;
   };
@@ -16093,8 +15521,7 @@ var TWF = function (_, Kotlin) {
       if (returnLogWithLogLevel) {
         result.append_gw00v9$(logLevelPrefixInPlainText);
         result.append_gw00v9$(toStringWithMinLength(message.level, maxLevelNumberLength, 32));
-      }
-      result.append_gw00v9$(repeat(levelChangeShift, message.level));
+      }result.append_gw00v9$(repeat(levelChangeShift, message.level));
       result.append_gw00v9$(message.message);
       result.append_s8itvh$(10);
     }
@@ -16123,11 +15550,9 @@ var TWF = function (_, Kotlin) {
       if (message.level === currentLevel) {
         if (last_0(result) === 125) {
           result.append_s8itvh$(44);
-        }
-        result.append_gw00v9$('{' + '"' + 'message' + '"' + ':' + '"' + replace_0(message.message, 34, 39) + '"' + ', ' + '"' + 'details' + '"' + ':[');
+        }result.append_gw00v9$('{' + '"' + 'message' + '"' + ':' + '"' + replace_0(message.message, 34, 39) + '"' + ', ' + '"' + 'details' + '"' + ':[');
         currentLevel = currentLevel + 1 | 0;
-      }
-    }
+      }}
     while (0 < currentLevel) {
       result.append_gw00v9$(']}');
       currentLevel = currentLevel - 1 | 0;
@@ -16284,8 +15709,7 @@ var TWF = function (_, Kotlin) {
         this.addMessageWithFactSubstitutionDetail_v23yj3$(LazyLog$logCheckParams$lambda_2(j, factsTransformation), factsTransformation, messageType, originalLogLevel + 2 | 0);
         i = i + 1 | 0;
       }
-    }
-    this.addMessage_bda5c9$(LazyLog$logCheckParams$lambda_3, void 0, originalLogLevel + 1 | 0);
+    }this.addMessage_bda5c9$(LazyLog$logCheckParams$lambda_3, void 0, originalLogLevel + 1 | 0);
     if (expressionTransformations != null) {
       i = 0;
       tmp$_0 = expressionTransformations.iterator();
@@ -16295,8 +15719,7 @@ var TWF = function (_, Kotlin) {
         this.addMessageWithExpressionSubstitutionShort_ht2yvq$(LazyLog$logCheckParams$lambda_4(j_0, expressionTransformation), expressionTransformation, messageType, originalLogLevel + 2 | 0);
         i = i + 1 | 0;
       }
-    }
-    this.addMessage_bda5c9$(LazyLog$logCheckParams$lambda_5, void 0, originalLogLevel + 1 | 0);
+    }this.addMessage_bda5c9$(LazyLog$logCheckParams$lambda_5, void 0, originalLogLevel + 1 | 0);
     if (additionalFacts != null) {
       i = 0;
       tmp$_1 = additionalFacts.iterator();
@@ -16306,8 +15729,7 @@ var TWF = function (_, Kotlin) {
         this.addMessageWithFactDetail_5zaetr$(LazyLog$logCheckParams$lambda_6(j_1), additionalFact, messageType, originalLogLevel + 2 | 0);
         i = i + 1 | 0;
       }
-    }
-    this.currentLevel = originalLogLevel;
+    }this.currentLevel = originalLogLevel;
   };
   function LazyLog$logSystemFacts$lambda(closure$message) {
     return function () {
@@ -16331,8 +15753,7 @@ var TWF = function (_, Kotlin) {
     var originalLogLevel = this.currentLevel;
     if (type === ComparableTransformationPartType$MAIN_LINE_AND_NODE_getInstance()) {
       this.addMessage_bda5c9$(LazyLog$logSystemFacts$lambda(message), messageType);
-    }
-     else {
+    } else {
       this.addMessage_bda5c9$(LazyLog$logSystemFacts$lambda_0(message), messageType);
     }
     if (facts != null) {
@@ -16344,8 +15765,7 @@ var TWF = function (_, Kotlin) {
         this.addMessageWithFactDetail_5zaetr$(LazyLog$logSystemFacts$lambda_1(j), additionalFact, messageType, originalLogLevel + 1 | 0);
         i = i + 1 | 0;
       }
-    }
-    this.currentLevel = originalLogLevel;
+    }this.currentLevel = originalLogLevel;
   };
   function LazyLog$logFactsCompareAsIsParams$lambda() {
     return 'Left fact: ';
@@ -16437,8 +15857,7 @@ var TWF = function (_, Kotlin) {
     this.addMessageWithFactDetail_5zaetr$(LazyLog$logFactsCompareAsIsParams$lambda_10, right, messageType, originalLogLevel + 1 | 0);
     if (compareExpressionsWithProbabilityTest != null) {
       this.addMessage_bda5c9$(LazyLog$logFactsCompareAsIsParams$lambda_11(compareExpressionsWithProbabilityTest), messageType, originalLogLevel + 1 | 0);
-    }
-    this.addMessage_bda5c9$(LazyLog$logFactsCompareAsIsParams$lambda_12, messageType, originalLogLevel + 1 | 0);
+    }this.addMessage_bda5c9$(LazyLog$logFactsCompareAsIsParams$lambda_12, messageType, originalLogLevel + 1 | 0);
     var i = 0;
     tmp$ = additionalFactsSortedIdentifiers.iterator();
     while (tmp$.hasNext()) {
@@ -16562,15 +15981,13 @@ var TWF = function (_, Kotlin) {
     var mathML = correctMathMlTagsAccordingToBracketsFromEnd(mathMLAfterSpecificSystemReplacements);
     if (contains(mathML, 'error', true) && contains(mathML, '#FF')) {
       return mathML;
-    }
-    log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_0(mathML), void 0, 0);
+    }log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_0(mathML), void 0, 0);
     var transformationChainParser = new TransformationChainParser(mathML, false, compiledConfiguration.functionConfiguration, compiledConfiguration.factsLogicConfiguration, compiledConfiguration.compiledImmediateVariableReplacements);
     log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_1, MessageType$USER_getInstance(), 0);
     var error = transformationChainParser.parse();
     if (error != null) {
       return returnParsingError(error, mathML);
-    }
-     else {
+    } else {
       log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_2, MessageType$USER_getInstance(), 0);
       log_0.addMessageWithFactDetail_5zaetr$(checkFactsInMathML$lambda_3, transformationChainParser.root, MessageType$USER_getInstance());
       var factComporator = compiledConfiguration.factComporator;
@@ -16580,8 +15997,7 @@ var TWF = function (_, Kotlin) {
         var newRoot = new MainLineAndNode(void 0, void 0, void 0, mutableListOf([new MainChain(mutableListOf([transformationChainParser.root, taskTargetRoot]))]));
         log_0.addMessageWithFactDetail_5zaetr$(checkFactsInMathML$lambda_4, newRoot, MessageType$USER_getInstance());
         tmp$ = newRoot;
-      }
-       else {
+      } else {
         tmp$ = transformationChainParser.root;
       }
       var solutionRoot = tmp$;
@@ -16594,15 +16010,12 @@ var TWF = function (_, Kotlin) {
       if (!checkingResult.isCorrect) {
         if (!startsWith_0(brushedMathML, '<')) {
           return errorPrefix + ': ' + checkingResult.description;
-        }
-        if (equals(shortErrorDescription, '1')) {
+        }if (equals(shortErrorDescription, '1')) {
           tmp$_0 = addErrorStringToMathMLSolution(result, 'Unclear transformation or incomplete solution. Try to fix errors or to write more details.', errorPrefix);
-        }
-         else
+        } else
           tmp$_0 = addErrorStringToMathMLSolution(result, checkingResult.description, errorPrefix);
         return tmp$_0;
-      }
-      if (!isBlank(minNumberOfMultipliersInAnswer)) {
+      }if (!isBlank(minNumberOfMultipliersInAnswer)) {
         var minNumberOfMultipliers = toInt(minNumberOfMultipliersInAnswer);
         var $receiver = split(targetVariablesNames, [configSeparator]);
         var destination = ArrayList_init_0(collectionSizeOrDefault($receiver, 10));
@@ -16619,9 +16032,7 @@ var TWF = function (_, Kotlin) {
         if (error_0 != null) {
           log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_8(error_0), MessageType$USER_getInstance(), 0);
           return addErrorStringToMathMLSolution(result, error_0.description, errorPrefix);
-        }
-      }
-       else {
+        }} else {
         if (!isBlank(maxNumberOfDivisionsInAnswer)) {
           var maxNumberOfDivisions = toInt(maxNumberOfDivisionsInAnswer);
           var targetExpression_0 = (Kotlin.isType(tmp$_2 = log_0.factConstructorViewer.constructFactByIdentifier_7q4i4t$(targetFactIdentifier), Expression) ? tmp$_2 : throwCCE()).data;
@@ -16629,9 +16040,7 @@ var TWF = function (_, Kotlin) {
           if (error_1 != null) {
             log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_9(error_1), MessageType$USER_getInstance(), 0);
             return addErrorStringToMathMLSolution(result, error_1.description, errorPrefix);
-          }
-        }
-         else {
+          }} else {
           if (!isBlank(targetVariablesNames)) {
             var $receiver_0 = split(targetVariablesNames, [configSeparator]);
             var destination_0 = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
@@ -16654,8 +16063,7 @@ var TWF = function (_, Kotlin) {
                 destination_1.add_11rb$(trim(Kotlin.isCharSequence(tmp$_11 = item_1) ? tmp$_11 : throwCCE()).toString());
               }
               tmp$_3 = toSet(destination_1);
-            }
-             else {
+            } else {
               tmp$_3 = emptySet();
             }
             var allowedVariables = tmp$_3;
@@ -16668,23 +16076,18 @@ var TWF = function (_, Kotlin) {
               if (!expressed) {
                 log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_10(variable), MessageType$USER_getInstance(), 0);
                 return addErrorStringToMathMLSolution(result, "variable '" + variable + "' is not expressed", errorPrefix);
-              }
-            }
+              }}
             if (error_2 != null) {
               log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_11(error_2), MessageType$USER_getInstance(), 0);
               return addErrorStringToMathMLSolution(result, error_2.description, errorPrefix);
-            }
-          }
-          if (!isBlank(forbiddenFunctions)) {
+            }}if (!isBlank(forbiddenFunctions)) {
             var forbidden = pairsStringIntFromString(forbiddenFunctions);
             var targetExpression_1 = (Kotlin.isType(tmp$_5 = log_0.factConstructorViewer.constructFactByIdentifier_7q4i4t$(targetFactIdentifier), Expression) ? tmp$_5 : throwCCE()).data;
             var error_3 = solutionRoot.isSolutionWithoutFunctions_cbql57$(forbidden, targetExpression_1, factComporator);
             if (error_3 != null) {
               log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_12(error_3), MessageType$USER_getInstance(), 0);
               return addErrorStringToMathMLSolution(result, error_3.description, errorPrefix);
-            }
-          }
-          log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_13, MessageType$USER_getInstance(), 0);
+            }}log_0.addMessage_bda5c9$(checkFactsInMathML$lambda_13, MessageType$USER_getInstance(), 0);
         }
       }
       return result;
@@ -16738,8 +16141,7 @@ var TWF = function (_, Kotlin) {
         destination_0.add_11rb$(new FunctionIdentifier(item_0.first, toInt(item_0.second)));
       }
       functionConfiguration.notChangesOnVariablesInComparisonFunction = toMutableList(destination_0);
-    }
-    if (!isBlank(unlimitedWellKnownFunctions)) {
+    }if (!isBlank(unlimitedWellKnownFunctions)) {
       var pairs_0 = pairsFromString(unlimitedWellKnownFunctions);
       var destination_1 = ArrayList_init_0(collectionSizeOrDefault(pairs_0, 10));
       var tmp$_2;
@@ -16749,8 +16151,7 @@ var TWF = function (_, Kotlin) {
         destination_1.add_11rb$(new FunctionIdentifier(item_1.first, toInt(item_1.second)));
       }
       functionConfiguration.notChangesOnVariablesInComparisonFunctionWithoutTransformations = toMutableList(destination_1);
-    }
-    if (expressionTransformationRules.length > 0) {
+    }if (expressionTransformationRules.length > 0) {
       var $receiver_0 = functionConfiguration.treeTransformationRules;
       var destination_2 = ArrayList_init();
       var tmp$_3;
@@ -16771,8 +16172,7 @@ var TWF = function (_, Kotlin) {
         destination_3.add_11rb$(new TreeTransformationRule(item_2.first, item_2.second));
       }
       tmp$_4.addAll_brywnq$(destination_3);
-    }
-    if (taskContextExpressionTransformationRules.length > 0) {
+    }if (taskContextExpressionTransformationRules.length > 0) {
       var $receiver_1 = functionConfiguration.taskContextTreeTransformationRules;
       var destination_4 = ArrayList_init();
       var tmp$_6;
@@ -16793,15 +16193,12 @@ var TWF = function (_, Kotlin) {
         destination_5.add_11rb$(new TreeTransformationRule(item_3.first, item_3.second));
       }
       tmp$_7.addAll_brywnq$(destination_5);
-    }
-    var compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
+    }var compiledConfiguration = new CompiledConfiguration(void 0, functionConfiguration);
     if (!isBlank(maxExpressionTransformationWeight)) {
       compiledConfiguration.comparisonSettings.maxExpressionTransformationWeight = toDouble(maxExpressionTransformationWeight);
-    }
-    if (!isBlank(maxDistBetweenDiffSteps)) {
+    }if (!isBlank(maxDistBetweenDiffSteps)) {
       compiledConfiguration.comparisonSettings.maxDistBetweenDiffSteps = toDouble(maxDistBetweenDiffSteps);
-    }
-    return compiledConfiguration;
+    }return compiledConfiguration;
   }
   function replaceAliases(string) {
     var result = spaceRegex.replace_x2uqeu$(string, '&#xA0;');
@@ -16861,21 +16258,17 @@ var TWF = function (_, Kotlin) {
           pos = pos + ('<\/' + tag + '>').length | 0;
           toWhile = true;
           result.append_gw00v9$('<\/mrow>');
-        }
-         else if (remainingExpressionStartsWith('<' + tag, string, pos)) {
+        } else if (remainingExpressionStartsWith('<' + tag, string, pos)) {
           var actualTag = readOpenTagStringIfItPresent(string, pos);
           pos = pos + ensureNotNull(actualTag).length | 0;
           toWhile = true;
           result.append_gw00v9$('<mrow>');
-        }
-        if (toWhile) {
+        }if (toWhile) {
           break;
-        }
-      }
+        }}
       if (toWhile) {
         continue;
-      }
-      result.append_s8itvh$(string.charCodeAt(pos));
+      }result.append_s8itvh$(string.charCodeAt(pos));
       pos = pos + 1 | 0;
     }
     return result.toString();
@@ -16890,35 +16283,27 @@ var TWF = function (_, Kotlin) {
       result.append_s8itvh$(mathML.charCodeAt(currentPos));
       if (mathML.charCodeAt(currentPos) === 41) {
         tagBracketsStack.add_11rb$(')');
-      }
-       else if (mathML.charCodeAt(currentPos) === 60) {
+      } else if (mathML.charCodeAt(currentPos) === 60) {
         if (remainingExpressionStartsWith('<\/msup', mathML, currentPos)) {
           tagBracketsStack.add_11rb$(tag);
-        }
-         else if (remainingExpressionStartsWith('<msup', mathML, currentPos)) {
+        } else if (remainingExpressionStartsWith('<msup', mathML, currentPos)) {
           if (tagBracketsStack.isEmpty()) {
             return returnParsingError_0("Not closed tag: '<msup>'", currentPos - 4 | 0, currentPos + 6 | 0, mathML);
-          }
-          if (equals(last(tagBracketsStack), tag)) {
+          }if (equals(last(tagBracketsStack), tag)) {
             tagBracketsStack = toMutableList(dropLast_0(tagBracketsStack, 1));
-          }
-           else {
+          } else {
             tagBracketsStack = toMutableList(dropLast_0(tagBracketsStack, 1));
             var tagToMove = remainingExpressionStartsWith('<msup><mrow>', mathML, currentPos) ? '<msup><mrow>' : '';
             result = StringBuilder_init_0(dropLast(result, tagToMove.length));
             var tmp$;
             valuesToAddMap.put_xwzc9p$(tag, reversed(Kotlin.isCharSequence(tmp$ = tagToMove) ? tmp$ : throwCCE()).toString());
           }
-        }
-      }
-       else if (mathML.charCodeAt(currentPos) === 40) {
+        }} else if (mathML.charCodeAt(currentPos) === 40) {
         if (tagBracketsStack.isEmpty()) {
           return returnParsingError_0("Not closed bracket: '('", currentPos - 4 | 0, currentPos + 6 | 0, mathML);
-        }
-        if (equals(last(tagBracketsStack), '(')) {
+        }if (equals(last(tagBracketsStack), '(')) {
           tagBracketsStack = toMutableList(dropLast_0(tagBracketsStack, 1));
-        }
-         else {
+        } else {
           var currentTag = last(tagBracketsStack);
           tagBracketsStack = toMutableList(dropLast_0(tagBracketsStack, 1));
           if (valuesToAddMap.containsKey_11rb$(currentTag)) {
@@ -16926,10 +16311,8 @@ var TWF = function (_, Kotlin) {
             result.append_gw00v9$(reversed(Kotlin.isCharSequence(tmp$_0 = '<mo>') ? tmp$_0 : throwCCE()).toString());
             currentPos = currentPos - 4 | 0;
             result.append_gw00v9$(valuesToAddMap.get_11rb$(currentTag));
-          }
-        }
-      }
-      currentPos = currentPos - 1 | 0;
+          }}
+      }currentPos = currentPos - 1 | 0;
     }
     return result.reverse().toString();
   }
@@ -16952,10 +16335,8 @@ var TWF = function (_, Kotlin) {
         if (startsWith_0(errorMessage, prefix)) {
           var withoutEnd = substringBeforeLast(mathML, '<mspace linebreak="newline"/><mtext mathvariant="bold" mathcolor="#FF0000">');
           return withoutEnd + '<\/math>';
-        }
-      }
-    }
-    return mathML;
+        }}
+    }return mathML;
   }
   function additionalFactsFromItsIdentifiers($receiver, additionalFactsIdentifiers) {
     var $receiver_0 = split(additionalFactsIdentifiers, [configSeparator]);
@@ -16998,13 +16379,11 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.minPoint_0.size !== this.maxPoint_0.size) {
       throw IllegalArgumentException_init('Points have different dimensions');
-    }
-    tmp$ = this.minPoint_0.size;
+    }tmp$ = this.minPoint_0.size;
     for (var i = 0; i <= tmp$; i++) {
       if (this.minPoint_0.get_za3lpa$(i) > this.maxPoint_0.get_za3lpa$(i)) {
         throw IllegalArgumentException_init('Min point greater than max point in position ' + i);
-      }
-    }
+      }}
   }
   function CageHolder$Companion() {
     CageHolder$Companion_instance = this;
@@ -17033,14 +16412,12 @@ var TWF = function (_, Kotlin) {
     var intersectionMaxPoint = ArrayList_init();
     if (domains.isEmpty()) {
       return this.fullSpaceCageHolder_za3lpa$(dimension);
-    }
-    tmp$ = domains.iterator();
+    }tmp$ = domains.iterator();
     while (tmp$.hasNext()) {
       var domain = tmp$.next();
       if (domain.getDimension() !== dimension) {
         throw IllegalArgumentException_init("Different point's dimensions");
-      }
-    }
+      }}
     loop_label: for (var i = 0; i <= dimension; i++) {
       var maxBy$result;
       maxBy$break: do {
@@ -17048,8 +16425,7 @@ var TWF = function (_, Kotlin) {
         if (!iterator.hasNext()) {
           maxBy$result = null;
           break maxBy$break;
-        }
-        var maxElem = iterator.next();
+        }var maxElem = iterator.next();
         var maxValue = maxElem.minPoint_0.get_za3lpa$(i);
         while (iterator.hasNext()) {
           var e = iterator.next();
@@ -17057,8 +16433,7 @@ var TWF = function (_, Kotlin) {
           if (Kotlin.compareTo(maxValue, v) < 0) {
             maxElem = e;
             maxValue = v;
-          }
-        }
+          }}
         maxBy$result = maxElem;
       }
        while (false);
@@ -17069,8 +16444,7 @@ var TWF = function (_, Kotlin) {
         if (!iterator_0.hasNext()) {
           minBy$result = null;
           break minBy$break;
-        }
-        var minElem = iterator_0.next();
+        }var minElem = iterator_0.next();
         var minValue = minElem.maxPoint_0.get_za3lpa$(i);
         while (iterator_0.hasNext()) {
           var e_0 = iterator_0.next();
@@ -17078,8 +16452,7 @@ var TWF = function (_, Kotlin) {
           if (Kotlin.compareTo(minValue, v_0) > 0) {
             minElem = e_0;
             minValue = v_0;
-          }
-        }
+          }}
         minBy$result = minElem;
       }
        while (false);
@@ -17088,8 +16461,7 @@ var TWF = function (_, Kotlin) {
     for (var i_0 = 0; i_0 <= dimension; i_0++) {
       if (intersectionMaxPoint.get_za3lpa$(i_0) < intersectionMinPoint.get_za3lpa$(i_0)) {
         return this.emptyCageHolder_za3lpa$(dimension);
-      }
-    }
+      }}
     return new CageHolder(intersectionMinPoint, intersectionMaxPoint);
   };
   CageHolder$Companion.$metadata$ = {
@@ -17101,20 +16473,17 @@ var TWF = function (_, Kotlin) {
   function CageHolder$Companion_getInstance() {
     if (CageHolder$Companion_instance === null) {
       new CageHolder$Companion();
-    }
-    return CageHolder$Companion_instance;
+    }return CageHolder$Companion_instance;
   }
   CageHolder.prototype.pointInDomain_l8u4bv$ = function (point) {
     var tmp$;
     if (point.size !== this.minPoint_0.size) {
       throw IllegalArgumentException_init("Point's dimension " + point.size + ' != cage dimension ' + this.minPoint_0.size + '$');
-    }
-    tmp$ = this.getDimension();
+    }tmp$ = this.getDimension();
     for (var i = 0; i <= tmp$; i++) {
       if (point.get_za3lpa$(i) < this.minPoint_0.get_za3lpa$(i) || point.get_za3lpa$(i) > this.maxPoint_0.get_za3lpa$(i)) {
         return false;
-      }
-    }
+      }}
     return true;
   };
   CageHolder.prototype.getDimension = function () {
@@ -17126,8 +16495,7 @@ var TWF = function (_, Kotlin) {
     for (var i = 0; i <= tmp$; i++) {
       if (this.minPoint_0.get_za3lpa$(i) !== kotlin_js_internal_DoubleCompanionObject.POSITIVE_INFINITY) {
         return false;
-      }
-    }
+      }}
     return true;
   };
   CageHolder.$metadata$ = {
@@ -17185,30 +16553,24 @@ var TWF = function (_, Kotlin) {
     var realValue = toRealOrNull($receiver);
     if (realValue != null) {
       return Complex_init(realValue, Real_init(0), Form$ALGEBRAIC_getInstance());
-    }
-    if ($receiver.length > 0 && $receiver.charCodeAt(0) === 105) {
+    }if ($receiver.length > 0 && $receiver.charCodeAt(0) === 105) {
       var imaginaryValue = toRealOrNull($receiver.substring(1));
       if (imaginaryValue != null) {
         return Complex_init(Real_init(0), imaginaryValue, Form$ALGEBRAIC_getInstance());
-      }
-    }
-    var partsOfNumber = split($receiver, ['+i']);
+      }}var partsOfNumber = split($receiver, ['+i']);
     if (partsOfNumber.size !== 2) {
       return null;
-    }
-    var realPart = toRealOrNull(partsOfNumber.get_za3lpa$(0));
+    }var realPart = toRealOrNull(partsOfNumber.get_za3lpa$(0));
     var imaginaryPart = toRealOrNull(partsOfNumber.get_za3lpa$(1));
     if (realPart == null || imaginaryPart == null) {
       return null;
-    }
-    return Complex_init(realPart, imaginaryPart, Form$ALGEBRAIC_getInstance());
+    }return Complex_init(realPart, imaginaryPart, Form$ALGEBRAIC_getInstance());
   }
   function toComplex_1($receiver) {
     var result = toComplexOrNull($receiver);
     if (result == null) {
       throw IllegalStateException_init_0($receiver + ' cannot be converted to complex');
-    }
-     else {
+    } else {
       return result;
     }
   }
@@ -17274,8 +16636,7 @@ var TWF = function (_, Kotlin) {
   function Complex$Companion_getInstance() {
     if (Complex$Companion_instance === null) {
       new Complex$Companion();
-    }
-    return Complex$Companion_instance;
+    }return Complex$Companion_instance;
   }
   Complex.prototype.angleToNormalForm_0 = function () {
     var tmp$;
@@ -17283,8 +16644,7 @@ var TWF = function (_, Kotlin) {
     var angleCos = Real$Companion_getInstance().cos_vit0pu$(this.angle_0);
     if (angleSin.compareTo_11rb$(toReal(0)) >= 0) {
       tmp$ = Real$Companion_getInstance().acos_vit0pu$(angleCos);
-    }
-     else {
+    } else {
       tmp$ = Real$Companion_getInstance().acos_vit0pu$(angleCos).unaryMinus();
     }
     this.angle_0 = tmp$;
@@ -17298,12 +16658,10 @@ var TWF = function (_, Kotlin) {
     this.radius_0 = Real$Companion_getInstance().sqrt_vit0pu$(Real$Companion_getInstance().pow2_vit0pu$(this.real_0).plus_vit0pu$(Real$Companion_getInstance().pow2_vit0pu$(this.imaginary_0)));
     if (this.radius_0.additivelyEqualToZero()) {
       tmp$ = Real_init(0);
-    }
-     else {
+    } else {
       if (this.imaginary_0.compareTo_11rb$(toReal(0)) >= 0) {
         tmp$ = Real$Companion_getInstance().acos_vit0pu$(this.real_0.div_vit0pu$(this.radius_0));
-      }
-       else {
+      } else {
         tmp$ = Real$Companion_getInstance().acos_vit0pu$(this.real_0.div_vit0pu$(this.radius_0)).unaryMinus();
       }
     }
@@ -17359,8 +16717,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.additivelyEqualToZero_0()) {
       tmp$ = toComplex(0);
-    }
-     else {
+    } else {
       tmp$ = Complex$Companion_getInstance().exp_i6s3kk$(arg.times_i6s3kk$(Complex$Companion_getInstance().ln_i6s3kk$(this)));
     }
     return tmp$;
@@ -17407,7 +16764,6 @@ var TWF = function (_, Kotlin) {
         if (realOrRadius.compareTo_11rb$(toReal(0)) < 0) {
           throw IllegalArgumentException_init('error: radius < 0');
         }
-
         $this.radius_0 = realOrRadius;
         $this.angle_0 = imaginaryOrAngle;
         $this.angleToNormalForm_0();
@@ -17424,8 +16780,7 @@ var TWF = function (_, Kotlin) {
       var temporary = this.from_0;
       this.from_0 = this.to_0;
       this.to_0 = temporary;
-    }
-  }
+    }}
   function LineSegmentHolder$Companion() {
     LineSegmentHolder$Companion_instance = this;
     this.fullSegment = new LineSegmentHolder(kotlin_js_internal_DoubleCompanionObject.NEGATIVE_INFINITY, kotlin_js_internal_DoubleCompanionObject.POSITIVE_INFINITY);
@@ -17441,8 +16796,7 @@ var TWF = function (_, Kotlin) {
   function LineSegmentHolder$Companion_getInstance() {
     if (LineSegmentHolder$Companion_instance === null) {
       new LineSegmentHolder$Companion();
-    }
-    return LineSegmentHolder$Companion_instance;
+    }return LineSegmentHolder$Companion_instance;
   }
   LineSegmentHolder.prototype.pointInSegment_14dthe$ = function (point) {
     return rangeTo(this.from_0, this.to_0).contains_mef7kx$(point);
@@ -17472,8 +16826,7 @@ var TWF = function (_, Kotlin) {
     var resultDouble = toDoubleOrNull($receiver);
     if (resultDouble === null) {
       tmp$ = null;
-    }
-     else {
+    } else {
       tmp$ = new Real(resultDouble);
     }
     return tmp$;
@@ -17564,8 +16917,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (arg === this.POSITIVE_INFINITY_0 || arg === this.NEGATIVE_INFINITY_0) {
       tmp$ = this.POSITIVE_INFINITY_0;
-    }
-     else {
+    } else {
       var x = arg.value;
       tmp$ = new Real(Math_0.abs(x));
     }
@@ -17575,8 +16927,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (arg === this.POSITIVE_INFINITY_0 || arg === this.NEGATIVE_INFINITY_0) {
       tmp$ = this.POSITIVE_INFINITY_0;
-    }
-     else {
+    } else {
       tmp$ = new Real(arg.value * arg.value);
     }
     return tmp$;
@@ -17585,8 +16936,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (arg === this.POSITIVE_INFINITY_0) {
       tmp$ = this.POSITIVE_INFINITY_0;
-    }
-     else {
+    } else {
       var $receiver = arg.value;
       tmp$ = new Real(Math_0.pow($receiver, 0.5));
     }
@@ -17601,8 +16951,7 @@ var TWF = function (_, Kotlin) {
   function Real$Companion_getInstance() {
     if (Real$Companion_instance === null) {
       new Real$Companion();
-    }
-    return Real$Companion_instance;
+    }return Real$Companion_instance;
   }
   Real.prototype.compareTo_11rb$ = function (other) {
     return Kotlin.compareTo(this.value, other.value);
@@ -17632,8 +16981,7 @@ var TWF = function (_, Kotlin) {
     var tmp$;
     if (this.additivelyEqualToZero()) {
       tmp$ = Real_init(0);
-    }
-     else {
+    } else {
       var $receiver = this.value;
       var x = arg.value;
       tmp$ = new Real(Math_0.pow($receiver, x));
@@ -17675,11 +17023,21 @@ var TWF = function (_, Kotlin) {
     var suffixLen = minLength - res.length | 0;
     if (suffixLen > 0) {
       tmp$ = res + repeat(String.fromCharCode(suffixChar), suffixLen);
-    }
-     else {
+    } else {
       tmp$ = res;
     }
     return tmp$;
+  }
+  function escapeCharacters(string, characterEscapingDepth) {
+    if (characterEscapingDepth === void 0)
+      characterEscapingDepth = 1;
+    return escapeBackSlash(string, characterEscapingDepth);
+  }
+  function escapeBackSlash(string, characterEscapingDepth) {
+    if (characterEscapingDepth === void 0)
+      characterEscapingDepth = 1;
+    var replacement = repeat('\\', characterEscapingDepth);
+    return replace(string, '\\', replacement);
   }
   function abs_0($receiver) {
     return $receiver < 0 ? -$receiver : $receiver;
@@ -17720,12 +17078,24 @@ var TWF = function (_, Kotlin) {
   function isBracket($receiver) {
     return isOpenBracket($receiver) || isCloseBracket($receiver);
   }
+  function isUnarySignPart(c) {
+    return c === 33 || c === 35 || c === 39;
+  }
+  function isBinarySignPart(c, isMathML) {
+    if (isMathML === void 0)
+      isMathML = false;
+    return c === 43 || c === 45 || c === 42 || c === 47 || c === 94 || c === 37 || c === 124 || c === 92 || (c === 38 && !isMathML);
+  }
+  function isSign($receiver, isMathML) {
+    if (isMathML === void 0)
+      isMathML = false;
+    return isUnarySignPart($receiver) || isBinarySignPart($receiver, isMathML);
+  }
   function remainingExpressionStartsWith(string, expression, currentPosition) {
     var tmp$;
     if (currentPosition < 0) {
       return false;
-    }
-    tmp$ = string.length;
+    }tmp$ = string.length;
     for (var i = 0; i < tmp$; i++)
       if ((currentPosition + i | 0) >= expression.length || expression.charCodeAt(currentPosition + i | 0) !== string.charCodeAt(i))
         return false;
@@ -17754,8 +17124,7 @@ var TWF = function (_, Kotlin) {
     while (pos < expression.length) {
       if (remainingExpressionStartsWith('<' + closingTag, expression, pos)) {
         openTagsCount = openTagsCount + 1 | 0;
-      }
-       else if (remainingExpressionStartsWith('<\/' + closingTag, expression, pos))
+      } else if (remainingExpressionStartsWith('<\/' + closingTag, expression, pos))
         tmp$ = openTagsCount, openTagsCount = tmp$ - 1 | 0;
       if (openTagsCount === 0)
         break;
@@ -17771,18 +17140,15 @@ var TWF = function (_, Kotlin) {
     while (pos < expression.length) {
       if (remainingExpressionStartsWith('<' + closingTag, expression, pos)) {
         openTagsCount = openTagsCount + 1 | 0;
-      }
-       else if (remainingExpressionStartsWith('<\/' + closingTag, expression, pos))
+      } else if (remainingExpressionStartsWith('<\/' + closingTag, expression, pos))
         tmp$ = openTagsCount, openTagsCount = tmp$ - 1 | 0;
       if (openTagsCount === 0)
         break;
       if (isOpenBracket(expression.charCodeAt(pos))) {
         openBracketsCount = openBracketsCount + 1 | 0;
-      }
-       else if (isCloseBracket(expression.charCodeAt(pos))) {
+      } else if (isCloseBracket(expression.charCodeAt(pos))) {
         tmp$_0 = openBracketsCount, openBracketsCount = tmp$_0 - 1 | 0;
-      }
-      pos = pos + 1 | 0;
+      }pos = pos + 1 | 0;
     }
     return openBracketsCount;
   }
@@ -17795,18 +17161,13 @@ var TWF = function (_, Kotlin) {
           for (var j = startPosition; j >= 0; j--) {
             if (string.charCodeAt(j) === 62) {
               return j - 6 | 0;
-            }
-          }
-        }
-        return startPosition;
-      }
-       else if (string.charCodeAt(i) === 62) {
+            }}
+        }return startPosition;
+      } else if (string.charCodeAt(i) === 62) {
         if (remainingExpressionStartsWith('<mtext>', string, i - 6 | 0)) {
           return i - 6 | 0;
-        }
-        return i + 1 | 0;
-      }
-    }
+        }return i + 1 | 0;
+      }}
     return string.length;
   }
   function skipClosingTags(string, startPosition) {
@@ -17827,25 +17188,21 @@ var TWF = function (_, Kotlin) {
     }
     if (mathML.charCodeAt(startPosition) === 62) {
       startPosition = startPosition + 1 | 0;
-    }
-    while (endPosition < mathML.length && mathML.charCodeAt(endPosition) !== 60 && mathML.charCodeAt(endPosition) !== 62) {
+    }while (endPosition < mathML.length && mathML.charCodeAt(endPosition) !== 60 && mathML.charCodeAt(endPosition) !== 62) {
       endPosition = endPosition + 1 | 0;
     }
     if (mathML.charCodeAt(endPosition) === 62) {
       endPosition = endPosition + 1 | 0;
-    }
-    var numberOfNotClosedTags = 0;
+    }var numberOfNotClosedTags = 0;
     var currentStartPosition = startPosition;
     while (currentStartPosition < endPosition) {
       if (mathML.charCodeAt(currentStartPosition) === 60) {
         if ((currentStartPosition + 1 | 0) < mathML.length && mathML.charCodeAt(currentStartPosition + 1 | 0) === 47) {
           numberOfNotClosedTags = numberOfNotClosedTags - 1 | 0;
-        }
-         else {
+        } else {
           numberOfNotClosedTags = numberOfNotClosedTags + 1 | 0;
         }
-      }
-      currentStartPosition = currentStartPosition + 1 | 0;
+      }currentStartPosition = currentStartPosition + 1 | 0;
     }
     while (numberOfNotClosedTags > 0) {
       while (endPosition < mathML.length && mathML.charCodeAt(endPosition) !== 60) {
@@ -17853,8 +17210,7 @@ var TWF = function (_, Kotlin) {
       }
       if ((endPosition + 1 | 0) < mathML.length && mathML.charCodeAt(endPosition + 1 | 0) === 47) {
         numberOfNotClosedTags = numberOfNotClosedTags - 1 | 0;
-      }
-       else {
+      } else {
         numberOfNotClosedTags = numberOfNotClosedTags + 1 | 0;
       }
       while (endPosition < mathML.length && mathML.charCodeAt(endPosition) !== 62) {
@@ -17869,8 +17225,7 @@ var TWF = function (_, Kotlin) {
       }
       if ((startPosition + 1 | 0) < mathML.length && mathML.charCodeAt(startPosition + 1 | 0) === 47) {
         numberOfNotClosedTags = numberOfNotClosedTags - 1 | 0;
-      }
-       else {
+      } else {
         numberOfNotClosedTags = numberOfNotClosedTags + 1 | 0;
       }
     }
@@ -17885,14 +17240,11 @@ var TWF = function (_, Kotlin) {
     while (pos < string.length) {
       if (remainingExpressionStartsWith('<\/', string, pos)) {
         openTagsCount = openTagsCount - 1 | 0;
-      }
-       else if (string.charCodeAt(pos) === 60) {
+      } else if (string.charCodeAt(pos) === 60) {
         openTagsCount = openTagsCount + 1 | 0;
-      }
-       else if (isOpenBracket(string.charCodeAt(pos))) {
+      } else if (isOpenBracket(string.charCodeAt(pos))) {
         openTagsCount = openTagsCount + 1 | 0;
-      }
-       else if (isCloseBracket(string.charCodeAt(pos)))
+      } else if (isCloseBracket(string.charCodeAt(pos)))
         tmp$ = openTagsCount, openTagsCount = tmp$ - 1 | 0;
       pos = pos + 1 | 0;
       if (openTagsCount === 0) {
@@ -17900,12 +17252,9 @@ var TWF = function (_, Kotlin) {
         if (currentDist < minDist) {
           minDist = currentDist;
           currentResultPos = pos;
-        }
-         else if (pos > targetEndPosition) {
+        } else if (pos > targetEndPosition) {
           break;
-        }
-      }
-    }
+        }}}
     return currentResultPos;
   }
   function skipFromRemainingExpressionWhileClosingBracketNotFound(closingBracket, openingBracket, expression, currentPosition) {
@@ -17915,8 +17264,7 @@ var TWF = function (_, Kotlin) {
     while (pos < expression.length) {
       if (remainingExpressionStartsWith(openingBracket, expression, pos)) {
         openTagsCount = openTagsCount + 1 | 0;
-      }
-       else if (remainingExpressionStartsWith(closingBracket, expression, pos))
+      } else if (remainingExpressionStartsWith(closingBracket, expression, pos))
         tmp$ = openTagsCount, openTagsCount = tmp$ - 1 | 0;
       if (openTagsCount === 0)
         break;
@@ -17930,14 +17278,11 @@ var TWF = function (_, Kotlin) {
     while (i < string.length) {
       if (string.charCodeAt(i) === openBracket) {
         numberOfOpenBrackets = numberOfOpenBrackets + 1 | 0;
-      }
-       else if (string.charCodeAt(i) === closingBracket) {
+      } else if (string.charCodeAt(i) === closingBracket) {
         numberOfOpenBrackets = numberOfOpenBrackets - 1 | 0;
         if (numberOfOpenBrackets === 0) {
           return i;
-        }
-      }
-      i = i + 1 | 0;
+        }}i = i + 1 | 0;
     }
     return string.length;
   }
@@ -17992,16 +17337,14 @@ var TWF = function (_, Kotlin) {
         if (unboxChar(toBoxedChar(string.charCodeAt(index))) === openBracket) {
           indexOfFirst$result = index;
           break indexOfFirst$break;
-        }
-      }
+        }}
       indexOfFirst$result = -1;
     }
      while (false);
     var firstOpenBracketIndex = indexOfFirst$result;
     if (firstOpenBracketIndex < 0) {
       return new NamedList(originalString, emptyList(), originalString.length);
-    }
-    var $receiver = string.substring(0, firstOpenBracketIndex);
+    }var $receiver = string.substring(0, firstOpenBracketIndex);
     var tmp$_3;
     var name = trim(Kotlin.isCharSequence(tmp$_3 = $receiver) ? tmp$_3 : throwCCE()).toString();
     var j = firstOpenBracketIndex;
@@ -18011,14 +17354,12 @@ var TWF = function (_, Kotlin) {
       var partEnd = getIndexOfFirstBracketsValueEnd(string, partStart, 123, 125);
       if (partEnd >= string.length) {
         break;
-      }
-      result.add_11rb$(string.substring(partStart, partEnd));
+      }result.add_11rb$(string.substring(partStart, partEnd));
       j = partEnd + 1 | 0;
     }
     if (j < string.length) {
       endPosition = j + startPosition | 0;
-    }
-    return new NamedList(name, result, endPosition);
+    }return new NamedList(name, result, endPosition);
   }
   function splitBySubstringOnTopLevel(substrings, expression, startPosition, endPosition) {
     if (startPosition === void 0)
@@ -18038,60 +17379,48 @@ var TWF = function (_, Kotlin) {
         if (remainingExpressionStartsWith(substring, expression, pos)) {
           splittingSubstring = substring;
           break;
-        }
-      }
+        }}
       if (splittingSubstring != null && !expressionNotCompleted) {
         result.add_11rb$(new StringPart(lastStartPos, pos, splittingSubstring));
         pos = pos + splittingSubstring.length | 0;
         lastStartPos = pos;
-      }
-       else if (remainingExpressionStartsWith('<mo>', expression, pos)) {
+      } else if (remainingExpressionStartsWith('<mo>', expression, pos)) {
         pos = pos + 4 | 0;
-      }
-       else if (remainingExpressionStartsWith('<\/mo>', expression, pos)) {
+      } else if (remainingExpressionStartsWith('<\/mo>', expression, pos)) {
         pos = pos + 5 | 0;
-      }
-       else if (remainingExpressionStartsWith('<mrow>', expression, pos)) {
+      } else if (remainingExpressionStartsWith('<mrow>', expression, pos)) {
         pos = pos + 6 | 0;
-      }
-       else if (remainingExpressionStartsWith('<\/mrow>', expression, pos)) {
+      } else if (remainingExpressionStartsWith('<\/mrow>', expression, pos)) {
         pos = pos + 7 | 0;
-      }
-       else if (isOpenBracket(expression.charCodeAt(pos))) {
+      } else if (isOpenBracket(expression.charCodeAt(pos))) {
         var numberOfOpenBrackets = 1;
         expressionNotCompleted = true;
         pos = pos + 1 | 0;
         while (pos < endPosition) {
           if (isOpenBracket(expression.charCodeAt(pos))) {
             numberOfOpenBrackets = numberOfOpenBrackets + 1 | 0;
-          }
-           else if (isCloseBracket(expression.charCodeAt(pos)))
+          } else if (isCloseBracket(expression.charCodeAt(pos)))
             tmp$_0 = numberOfOpenBrackets, numberOfOpenBrackets = tmp$_0 - 1 | 0;
           pos = pos + 1 | 0;
           if (numberOfOpenBrackets === 0) {
             expressionNotCompleted = false;
             break;
-          }
-        }
-      }
-       else {
+          }}
+      } else {
         var actualTag = readOpenTagStringIfItPresent(expression, pos);
         if (actualTag != null) {
           pos = pos + actualTag.length | 0;
           if (!endsWith(actualTag, '/>')) {
             var tagName = ensureNotNull(getTagAttributes(actualTag).get_11rb$('name'));
             pos = skipFromRemainingExpressionWhileClosingTagNotFound(tagName, expression, pos) + tagName.length + closing.length | 0;
-          }
-        }
-         else {
+          }} else {
           pos = pos + 1 | 0;
         }
       }
     }
     if (!expressionNotCompleted) {
       result.add_11rb$(new StringPart(lastStartPos, pos));
-    }
-    return result;
+    }return result;
   }
   function readOpenTagStringIfItPresent$lambda(it) {
     return unboxChar(it) !== 62;
@@ -18103,8 +17432,7 @@ var TWF = function (_, Kotlin) {
         return null;
       var endIndex = end + 1 | 0;
       return expression.substring(currentPosition, endIndex);
-    }
-     else
+    } else
       return null;
   }
   function trimmedMathML($receiver) {
@@ -18112,14 +17440,11 @@ var TWF = function (_, Kotlin) {
     while (startPosition < $receiver.length) {
       if (remainingExpressionStartsWith(newWhiteSpace, $receiver, startPosition)) {
         startPosition = startPosition + newWhiteSpace.length | 0;
-      }
-       else if (remainingExpressionStartsWith(newLineMspace, $receiver, startPosition)) {
+      } else if (remainingExpressionStartsWith(newLineMspace, $receiver, startPosition)) {
         startPosition = startPosition + newLineMspace.length | 0;
-      }
-       else if (isWhitespace($receiver.charCodeAt(startPosition))) {
+      } else if (isWhitespace($receiver.charCodeAt(startPosition))) {
         startPosition = startPosition + 1 | 0;
-      }
-       else {
+      } else {
         break;
       }
     }
@@ -18127,14 +17452,11 @@ var TWF = function (_, Kotlin) {
     while (endPosition > 0) {
       if (remainingExpressionStartsWith(newWhiteSpace, $receiver, endPosition - newWhiteSpace.length | 0)) {
         endPosition = endPosition - newWhiteSpace.length | 0;
-      }
-       else if (remainingExpressionStartsWith(newLineMspace, $receiver, endPosition - newLineMspace.length | 0)) {
+      } else if (remainingExpressionStartsWith(newLineMspace, $receiver, endPosition - newLineMspace.length | 0)) {
         endPosition = endPosition - newLineMspace.length | 0;
-      }
-       else if (isWhitespace($receiver.charCodeAt(endPosition - 1 | 0))) {
+      } else if (isWhitespace($receiver.charCodeAt(endPosition - 1 | 0))) {
         endPosition = endPosition - 1 | 0;
-      }
-       else {
+      } else {
         break;
       }
     }
@@ -18170,8 +17492,7 @@ var TWF = function (_, Kotlin) {
       var pos = indexOf(expression, newLineMspace, startPosition);
       if (pos < 0) {
         break;
-      }
-      result.add_11rb$(pos);
+      }result.add_11rb$(pos);
       startPosition = pos + 1 | 0;
     }
     return result;
@@ -18295,8 +17616,7 @@ var TWF = function (_, Kotlin) {
         result.append_gw00v9$(colorOnlyNewLineSplittingSign(string.substring(startIndex, startPosition)));
         result.append_gw00v9$(coloringStart(task.color) + underlining + coloringEnd);
         lastHandledPosition = startPosition;
-      }
-       else {
+      } else {
         var endPosition = findClosestPlaceToTargetOnTheSameLevel(string, startPosition, task.endPosition);
         var startIndex_0 = lastHandledPosition;
         result.append_gw00v9$(string.substring(startIndex_0, startPosition));
@@ -18335,8 +17655,7 @@ var TWF = function (_, Kotlin) {
           var startIndex_0 = currentPosition;
           result.append_gw00v9$(string.substring(startIndex_0, newCurrentPosition));
           currentPosition = newCurrentPosition + coloringEndLength | 0;
-        }
-         else if (equals(indexPair.second, coloringHeaderStart)) {
+        } else if (equals(indexPair.second, coloringHeaderStart)) {
           var startIndex_1 = currentPosition;
           var endIndex_0 = indexPair.first;
           result.append_gw00v9$(string.substring(startIndex_1, endIndex_0));
@@ -18345,8 +17664,7 @@ var TWF = function (_, Kotlin) {
           var startIndex_2 = currentPosition;
           result.append_gw00v9$(string.substring(startIndex_2, newCurrentPosition_0));
           currentPosition = newCurrentPosition_0 + coloringEndLength | 0;
-        }
-         else if (equals(indexPair.second, boldHeaderStart)) {
+        } else if (equals(indexPair.second, boldHeaderStart)) {
           var startIndex_3 = currentPosition;
           var endIndex_1 = indexPair.first;
           result.append_gw00v9$(string.substring(startIndex_3, endIndex_1));
@@ -18355,29 +17673,24 @@ var TWF = function (_, Kotlin) {
           var startIndex_4 = currentPosition;
           result.append_gw00v9$(string.substring(startIndex_4, newCurrentPosition_1));
           currentPosition = newCurrentPosition_1 + coloringEndLength | 0;
-        }
-         else if (equals(indexPair.second, coloringBoldHeaderStartGeneral)) {
+        } else if (equals(indexPair.second, coloringBoldHeaderStartGeneral)) {
           var startIndex_5 = currentPosition;
           var endIndex_2 = indexPair.first;
           result.append_gw00v9$(string.substring(startIndex_5, endIndex_2));
           currentPosition = indexPair.first + 39 | 0;
-        }
-         else if (equals(indexPair.second, coloringHeaderStartGeneral)) {
+        } else if (equals(indexPair.second, coloringHeaderStartGeneral)) {
           var startIndex_6 = currentPosition;
           var endIndex_3 = indexPair.first;
           result.append_gw00v9$(string.substring(startIndex_6, endIndex_3));
           currentPosition = indexPair.first + 20 | 0;
-        }
-         else if (equals(indexPair.second, boldHeaderStartGeneral)) {
+        } else if (equals(indexPair.second, boldHeaderStartGeneral)) {
           var startIndex_7 = currentPosition;
           var endIndex_4 = indexPair.first;
           result.append_gw00v9$(string.substring(startIndex_7, endIndex_4));
           currentPosition = indexPair.first + 19 | 0;
-        }
-         else
+        } else
           break;
-      }
-       else {
+      } else {
         var startIndex_8 = currentPosition;
         result.append_gw00v9$(string.substring(startIndex_8));
         break;
@@ -18405,8 +17718,7 @@ var TWF = function (_, Kotlin) {
     var newSplittingSign = splittingSign;
     if (splittingSign.length === 0 || startsWith_0(splittingSign, '<mspace linebreak="newline"/>')) {
       newSplittingSign = '<mo>=<\/mo><mo>&gt;<\/mo>' + splittingSign;
-    }
-    return newSplittingSign;
+    }return newSplittingSign;
   }
   function transformationPartsToLog(transformationsPart) {
     return transformationsPart.computeIdentifier_6taknv$(false);
@@ -18421,12 +17733,12 @@ var TWF = function (_, Kotlin) {
     return transformation.computeIdentifier_6taknv$(false);
   }
   var package$api = _.api || (_.api = {});
-  package$api.stringToExpression_7uspo7$ = stringToExpression;
+  package$api.stringToExpression = stringToExpression;
   package$api.structureStringToExpression_61zpoe$ = structureStringToExpression;
   package$api.expressionToStructureString_6718cy$ = expressionToStructureString;
-  package$api.expressionToString_6718cy$ = expressionToString;
+  package$api.expressionToString_tvfpvg$ = expressionToString;
   package$api.compareWithoutSubstitutions_ic33gh$ = compareWithoutSubstitutions;
-  package$api.expressionSubstitutionFromStrings_tp2npl$ = expressionSubstitutionFromStrings;
+  package$api.expressionSubstitutionFromStrings_enwyyc$ = expressionSubstitutionFromStrings;
   package$api.findSubstitutionPlacesInExpression_333i8d$ = findSubstitutionPlacesInExpression;
   package$api.applySubstitution_g1mkoe$ = applySubstitution;
   package$api.generateTask_ufm96r$ = generateTask;
@@ -18434,7 +17746,7 @@ var TWF = function (_, Kotlin) {
   package$api.SubstitutionPlaceOfflineData = SubstitutionPlaceOfflineData;
   package$api.findSubstitutionPlacesCoordinatesInExpressionJSON = findSubstitutionPlacesCoordinatesInExpressionJSON;
   package$api.applyExpressionBySubstitutionPlaceCoordinates = applyExpressionBySubstitutionPlaceCoordinates;
-  package$api.generateTaskInJSON_r8hs2j$ = generateTaskInJSON;
+  package$api.generateTaskInJSON_ny8vwh$ = generateTaskInJSON;
   var package$baseoperations = _.baseoperations || (_.baseoperations = {});
   package$baseoperations.BaseNumber = BaseNumber;
   package$baseoperations.BaseOperationDefinitionWithDomain = BaseOperationDefinitionWithDomain;
@@ -18455,10 +17767,6 @@ var TWF = function (_, Kotlin) {
     get: ComplexBaseOperation$Companion_getInstance
   });
   package$baseoperations.ComplexBaseOperation = ComplexBaseOperation;
-  package$baseoperations.Segment = Segment;
-  package$baseoperations.SegmentsUnion = SegmentsUnion;
-  package$baseoperations.VariableProperties = VariableProperties;
-  package$baseoperations.Domain = Domain;
   Object.defineProperty(DoubleBaseOperation, 'Companion', {
     get: DoubleBaseOperation$Companion_getInstance
   });
@@ -18485,6 +17793,12 @@ var TWF = function (_, Kotlin) {
   });
   package$baseoperations.MultivariateDefinitionDomain = MultivariateDefinitionDomain;
   package$baseoperations.InequalityApproximateSolver = InequalityApproximateSolver;
+  package$baseoperations.Segment = Segment;
+  package$baseoperations.SegmentsUnion = SegmentsUnion;
+  package$baseoperations.VariableProperties = VariableProperties;
+  package$baseoperations.PointGenerator = PointGenerator;
+  package$baseoperations.VariableInfo = VariableInfo;
+  package$baseoperations.DomainPointGenerator = DomainPointGenerator;
   var package$config = _.config || (_.config = {});
   package$config.CheckedFactColor = CheckedFactColor;
   package$config.CheckedFactAccentuation = CheckedFactAccentuation;
@@ -18868,6 +18182,8 @@ var TWF = function (_, Kotlin) {
   package$platformdependent.randomInt_vux9f0$ = randomInt;
   package$platformdependent.abs_za3lpa$ = abs;
   package$platformdependent.toStringWithMinLength_c38nye$ = toStringWithMinLength;
+  package$platformdependent.escapeCharacters_bm4lxs$ = escapeCharacters;
+  package$platformdependent.escapeBackSlash_bm4lxs$ = escapeBackSlash;
   var package$standartlibextensions = _.standartlibextensions || (_.standartlibextensions = {});
   package$standartlibextensions.abs_yrwdxr$ = abs_0;
   package$standartlibextensions.isLowerCaseLetter_myv2d0$ = isLowerCaseLetter;
@@ -18882,6 +18198,9 @@ var TWF = function (_, Kotlin) {
   package$standartlibextensions.isOpenBracket_myv2d0$ = isOpenBracket;
   package$standartlibextensions.isCloseBracket_myv2d0$ = isCloseBracket;
   package$standartlibextensions.isBracket_myv2d0$ = isBracket;
+  package$standartlibextensions.isUnarySignPart_s8itvh$ = isUnarySignPart;
+  package$standartlibextensions.isBinarySignPart_1t0m1w$ = isBinarySignPart;
+  package$standartlibextensions.isSign_5kkrc7$ = isSign;
   package$standartlibextensions.remainingExpressionStartsWith_rjan26$ = remainingExpressionStartsWith;
   package$standartlibextensions.readFromRemainingExpressionWhile_josn5q$ = readFromRemainingExpressionWhile;
   package$standartlibextensions.skipFromRemainingExpressionWhile_josn5q$ = skipFromRemainingExpressionWhile;

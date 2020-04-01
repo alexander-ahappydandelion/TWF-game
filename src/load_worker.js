@@ -311,6 +311,8 @@ class FormulasGenerator {
 var generator = new FormulasGenerator();
 
 onmessage = function(event) {
+    console.log('data received from main thread');
+
     var generatedFormulas = []
     for (let i = 0; i < 10; ++i) {
         generatedFormulas.push(generator.getNext());

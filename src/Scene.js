@@ -26,9 +26,12 @@ class Scene extends Phaser.Scene {
                     '&chl=' + this.initExpr +              // specify the text of formula
                     '&chf=bg,s,11223300');                  // make transparent background
 
+
+
     }
 
     create() {
+
         this.anims.create({
             key: 'fm_accept',
             frames: [

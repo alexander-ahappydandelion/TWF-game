@@ -1,10 +1,11 @@
 class FormulasGenerator {
     constructor(initialExpr) {
         this.count = 0;
-        this.limit = 100;
+        this.limit = 30;
 
         // this.expr = "(A|B)&(C->D)";
-        this.expr = initialExpr;
+        this.expr = "A|B";
+        // this.expr = initialExpr;
         this.isCorrect = true;
 
 
@@ -196,14 +197,379 @@ class FormulasGenerator {
                 pass: 6
             }
         ];
-        this.wrongSubs = [
+        this.correctSubs = [
             {
-                origin: "C|D",
-                target: "D|C"
+                origin: "A&(!A|B)",
+                target: "A&B",
+                hit: -239,
+                pass: 6,
+                len_diff: -5
             },
             {
-                origin: "D|C",
-                target: "C|D"
+                origin: "A|(B|C)",
+                target: "A|B|C",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            },
+            {
+                origin: "A|B|C",
+                target: "A|(B|C)",
+                hit: -239,
+                pass: 6,
+                len_diff: 2
+            },
+            {
+                origin: "A&(B&C)",
+                target: "A&B&C",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            },
+            {
+                origin: "A&B&C",
+                target: "A&(B&C)",
+                hit: -239,
+                pass: 6,
+                len_diff: 2
+            },
+            {
+                origin: "A&(B&C)",
+                target: "(A&B)&C",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "(A|B)|C",
+                target: "A|B|C",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            },
+            {
+                origin: "A|B|C",
+                target: "(A|B)|C",
+                hit: -239,
+                pass: 6,
+                len_diff: 2
+            },
+            {
+                origin: "(A&B)&C",
+                target: "A&B&C",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            },
+            {
+                origin: "A&B&C",
+                target: "(A&B)&C",
+                hit: -239,
+                pass: 6,
+                len_diff: 2
+            },
+            {
+                origin: "A|(B&C)",
+                target: "(A|B)&(A|C)",
+                hit: -239,
+                pass: 6,
+                len_diff: 4
+            },
+            {
+                origin: "(A|B)&(A|C)",
+                target: "A|(B&C)",
+                hit: -239,
+                pass: 6,
+                len_diff: -4
+            },
+            {
+                origin: "A&(B|C)",
+                target: "(A&B)|(A&C)",
+                hit: -239,
+                pass: 6,
+                len_diff: 4
+            },
+            {
+                origin: "(A&B)|(A&C)",
+                target: "A&(B|C)",
+                hit: -239,
+                pass: 6,
+                len_diff: -4
+            },
+            {
+                origin: "!(A&B)",
+                target: "!A|!B",
+                hit: -239,
+                pass: 6,
+                len_diff: -1
+            },
+            {
+                origin: "!(A&B)",
+                target: "!(B&A)",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "!A|!B",
+                target: "!(A&B)",
+                hit: -239,
+                pass: 6,
+                len_diff: 1
+            },
+            {
+                origin: "A|B",
+                target: "!(!A&!B)",
+                hit: -239,
+                pass: 6,
+                len_diff: 5
+            },
+            {
+                origin: "A&B",
+                target: "!(!A|!B)",
+                hit: -239,
+                pass: 6,
+                len_diff: 5
+            },
+            {
+                origin: "!(A|B)",
+                target: "!A&!B",
+                hit: -239,
+                pass: 6,
+                len_diff: -1
+            },
+            {
+                origin: "!(A|B)",
+                target: "!B&!A",
+                hit: -239,
+                pass: 6,
+                len_diff: -1
+            },
+            {
+                origin: "!(A|B)",
+                target: "!(B|A)",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "!A&!B",
+                target: "!(A|B)",
+                hit: -239,
+                pass: 6,
+                len_diff: 1
+            },
+            {
+                origin: "!A|B",
+                target: "A->B",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "A->B",
+                target: "!A|B",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "A&!B",
+                target: "A\\B",
+                hit: -239,
+                pass: 6,
+                len_diff: -1
+            },
+            {
+                origin: "A\\B",
+                target: "A&!B",
+                hit: -239,
+                pass: 6,
+                len_diff: 1
+            },
+            {
+                origin: "!(!A)",
+                target: "A",
+                hit: -239,
+                pass: 6,
+                len_diff: -4
+            },
+            {
+                origin: "A&(A|B)",
+                target: "A",
+                hit: -239,
+                pass: 6,
+                len_diff: -6
+            },
+            {
+                origin: "A|A",
+                target: "A",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            },
+            {
+                origin: "A&A",
+                target: "A",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            },
+            {
+                origin: "A&B",
+                target: "B&A",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "A|B",
+                target: "B|A",
+                hit: -239,
+                pass: 6,
+                len_diff: 0
+            },
+            {
+                origin: "A\\B",
+                target: "!(B->A)",
+                hit: -239,
+                pass: 6,
+                len_diff: 4
+            },
+            {
+                origin: "!(B->A)",
+                target: "A\\B",
+                hit: -239,
+                pass: 6,
+                len_diff: -4
+            },
+            {
+                origin: "B->A",
+                target: "!(A\\B)",
+                hit: -239,
+                pass: 6,
+                len_diff: 2
+            },
+            {
+                origin: "!(A\\B)",
+                target: "B->A",
+                hit: -239,
+                pass: 6,
+                len_diff: -2
+            }
+        ];
+        this.wrongSubs = [
+            {
+                origin: "!(A\\B)",
+                target: "!B->A",
+                hit: 239,
+                pass: -239,
+                len_diff: -1
+            },
+            {
+                origin: "!(A\\B)",
+                target: "B->!A",
+                hit: 239,
+                pass: -239,
+                len_diff: -1
+            },
+            {
+                origin: "B->A",
+                target: "A\\!B",
+                hit: 239,
+                pass: -239,
+                len_diff: 0
+            },
+            {
+                origin: "B->A",
+                target: "!A\\B",
+                hit: 239,
+                pass: -239,
+                len_diff: 0
+            },
+            {
+                origin: "!A&B",
+                target: "A\\B",
+                hit: 239,
+                pass: -239,
+                len_diff: 0
+            },
+            {
+                origin: "A\\B",
+                target: "!A&B",
+                hit: 239,
+                pass: -239,
+                len_diff: 0
+            },
+            {
+                origin: "!A&!B",
+                target: "!(!A|!B)",
+                hit: 239,
+                pass: -239,
+                len_diff: 3
+            },
+            {
+                origin: "!(!A|!B)",
+                target: "!A&!B",
+                hit: 239,
+                pass: -239,
+                len_diff: -3
+            },
+            {
+                origin: "!A|!B",
+                target: "!(!A&!B)",
+                hit: 239,
+                pass: -239,
+                len_diff: 3
+            },
+            {
+                origin: "!(!A&!B)",
+                target: "!A|!B",
+                hit: 239,
+                pass: -239,
+                len_diff: -3
+            },
+            {
+                origin: "A|!B",
+                target: "A\\B",
+                hit: 239,
+                pass: -239,
+                len_diff: -1
+            },
+            {
+                origin: "A\\B",
+                target: "A|!B",
+                hit: 239,
+                pass: -239,
+                len_diff: 1
+            },
+            {
+                origin: "A|B",
+                target: "A->!B",
+                hit: 239,
+                pass: -239,
+                len_diff: 2
+            },
+            {
+                origin: "A->!B",
+                target: "A|B",
+                hit: 239,
+                pass: -239,
+                len_diff: -2
+            },
+            {
+                origin: "!(!A)",
+                target: "!A",
+                hit: 239,
+                pass: -239,
+                len_diff: -4
+            },
+            {
+                origin: "!A",
+                target: "!(!A)",
+                hit: 239,
+                pass: -239,
+                len_diff: 4
             }
         ];
     }
@@ -233,11 +599,13 @@ class FormulasGenerator {
             "hitScore": this.prevIsCorrect ? -239 : 239,
             "passScore": this.prevIsCorrect ? 6 : -239
         };
+
+
     }
 
 
     isNextFormulaCorrect() {
-        return Math.random() < 0.5;
+        return Math.random() < 0.85;
         // return true;
     }
 
@@ -246,26 +614,44 @@ class FormulasGenerator {
                          : this.getNextExpressionOf(this.wrongSubs);
     }
 
+    /**
+     * if length of expr is small (< 8) it forces to lengthen expr
+     * if length of expr is large (> 12) it forces to shorten expr
+     * @param subs
+     */
     getNextExpressionOf(subs) {
-        // let nextExpr = this.expr;
+        let group1 = subs;
+        let group2 = [];
 
-        // check if we've got the same formula
-        // while (nextExpr === this.expr) {
-        //     let sub = this.getNextApplicableSubstitutionFrom(this.correctSubs);
-        //     nextExpr = this.applySubInRandomPlace(this.expr, sub);
-        // }
+        if (this.expr.length < 8)  {
+            group1 = subs.filter( sub => 0 < sub.len_diff  );
+            group2 = subs.filter( sub => sub.len_diff <= 0 );
+        }
 
-        this.shuffle(subs);
+        if (12 < this.expr.length) {
+            group1 = subs.filter( sub => sub.len_diff < 0 );
+            group2 = subs.filter( sub => 0 <= sub.len_diff );
+        }
 
-        let applicableSub = undefined;
-        for (let sub of subs) {
+        this.shuffle(group1);
+        this.shuffle(group2);
+
+        console.log("group1 len: " + group1.length);
+        console.log("group2 len: " + group2.length);
+
+        for (let sub of group1) {
             if (this.isApplicableSubstitution(this.expr, sub)) {
-                applicableSub = sub;
-                break;
+                return this.applySubInRandomPlace(this.expr, sub);
             }
         }
 
-        return this.applySubInRandomPlace(this.expr, applicableSub);
+        for (let sub of group2) {
+            if (this.isApplicableSubstitution(this.expr, sub)) {
+                return this.applySubInRandomPlace(this.expr, sub);
+            }
+        }
+
+        console.log("Error in getNexExprOf(subs): no applicable substitution was found");
     }
 
     shuffle(a) {
@@ -302,8 +688,8 @@ class FormulasGenerator {
 
     applySub(expr, sub, place) {
         return TWF.api.applyExpressionBySubstitutionPlaceCoordinates(expr, sub.origin, sub.target,
-            place.parentStartPosition, place.parentEndPosition,
-            place.startPosition, place.endPosition,
+            parseInt(place.parentStartPosition), parseInt(place.parentEndPosition),
+            parseInt(place.startPosition), parseInt(place.endPosition),
             "setTheory")
     }
 
@@ -314,22 +700,25 @@ class FormulasGenerator {
     }
 
     isApplicableSubstitution(expr, sub) {
+        console.log("origin: " + sub.origin);
+        console.log("target: " + sub.target);
         let subs = this.getSubsPlacesFor(expr, sub);
+        console.log("isApplicable: " + (subs.length > 0));
         return subs.length > 0
     }
 
     getSubsPlacesFor(expr, sub) {
         let placesJSON = TWF.api.findSubstitutionPlacesCoordinatesInExpressionJSON(expr, sub.origin, sub.target, "setTheory");
         let substitutionPlaces = (JSON.parse(placesJSON)).substitutionPlaces;
-        substitutionPlaces.forEach((subPlaces) => {
-            for (let place in subPlaces) {
-                subPlaces[place] = parseInt(subPlaces[place]);
-            }
-        });
+        // substitutionPlaces.forEach((subPlaces) => {
+        //     for (let place in subPlaces) {
+        //         subPlaces[place] = parseInt(subPlaces[place]);
+        //     }
+        // });
         // substitutionPlaces = substitutionPlaces.filter((subPlaces) => {
         //     return subPlaces.endPosition - subPlaces.startPosition <= sub.origin.length + 2
         // });
-        // console.log("I was here 11")
+        console.log("sub places: " + substitutionPlaces.length);
         return substitutionPlaces
     }
 
